@@ -57,8 +57,7 @@
   ledger module before insert, and by a deferred constraint trigger at
   commit. The table is append-only (UPDATE/DELETE/TRUNCATE raise);
   corrections are reversing entries. Its foreign keys are ON DELETE
-  RESTRICT. Lines on producer_pending/producer_available must carry
-  producer_id (migration 0003).
+  RESTRICT.
 - `payouts` — producer_id, moncash_account_id, amount_minor + currency
   (ledger currency), payout_currency + payout_amount_minor + fx_rate +
   fx_rate_id (what MonCash actually sent, e.g. HTG), status

@@ -11,8 +11,6 @@ historical rates preserved). English, French, and Haitian Creole.
   bank transfers, refunds, idempotency keys, audit log
 - Migration 0002: append-only ledger, balance + currency checks at commit,
   producer pending/available accounts, processor fees, FX on payouts
-- Migration 0003: producer ledger lines must name their producer
-- CI (GitHub Actions): tests, typecheck, and build on every push and PR
 - Commission engine + double-entry ledger (`src/lib/ledger`) with tests
 - Mock payment, MonCash payout, and shipping providers
 - Admin dashboard shell (`/admin`) with clearly-labeled demo figures
