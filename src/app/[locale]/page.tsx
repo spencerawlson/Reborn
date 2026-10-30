@@ -1,24 +1,16 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PriceEstimator } from "@/components/PriceEstimator";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 
-const STEPS: [DictionaryKey, DictionaryKey, string][] = [
-  ["step1Title", "step1Body", "1"],
-  ["step2Title", "step2Body", "2"],
-  ["step3Title", "step3Body", "3"],
-];
+// Simple on purpose (Kay Ayiti / Farelune): one headline, three checks,
+// one tool, three steps, one teaser. Nothing else.
+const CHECKS: DictionaryKey[] = ["heroCheck1", "trust1Title", "heroCheck3"];
 
-const TRUST: [DictionaryKey, DictionaryKey][] = [
-  ["trust1Title", "trust1Body"],
-  ["trust2Title", "trust2Body"],
-  ["trust3Title", "trust3Body"],
-];
-
-const ROUTES = [
-  { from: "Montréal", to: ["Port-au-Prince", "Cap-Haïtien"] },
-  { from: "Miami", to: ["Port-au-Prince", "Cap-Haïtien"] },
+const STEPS: { title: DictionaryKey; body: DictionaryKey; icon: string }[] = [
+  { title: "step1Title", body: "step1Body", icon: "📦" },
+  { title: "step2Title", body: "step2Body", icon: "🚢" },
+  { title: "step3Title", body: "step3Body", icon: "🏠" },
 ];
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -29,90 +21,51 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       <SiteHeader locale={locale} />
-      <main>
-        {/* Hero + estimator */}
-        <section className="bg-blue-900 text-white">
-          <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 pb-16 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
-            <div className="lg:pt-8">
-              <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl">
-                {t(locale, "heroTitle")}
-              </h1>
-              <p className="mt-5 max-w-xl text-lg text-blue-100">{t(locale, "heroBody")}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#estimate" className="rounded-full bg-red-600 px-6 py-3 font-semibold text-white shadow-lg shadow-red-950/30 hover:bg-red-500">
-                  {t(locale, "ctaShip")}
-                </a>
-                <Link href={`/${locale}/track`} className="rounded-full border border-white/30 px-6 py-3 font-semibold hover:bg-white/10">
-                  {t(locale, "ctaTrack")}
-                </Link>
-              </div>
-              <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-blue-200">
-                <li>Montréal → {t(locale, "haiti")}</li>
-                <li>Miami → {t(locale, "haiti")}</li>
-                <li>🚚 {t(locale, "estimateDoor")}</li>
-              </ul>
-            </div>
-            <PriceEstimator locale={locale} />
+      <main className="mx-auto max-w-5xl px-4">
+        <section className="grid items-start gap-8 pb-12 pt-8 md:grid-cols-[1fr_1.05fr] md:gap-12 md:pt-16">
+          <div className="md:pt-6">
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-slate-200">
+              Montréal · Miami → {t(locale, "haiti")}
+            </p>
+            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{t(locale, "heroTitle")}</h1>
+            <p className="mt-3 text-lg text-slate-600">{t(locale, "heroBody")}</p>
+            <ul className="mt-6 grid gap-2.5 text-[15px] text-slate-700">
+              {CHECKS.map((key) => (
+                <li key={key} className="flex items-start gap-2.5">
+                  <span aria-hidden className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-black text-emerald-600">✓</span>
+                  {t(locale, key)}
+                </li>
+              ))}
+            </ul>
           </div>
+          <PriceEstimator locale={locale} />
         </section>
 
-        {/* How it works */}
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-2xl font-bold tracking-tight">{t(locale, "howTitle")}</h2>
-          <ol className="mt-8 grid gap-6 md:grid-cols-3">
-            {STEPS.map(([title, body, n]) => (
-              <li key={n} className="rounded-2xl bg-white p-6 ring-1 ring-stone-200">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-900 font-bold text-white">{n}</span>
-                <h3 className="mt-4 font-semibold">{t(locale, title)}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-stone-600">{t(locale, body)}</p>
+        <section id="how" className="scroll-mt-20 pb-6">
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">{t(locale, "howTitle")}</h2>
+          <ol className="mt-4 grid gap-3 md:grid-cols-3">
+            {STEPS.map((step) => (
+              <li key={step.title} className="flex gap-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200 md:flex-col md:gap-3 md:p-5">
+                <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xl">{step.icon}</span>
+                <div>
+                  <h3 className="font-bold text-slate-900">{t(locale, step.title)}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-500">{t(locale, step.body)}</p>
+                </div>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* Routes */}
-        <section className="bg-white">
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-[1fr_1.2fr]">
+        <section className="py-6">
+          <div className="flex items-center gap-4 rounded-2xl bg-red-50 p-4 ring-1 ring-red-100 md:p-5">
+            <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-xl">☕</span>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">{t(locale, "routesTitle")}</h2>
-              <p className="mt-3 text-stone-600">{t(locale, "routesBody")}</p>
-              <p className="mt-3 text-sm font-medium text-red-700">{t(locale, "routesMore")}</p>
+              <p className="flex flex-wrap items-center gap-2 font-bold text-slate-900">
+                {t(locale, "teaserTitle")}
+                <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase text-white">{t(locale, "soon")}</span>
+              </p>
+              <p className="mt-1 text-sm text-slate-600">{t(locale, "teaserBody")}</p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {ROUTES.map((r) => (
-                <div key={r.from} className="rounded-2xl bg-stone-50 p-5 ring-1 ring-stone-200">
-                  <p className="text-sm text-stone-500">{t(locale, "estimateFrom")}</p>
-                  <p className="text-xl font-bold">{r.from}</p>
-                  <div className="my-3 h-px bg-gradient-to-r from-blue-800 to-red-600" />
-                  <p className="text-sm text-stone-500">{t(locale, "estimateTo")}</p>
-                  {r.to.map((d) => <p key={d} className="font-semibold">{d}</p>)}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Trust */}
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-2xl font-bold tracking-tight">{t(locale, "trustTitle")}</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {TRUST.map(([title, body]) => (
-              <div key={title} className="border-l-4 border-red-600 pl-4">
-                <h3 className="font-semibold">{t(locale, title)}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-stone-600">{t(locale, body)}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Marketplace teaser */}
-        <section className="mx-auto max-w-6xl px-4 pb-16">
-          <div className="rounded-3xl bg-gradient-to-br from-red-700 to-red-900 p-8 text-white sm:p-10">
-            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              {t(locale, "soon")}
-            </span>
-            <h2 className="mt-4 text-2xl font-bold tracking-tight">{t(locale, "teaserTitle")}</h2>
-            <p className="mt-3 max-w-2xl text-red-50">{t(locale, "teaserBody")}</p>
           </div>
         </section>
       </main>

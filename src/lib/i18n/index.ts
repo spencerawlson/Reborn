@@ -23,11 +23,13 @@ const en = {
   soon: "Soon",
   haiti: "Haiti",
 
-  heroTitle: "Ship to Haiti, door to door",
-  heroBody:
-    "Boxes and barrels from Montréal and Miami to every town in Haiti — delivered to the door, or ready for pickup at our warehouse.",
-  ctaShip: "Start a shipment",
-  ctaTrack: "Track a shipment",
+  heroTitle: "Ship to Haiti",
+  heroBody: "Boxes and barrels from Montréal and Miami, delivered anywhere in Haiti.",
+  heroCheck1: "Door to door, or pickup at our warehouse",
+  heroCheck3: "WhatsApp updates in Creole for your family",
+  tabHome: "Home",
+  tabHelp: "Help",
+  bookingSoon: "Online booking opens soon",
 
   estimateTitle: "Estimate your price",
   estimateFrom: "From",
@@ -59,17 +61,8 @@ const en = {
   step3Body:
     "To the door anywhere in Haiti, or ready at our Port-au-Prince or Cap-Haïtien warehouse. Your recipient gets updates in Creole.",
 
-  routesTitle: "Where we ship",
-  routesBody: "From our warehouses abroad to our warehouses in Haiti — then to every department.",
-  routesMore: "Paris and more destinations next.",
 
-  trustTitle: "Why ship with us",
   trust1Title: "Our own trucks and warehouses",
-  trust1Body: "In Montréal, Miami, Port-au-Prince, and Cap-Haïtien — not a chain of strangers.",
-  trust2Title: "Every item tracked",
-  trust2Body: "Scanned in and out at every step, with photos on arrival.",
-  trust3Title: "Updates that reach Haiti",
-  trust3Body: "WhatsApp and SMS for you and your recipient, in their language.",
 
   teaserTitle: "Coming next: Haitian goods to the world",
   teaserBody:
@@ -115,11 +108,13 @@ const fr: Dictionary = {
   soon: "Bientôt",
   haiti: "Haïti",
 
-  heroTitle: "Expédiez en Haïti, porte à porte",
-  heroBody:
-    "Boîtes et barils de Montréal et Miami vers toutes les villes d'Haïti — livrés à domicile ou prêts à récupérer à notre entrepôt.",
-  ctaShip: "Commencer un envoi",
-  ctaTrack: "Suivre un envoi",
+  heroTitle: "Expédiez en Haïti",
+  heroBody: "Boîtes et barils de Montréal et Miami, livrés partout en Haïti.",
+  heroCheck1: "À domicile, ou retrait à notre entrepôt",
+  heroCheck3: "Nouvelles par WhatsApp en créole pour votre famille",
+  tabHome: "Accueil",
+  tabHelp: "Aide",
+  bookingSoon: "Réservation en ligne bientôt",
 
   estimateTitle: "Estimez votre prix",
   estimateFrom: "De",
@@ -151,17 +146,8 @@ const fr: Dictionary = {
   step3Body:
     "À domicile partout en Haïti, ou prêt à notre entrepôt de Port-au-Prince ou du Cap-Haïtien. Votre destinataire reçoit des nouvelles en créole.",
 
-  routesTitle: "Nos trajets",
-  routesBody: "De nos entrepôts à l'étranger à nos entrepôts en Haïti — puis dans tous les départements.",
-  routesMore: "Paris et d'autres destinations ensuite.",
 
-  trustTitle: "Pourquoi nous choisir",
   trust1Title: "Nos propres camions et entrepôts",
-  trust1Body: "À Montréal, Miami, Port-au-Prince et au Cap-Haïtien — pas une chaîne d'inconnus.",
-  trust2Title: "Chaque article suivi",
-  trust2Body: "Scanné à chaque étape, avec photos à l'arrivée.",
-  trust3Title: "Des nouvelles jusqu'en Haïti",
-  trust3Body: "WhatsApp et SMS pour vous et votre destinataire, dans sa langue.",
 
   teaserTitle: "Bientôt : les produits haïtiens pour le monde",
   teaserBody:
@@ -204,11 +190,13 @@ const ht: Dictionary = {
   soon: "Talè",
   haiti: "Ayiti",
 
-  heroTitle: "Voye bay Ayiti, pòt an pòt",
-  heroBody:
-    "Bwat ak barik soti Monreyal ak Miyami pou tout vil an Ayiti — nou livre lakay moun nan, oswa li pare pou yo vin pran l nan depo nou.",
-  ctaShip: "Kòmanse yon anvwa",
-  ctaTrack: "Swiv yon anvwa",
+  heroTitle: "Voye bay Ayiti",
+  heroBody: "Bwat ak barik soti Monreyal ak Miyami, livre nenpòt kote an Ayiti.",
+  heroCheck1: "Lakay moun nan, oswa pran l nan depo nou",
+  heroCheck3: "Nouvèl sou WhatsApp an kreyòl pou fanmi w",
+  tabHome: "Akèy",
+  tabHelp: "Èd",
+  bookingSoon: "Rezèvasyon an liy ap louvri talè",
 
   estimateTitle: "Kalkile pri a",
   estimateFrom: "Soti",
@@ -240,17 +228,8 @@ const ht: Dictionary = {
   step3Body:
     "Lakay moun nan nenpòt kote an Ayiti, oswa pare nan depo nou Pòtoprens oswa Okap. Moun k ap resevwa a jwenn nouvèl an kreyòl.",
 
-  routesTitle: "Kote nou voye",
-  routesBody: "Soti nan depo nou lòt bò dlo rive nan depo nou an Ayiti — epi nan tout depatman.",
-  routesMore: "Pari ak lòt destinasyon apre.",
 
-  trustTitle: "Poukisa voye avè nou",
   trust1Title: "Pwòp kamyon ak depo pa nou",
-  trust1Body: "Monreyal, Miyami, Pòtoprens ak Okap — se pa yon pakèt moun ou pa konnen.",
-  trust2Title: "Nou swiv chak atik",
-  trust2Body: "Eskane nan chak etap, ak foto lè l rive.",
-  trust3Title: "Nouvèl ki rive an Ayiti",
-  trust3Body: "WhatsApp ak SMS pou ou ak moun k ap resevwa a, nan lang pa l.",
 
   teaserTitle: "Talè konsa: pwodwi ayisyen pou tout mond lan",
   teaserBody:

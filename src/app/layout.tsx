@@ -14,7 +14,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const lang = resolveLocale((await headers()).get("x-locale"));
   return (
     <html lang={lang}>
-      <body className="min-h-screen bg-stone-50 text-stone-900 antialiased">{children}</body>
+      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">{children}</body>
     </html>
   );
 }
