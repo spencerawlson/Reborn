@@ -40,20 +40,24 @@ beforeAll(async () => {
   `);
 }, 60_000);
 
-function lines(group: string, rows: [string, number, number, string?][]): string {
+function lines(group: string, rows: [string, number, number, string?][], producerId: string | null): string {
   return rows
-    .map(
-      ([account, debit, credit, currency = "USD"]) =>
-        `('${group}', '${account}', ${debit}, ${credit}, '${currency}', '${ORDER}', 'test')`,
-    )
+    .map(([account, debit, credit, currency = "USD"]) => {
+      const producer = account.startsWith("producer_") && producerId ? `'${producerId}'` : "NULL";
+      return `('${group}', '${account}', ${debit}, ${credit}, '${currency}', '${ORDER}', ${producer}, 'test')`;
+    })
     .join(", ");
 }
 
-async function postGroup(group: string, rows: [string, number, number, string?][]) {
+async function postGroup(
+  group: string,
+  rows: [string, number, number, string?][],
+  producerId: string | null = PRODUCER,
+) {
   await db.exec(`
     BEGIN;
-    INSERT INTO ledger_entries (entry_group, account, debit_minor, credit_minor, currency, order_id, description)
-      VALUES ${lines(group, rows)};
+    INSERT INTO ledger_entries (entry_group, account, debit_minor, credit_minor, currency, order_id, producer_id, description)
+      VALUES ${lines(group, rows, producerId)};
     COMMIT;
   `);
 }
@@ -101,6 +105,17 @@ describe("migrations", () => {
          VALUES (gen_random_uuid(), 'producer_payable', 1, 0, 'old account')`,
       /ledger_entries_account_check/,
     );
+  });
+
+  it("rejects producer lines that do not name a producer", async () => {
+    await expect(
+      postGroup(
+        "44444444-0000-0000-0000-000000000001",
+        [["producer_pending", 9000, 0], ["producer_available", 0, 9000]],
+        null,
+      ),
+    ).rejects.toThrow(/ledger_entries_producer_line_check/);
+    await db.exec("ROLLBACK").catch(() => undefined);
   });
 
   it("makes the ledger append-only", async () => {
