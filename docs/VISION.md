@@ -24,20 +24,31 @@ From a producer's own storefront, a buyer can order:
   minimum quantities, and terms are a later phase, but the data model must
   not assume every buyer is a single consumer.
 
+## Storefronts are real stores, promoted by their owners
+- Every producer gets their own storefront, created on the platform,
+  with its own public link.
+- The producer promotes that link themselves — to their own customers,
+  contacts, and diaspora networks. Distribution is producer-led: the
+  platform gives every producer a real store plus a link; the producers
+  bring their buyers.
+- A storefront holds everything that producer makes: the full catalogue,
+  not a single listing. It should feel like a real store, not a classified
+  ad.
+
 ## What this changes in the build
 - Product model: perishable/fresh products need harvest/availability
   windows, weight-based quantities, and cold-chain/shipping notes —
   not just a static SKU price.
 - Storefronts: a storefront is the producer's shop window to the
   diaspora; trust signals (verified producer, reviews, origin) matter
-  more than catalogue size.
+  more than catalogue size. Every storefront has a clean, shareable
+  public URL.
 - Orders: bulk quantities and retailer orders ride the same order +
   commission + ledger pipeline as retail orders. No separate money path.
 - Categories: agriculture/fresh and art are first-class categories,
   not a generic list.
 
-## Open question (not assumed)
-- Reaching and advertising to the Haitian community abroad was flagged
-  as a constraint. Whether that means paid advertising is hard, or that
-  the platform itself is the reach channel, is undecided — the go-to-
-  market plan must answer it before launch marketing is built.
+## Still to decide
+- Which promotion tools the platform hands producers (share buttons,
+  WhatsApp share, link tracking) — the producer-led model itself is
+  decided; the tooling is not.
