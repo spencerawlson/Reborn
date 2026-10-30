@@ -1,5 +1,6 @@
 import { t, type Locale } from "@/lib/i18n/index";
-import { HAITI_MAP, MAIN_MAP } from "./map-data";
+import { HaitiMap } from "./HaitiMap";
+import { MAIN_MAP } from "./map-data";
 
 /**
  * "Our network" map — real geography (Natural Earth, public domain),
@@ -7,7 +8,7 @@ import { HAITI_MAP, MAIN_MAP } from "./map-data";
  * - left: eastern North America to Hispaniola, warehouses at their true
  *   positions, animated air & sea routes (CSS .route-flow);
  * - right: Haiti's 10 departments with their real borders, all served
- *   door to door.
+ *   door to door; click one for details (HaitiMap).
  */
 type City = { id: string; name: string; x: number; y: number };
 
@@ -25,10 +26,7 @@ function arc(a: City, b: City, bend: number) {
 // Haiti labels sit to the left (over the sea) so they never cover the Dominican Republic.
 const LABEL_SIDE: Record<string, "start" | "end"> = { yul: "start", mia: "end", cap: "end", pap: "end" };
 
-// Department label nudges where the centroid collides with a city dot.
-const LABEL_NUDGE: Record<string, [number, number]> = { "HT-OU": [4, 13] };
-
-export function RouteMap({ locale }: { locale: Locale }) {
+export function RouteMap({ locale, department = null }: { locale: Locale; department?: string | null }) {
   const c = MAIN_MAP.cities;
   const routes = [
     arc(byId(c, "yul"), byId(c, "cap"), -0.22),
@@ -92,37 +90,7 @@ export function RouteMap({ locale }: { locale: Locale }) {
         <p className="text-sm text-slate-500">
           <span className="font-semibold text-blue-700">{t(locale, "kpi2Value")}</span> {t(locale, "kpi2Label")}
         </p>
-        <svg viewBox={`0 0 ${HAITI_MAP.width} ${HAITI_MAP.height}`} className="mt-3 h-auto w-full" role="img" aria-label={t(locale, "kpi2Label")}>
-          {HAITI_MAP.departments.map((dept) => (
-            <path
-              key={dept.iso}
-              d={dept.d}
-              className="fill-blue-100 transition-colors hover:fill-blue-200"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            >
-              <title>{dept.name}</title>
-            </path>
-          ))}
-          {HAITI_MAP.departments.map((dept) => (
-            <text
-              key={`${dept.iso}-label`}
-              x={dept.cx + (LABEL_NUDGE[dept.iso]?.[0] ?? 0)}
-              y={dept.cy + (LABEL_NUDGE[dept.iso]?.[1] ?? 0)}
-              textAnchor="middle"
-              className="pointer-events-none fill-navy-800"
-              style={{ font: "600 9px var(--font-inter), system-ui, sans-serif" }}
-            >
-              {dept.name}
-            </text>
-          ))}
-          {HAITI_MAP.cities.map((city) => (
-            <g key={city.id}>
-              <circle cx={city.x} cy={city.y} r="4" fill="#fff" stroke="#0b1b3f" strokeWidth="2" />
-            </g>
-          ))}
-        </svg>
+        <HaitiMap locale={locale} initialSelected={department} />
         <figcaption className="mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm text-slate-500">
           <span className="inline-flex items-center gap-2">
             <span className="h-3 w-3 rounded-full border-[3px] border-navy-900 bg-white" /> {t(locale, "legendWarehouse")}

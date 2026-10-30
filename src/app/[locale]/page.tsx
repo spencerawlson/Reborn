@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Icon, type IconName } from "@/components/Icon";
 import { PriceEstimator } from "@/components/PriceEstimator";
 import { RouteMap } from "@/components/RouteMap";
+import { isDepartmentCode } from "@/lib/shipping/departments";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 import { isEstimatorTab } from "@/lib/shipping/tabs";
@@ -34,10 +35,11 @@ export default async function Home({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; to?: string; dept?: string }>;
 }) {
   const { locale: raw } = await params;
-  const { tab } = await searchParams;
+  const { tab, to, dept } = await searchParams;
+  const destination = to === "CAP" ? "CAP" : "PAP";
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
   const base = `/${locale}`;
@@ -73,7 +75,12 @@ export default async function Home({
               </div>
             </div>
             <div className="relative lg:-mb-48">
-              <PriceEstimator locale={locale} initialTab={isEstimatorTab(tab) ? tab : "ship"} />
+              <PriceEstimator
+                key={`${tab ?? "ship"}-${destination}`}
+                locale={locale}
+                initialTab={isEstimatorTab(tab) ? tab : "ship"}
+                initialDestination={destination}
+              />
             </div>
           </div>
         </section>
@@ -144,7 +151,7 @@ export default async function Home({
         </section>
 
         {/* Network */}
-        <section className="bg-white">
+        <section id="network" className="scroll-mt-20 bg-white">
           <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 lg:py-28">
             <div className="max-w-2xl">
               <h2 className="text-3xl font-semibold tracking-[-0.02em] text-navy-900 sm:text-4xl">{t(locale, "networkTitle")}</h2>
@@ -153,7 +160,7 @@ export default async function Home({
                 <Icon name="pin" size={18} /> {t(locale, "networkNext")}
               </p>
             </div>
-            <RouteMap locale={locale} />
+            <RouteMap locale={locale} department={isDepartmentCode(dept) ? dept : null} />
           </div>
         </section>
 

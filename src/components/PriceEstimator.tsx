@@ -24,12 +24,20 @@ const field =
 const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
 
 /** The one tool on the home page: Ship, Shop (Amazon forwarding), or Track. */
-export function PriceEstimator({ locale, initialTab = "ship" }: { locale: Locale; initialTab?: EstimatorTab }) {
+export function PriceEstimator({
+  locale,
+  initialTab = "ship",
+  initialDestination = "PAP",
+}: {
+  locale: Locale;
+  initialTab?: EstimatorTab;
+  initialDestination?: DestinationCode;
+}) {
   const router = useRouter();
   const [tab, setTab] = useState<EstimatorTab>(initialTab);
   const [pounds, setPounds] = useState("3");
   const [origin, setOrigin] = useState<OriginCode>("YUL");
-  const [destination, setDestination] = useState<DestinationCode>("PAP");
+  const [destination, setDestination] = useState<DestinationCode>(initialDestination);
   const [size, setSize] = useState<SizeCode>("barrel");
   const [delivery, setDelivery] = useState<"door" | "pickup">("door");
   const [zone, setZone] = useState<ZoneCode>("metro");
