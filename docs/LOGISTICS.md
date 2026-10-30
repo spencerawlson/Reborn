@@ -1,9 +1,19 @@
 # Logistics core — Phase 3 plan (draft)
 
 The company moves the goods. This plan covers the software that runs the
-logistics operation and connects it to the sourcing platform. It is a
-draft: the operating model below needs the founder's answers before the
-schema is fixed.
+logistics operation and connects it to the sourcing platform. Operating
+model confirmed by the founder on October 30, 2026 (below); final-mile
+delivery is the one open question.
+
+## Operating model (founder, October 30, 2026)
+- **Modes:** air and ocean.
+- **Fleet:** company-owned trucks plus independent contractor drivers.
+- **Warehouses:** Haiti, Montréal, and Miami.
+- **Experience:** the founder has run freight from China to Montréal.
+- **Who pays freight:** negotiated between buyer and supplier on each
+  deal.
+- **Both directions:** Haiti → abroad carries Haitian goods; abroad →
+  Haiti carries diaspora boxes and barrels, so loads are full both ways.
 
 ## Network (founder, October 30, 2026)
 - **Origins:** Port-au-Prince and Cap-Haïtien.
@@ -31,6 +41,47 @@ Design consequences (lead):
   in code.
 - **Currencies:** freight priced in USD; buyers in Montréal see CA$ and in
   Paris € as estimates from `fx_rates`; invoices state one currency.
+
+## Design consequences of the operating model (lead)
+- **Freight payer is a field on every quote and deal:** buyer, supplier,
+  or split, recorded with the Incoterm that expresses it (EXW/FCA: buyer
+  pays the main freight; CPT/CIP/DAP/DDP: supplier pays). Freight invoices
+  go to whoever the deal names.
+- **Three warehouses, one system:** every piece is scanned in and out at
+  Haiti, Montréal, and Miami; stock and location per site; cross-dock
+  without storage when a load is waiting.
+- **Fleet and dispatch:** vehicles, drivers (employees and contractors),
+  routes for pickups and deliveries, and a phone-friendly driver view for
+  proof of pickup and delivery (photo, signature, GPS time-stamp).
+- **Contractor settlement:** jobs completed by contractors accrue to a
+  `contractor_payable` ledger account; paid in batches, with an audit
+  trail. Contractors see only their own jobs.
+- **Two products on one engine:**
+  1. *Trade freight* (Haiti → abroad): commercial goods from deals,
+     palletised or cartoned, with export documents.
+  2. *Diaspora shipping* (abroad → Haiti): boxes and barrels from
+     individuals, flat prices by size, simpler customs (personal
+     shipments).
+  Both use the same locations, warehouses, legs, consolidations,
+  tracking, and billing.
+
+## Diaspora shipping (abroad → Haiti)
+- **Catalogue of sizes** with flat prices per lane: standard barrels,
+  box sizes, and over-size items, plus extra weight charges.
+- **Booking:** drop off at the Montréal or Miami warehouse, or book a
+  pickup by truck. Sender pays at booking.
+- **Contents declaration:** list of items and declared value (required
+  for Haitian customs), prohibited and restricted items enforced at
+  booking, optional insurance.
+- **Recipient in Haiti:** name, phone, city; notified by WhatsApp/SMS at
+  each step, in Creole by default.
+- **Consolidation:** barrels and boxes loaded into containers (ocean) or
+  air loads by cut-off date; manifest per load.
+- **Arrival:** customs release in Haiti, then home delivery or pickup at
+  the Haiti warehouse, with proof of delivery.
+- **Money:** the company charging senders for its own shipping service
+  — the simplest payment case, and the first candidate for live payments
+  once counsel confirms.
 
 ## The flow the software must run
 1. **Quote** — a buyer sees a delivered price: supplier price (at the
@@ -77,19 +128,17 @@ Design consequences (lead):
   per load, exceptions needing action.
 
 ## Questions for the founder (these shape the schema)
-1. ~~Lanes~~ — answered above. Still open: also carry the reverse
-   direction (diaspora → Haiti: boxes and barrels, a large existing
-   market), so return loads aren't empty?
-2. **Modes:** air, ocean, or both? Consolidated (LCL) or full containers?
-3. **Assets vs partners:** do you own or lease trucks, a warehouse in
-   Haiti, a receiving point abroad? Which carriers, forwarders, and
-   customs brokers do you already work with?
-4. **Experience:** have you run freight before — on which lanes, at what
-   volume?
-5. **Who pays freight:** the buyer (delivered price) by default, or
-   negotiable per deal?
-6. **Final delivery:** door-to-door, or the buyer collects from a
-   warehouse abroad?
+Answered October 30: lanes, modes, fleet, warehouses, experience,
+freight payer, and the reverse direction (see above). Still open:
+1. **Final delivery:** door-to-door, warehouse pickup, or both — abroad
+   and in Haiti? Which Haitian cities do you deliver to?
+2. **Containers:** shared (LCL) loads, full containers (FCL), or both?
+   Which ocean and air carriers, and which customs brokers in Canada, the
+   US, and Haiti, do you use today?
+3. **Contractors:** paid per job, per route, or per day? By bank transfer,
+   cash, or MonCash?
+4. **Barrel prices:** do you have current prices by size and lane? They
+   seed the diaspora shipping catalogue.
 
 ## Licences and compliance to confirm (counsel / brokers)
 Each depends on the operating model; listed so none is missed.

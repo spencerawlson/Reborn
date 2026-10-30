@@ -5,6 +5,17 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Operating model (founder) + design (lead)
+- **Founder:** air and ocean; owned trucks plus independent contractors;
+  warehouses in Haiti, Montréal, and Miami; prior freight experience China
+  → Montréal; freight payer negotiated between buyer and supplier per
+  deal; carry diaspora boxes and barrels back to Haiti.
+- **Lead:** freight payer + Incoterm on every quote and deal;
+  multi-warehouse scanning; fleet, dispatch, and driver proof of delivery;
+  contractor settlement on the ledger (`contractor_payable`); one engine
+  for two products — trade freight (Haiti → abroad) and diaspora shipping
+  (abroad → Haiti).
+
 ## 2026-10-30 — Network: PAP + Cap-Haïtien → Montréal + Miami, then Paris and worldwide (founder)
 - **Founder:** origins Port-au-Prince and Cap-Haïtien; first destinations
   Montréal and Miami; then Paris and anywhere in the world.

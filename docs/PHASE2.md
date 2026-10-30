@@ -100,10 +100,11 @@ Migration 0005:
   destination country, target price (optional), deadline, status
   (open/closed/awarded). Visible to suppliers in matching categories.
 - `quotes` — supplier → RFQ or conversation: unit price, quantity,
-  currency, lead time, valid until, notes. Suppliers quote **delivered to
-  the company's warehouse in Haiti**; the buyer also sees a freight
-  estimate to their city (from the Phase 3 rate tables, or "freight quote
-  to follow" until they exist); status (sent,
+  currency, lead time, valid until, notes. Suppliers quote **at the
+  company's warehouse in Haiti**, plus `freight_payer` (buyer, supplier,
+  or split — negotiated per deal) and the matching Incoterm; the buyer
+  also sees a freight estimate to their city (from the Phase 3 rate
+  tables, or "freight quote to follow" until they exist); status (sent,
   accepted, declined, expired). Immutable once sent; a revision is a new
   quote.
 - `deals` — created when a buyer accepts a quote: snapshot of the quote,
