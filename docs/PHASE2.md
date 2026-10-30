@@ -17,9 +17,10 @@ real store and share its link*.
 5. Tests prove tenant isolation: a producer can never read or write
    another producer's rows.
 
-## Decisions needed before building (founder)
-These change the schema, so they come first. The recommendation is
-listed first in each.
+## Decisions (taken October 30, 2026)
+These change the schema, so they came first. The founder appointed Claude
+as project lead; the recommended option was adopted in each case. Any of
+them can be overruled — record the change in `docs/DECISIONS.md`.
 
 1. **Launch categories.** *Recommended:* launch selling **art** and
    **shelf-stable foods** (coffee, cacao, spices, dried goods) to buyers
@@ -114,6 +115,13 @@ Schema (migration 0004):
 - Share: copy link, WhatsApp share (`wa.me` with a prefilled message in
   the producer's language), QR code for printing. Link tracking (`?ref=`)
   waits until the promotion tools are decided.
+- **Request to order (no payment):** until checkout is legally cleared,
+  a buyer can send an order request — items, quantities, their country —
+  that opens WhatsApp to the producer with the request prefilled, and is
+  also saved as an `order_requests` row (no amounts charged, no money
+  through the platform). The producer and buyer settle directly. This
+  validates real demand per producer and product before Phase 3, and the
+  admin dashboard counts requests by producer, category, and country.
 - SEO and link previews: page titles, descriptions, Open Graph images so a
   shared link shows the product photo in WhatsApp/Facebook.
 - Mobile first: most buyers and producers will open these on phones.
