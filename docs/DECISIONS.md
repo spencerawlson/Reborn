@@ -12,9 +12,10 @@ the vision stay with the founder.
   Phase 2 as milestone 2g: personal suite addresses, pre-alerts,
   receiving and matching, weight pricing, consolidation, payment in
   Haiti.
+- **Founder (answers):** both warehouses receive (Miami and Montréal);
+  priced per pound; paid in Haiti by MonCash or cash at the warehouse.
 - **Open (founder):** customers buy themselves (A), the company buys for
-  them (B, counsel first), or both; receiving warehouses; rates; payment
-  methods in Haiti.
+  them (B, counsel first), or both; the rate per pound.
 
 ## 2026-10-30 — Diaspora shipping first (founder, on lead's recommendation)
 - **Founder:** build the diaspora box-and-barrel service (abroad → Haiti)

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PriceEstimator } from "@/components/PriceEstimator";
+import { isEstimatorTab } from "@/lib/shipping/tabs";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 
@@ -13,8 +14,15 @@ const STEPS: { title: DictionaryKey; body: DictionaryKey; icon: string }[] = [
   { title: "step3Title", body: "step3Body", icon: "🏠" },
 ];
 
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+export default async function Home({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const { locale: raw } = await params;
+  const { tab } = await searchParams;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
 
@@ -38,7 +46,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               ))}
             </ul>
           </div>
-          <PriceEstimator locale={locale} />
+          <PriceEstimator locale={locale} initialTab={isEstimatorTab(tab) ? tab : "ship"} />
         </section>
 
         <section id="how" className="scroll-mt-20 pb-6">

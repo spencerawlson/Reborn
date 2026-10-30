@@ -14,3 +14,14 @@ describe("detectLocale", () => {
     expect(detectLocale("de-DE", "xx")).toBe("en");
   });
 });
+
+import { sampleShopEstimate } from "../src/lib/shipping/sample";
+
+describe("sampleShopEstimate", () => {
+  it("rounds weight up to the next whole pound, minimum 1 lb", () => {
+    expect(sampleShopEstimate(3)).toBe(1200n);
+    expect(sampleShopEstimate(3.2)).toBe(1600n);
+    expect(sampleShopEstimate(0)).toBe(400n);
+    expect(sampleShopEstimate(Number.NaN)).toBe(400n);
+  });
+});

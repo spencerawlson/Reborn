@@ -102,17 +102,19 @@ company's warehouse abroad; the company brings the packages to Haiti.
   with no match go to an unidentified-packages queue.
 - **Storage and consolidation:** free storage for a set number of days;
   several packages for one customer combine into one shipment.
-- **Pricing:** by weight (air, per lb/kg) or volume (sea), with a minimum
-  charge — rates to come from the founder.
-- **Payment in Haiti:** HTG, likely MonCash or cash at the warehouse,
-  before release; FX from `fx_rates`.
+- **Receiving warehouses (founder):** Miami (Amazon.com and US stores)
+  and Montréal (Amazon.ca and Canadian stores).
+- **Pricing (founder):** per pound. Weight rounds up to the next whole
+  pound; rate per lb per lane (and any minimum) to come from the founder.
+- **Payment in Haiti (founder):** MonCash or cash at the warehouse,
+  before release; HTG with FX from `fx_rates`. Cash takings are recorded
+  per warehouse in `cash_on_hand`.
 - **Restricted items** checked at receiving (e.g. lithium batteries and
   liquids cannot always fly).
 - **Open (founder):** do customers buy themselves with the company's
   address (A), does the company buy on their behalf against payment in
-  Haiti (B — customer money for goods; counsel first), or both? Which
-  warehouses receive (Miami for Amazon.com, Montréal for Amazon.ca)?
-  Rates? Payment methods in Haiti?
+  Haiti (B — customer money for goods; counsel first), or both? Rate per
+  pound.
 
 ## Diaspora shipping (abroad → Haiti)
 - **Price table: size × route.** Each size (barrel and box sizes,

@@ -41,6 +41,15 @@ const BASE: Record<OriginCode, Record<SizeCode, bigint>> = {
   YUL: { small: 5500n, medium: 7900n, large: 10500n, barrel: 15500n },
 };
 
+// Sample online-store forwarding rate (USD cents per pound).
+export const SAMPLE_SHOP_RATE_PER_LB = 400n;
+
+/** Weight in pounds rounds up to the next whole pound, minimum 1 lb. */
+export function sampleShopEstimate(pounds: number): bigint {
+  const billable = Number.isFinite(pounds) && pounds > 0 ? Math.ceil(pounds) : 1;
+  return BigInt(billable) * SAMPLE_SHOP_RATE_PER_LB;
+}
+
 export function sampleEstimate(args: {
   origin: OriginCode;
   size: SizeCode;
