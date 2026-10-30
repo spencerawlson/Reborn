@@ -3,12 +3,12 @@
  * the database-level guards: balanced ledger groups, append-only ledger,
  * one current commission rate, order totals, FX on payouts.
  */
-import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import { citext } from "@electric-sql/pglite/contrib/citext";
 import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 import { beforeAll, describe, expect, it } from "vitest";
+import { loadMigrations, migrate } from "../src/lib/db/migrate";
 
 const MIGRATIONS = join(__dirname, "..", "db", "migrations");
 
@@ -23,9 +23,10 @@ let db: PGlite;
 
 beforeAll(async () => {
   db = new PGlite({ extensions: { citext, pgcrypto } });
-  for (const file of readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort()) {
-    await db.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
-  }
+  await migrate(
+    { exec: async (sql) => void (await db.exec(sql)), rows: async (sql) => (await db.query(sql)).rows as never },
+    loadMigrations(MIGRATIONS),
+  );
   await db.exec(`
     INSERT INTO users (id, email, password_hash, display_name) VALUES
       ('${CUSTOMER}', 'c@example.test', 'x', 'Customer'),

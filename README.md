@@ -32,10 +32,12 @@ npm test           # vitest: ledger, guards, and migrations (in-process Postgres
 npm run typecheck  # tsc --noEmit
 ```
 
-Apply the schema to a local Postgres database with:
+Apply migrations to the database in `DATABASE_URL` (Node 24+):
 ```bash
-for f in db/migrations/*.sql; do psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -1 -f "$f"; done
+npm run db:migrate   # applies pending db/migrations/*.sql in order, once each
 ```
+Applied migrations are recorded in `schema_migrations` with a checksum.
+Never edit an applied migration; add a new numbered file instead.
 
 The admin dashboard has no login yet. To view it locally, set
 `ADMIN_DEV_PREVIEW=true` in `.env.local` (ignored in production);

@@ -45,10 +45,10 @@ them can be overruled — record the change in `docs/DECISIONS.md`.
 
 ### 2a — Plumbing the database and accounts
 Phase 1 has no app code talking to Postgres. Phase 2 needs it first.
-- Postgres client (`postgres` npm package) behind one `db` module;
+- ✅ Postgres client (`postgres` npm package) behind one `db` module;
   every producer query goes through a helper that requires
   `producerScope(session)`.
-- Migration runner: a small script that applies `db/migrations/*.sql` in
+- ✅ Migration runner (`npm run db:migrate`, `src/lib/db/migrate.ts`): a small script that applies `db/migrations/*.sql` in
   order inside a transaction and records them in a `schema_migrations`
   table. Replaces the psql loop in the README.
 - Real sign-in: email + password (argon2id hashes), database-backed
