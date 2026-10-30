@@ -1,55 +1,72 @@
-# Product vision — diaspora buyers, producer storefronts, bulk and retail
+# Product vision — the B2B sourcing platform for Haitian goods
 
-This document records the founder's product direction (October 30, 2026).
-Approved and merged to main on October 30, 2026. Phase 2 is planned
-around it in `docs/PHASE2.md`.
+Founder's direction. First recorded October 30, 2026 (diaspora buyers,
+producer storefronts, bulk and retail); refined the same day to an
+**Alibaba-style B2B sourcing platform**: businesses abroad source Haitian
+goods in volume from verified Haitian suppliers. Retail sales to
+individuals stay as a second channel.
 
 ## Who buys
-Haitians living abroad — Canada, France, the United States, and worldwide
-in general. The platform must speak to them first: EN/FR/HT, prices and
-shipping that make sense from abroad, and storefronts they can trust
-without being there in person.
+**Primary — businesses abroad**, many of them diaspora-owned: importers,
+distributors, grocers and Caribbean food shops, restaurants, cafés and
+roasters, galleries and décor retailers — in Canada, France, the United
+States, and worldwide.
 
-## What they buy
-From a producer's own storefront, a buyer can order:
-- Fresh agricultural products — vegetables and other farm produce from
-  Haitian producers.
-- Haitian-made art — paintings and other Haitian-made goods.
-- More producer categories to follow; food and art are the starting wedge.
+**Secondary — individuals** (mostly Haitians abroad) buying retail from the
+same suppliers. Same catalogue, retail prices, later phase.
 
-## How they buy
-- Regular retail orders (single buyers).
-- **Bulk orders** — larger quantities in one order.
-- **Retailer accounts** — buyers who resell (shops, grocers, distributors
-  abroad) ordering as retailers, not just as consumers. Retailer pricing,
-  minimum quantities, and terms are a later phase, but the data model must
-  not assume every buyer is a single consumer.
+The platform speaks to both in EN/FR/HT.
 
-## Storefronts are real stores, promoted by their owners
-- Every producer gets their own storefront, created on the platform,
-  with its own public link.
-- The producer promotes that link themselves — to their own customers,
-  contacts, and diaspora networks. Distribution is producer-led: the
-  platform gives every producer a real store plus a link; the producers
-  bring their buyers.
-- A storefront holds everything that producer makes: the full catalogue,
-  not a single listing. It should feel like a real store, not a classified
-  ad.
+## Who sells
+Haitian **suppliers**: farms and cooperatives, processors, artisans and
+artists, workshops, distilleries. Each is a verified business with an
+honest profile: what they make, how much they can supply per month, what
+certifications and export papers they hold, and photos of where it is made.
 
-## What this changes in the build
-- Product model: perishable/fresh products need harvest/availability
-  windows, weight-based quantities, and cold-chain/shipping notes —
-  not just a static SKU price.
-- Storefronts: a storefront is the producer's shop window to the
-  diaspora; trust signals (verified producer, reviews, origin) matter
-  more than catalogue size. Every storefront has a clean, shareable
-  public URL.
-- Orders: bulk quantities and retailer orders ride the same order +
-  commission + ledger pipeline as retail orders. No separate money path.
-- Categories: agriculture/fresh and art are first-class categories,
-  not a generic list.
+## What they trade
+Starting categories: coffee, cacao, spices, essential oils (vetiver),
+dried and processed foods, rum and spirits, handicrafts, and Haitian art.
+Fresh produce is listed but export-gated until import rules are cleared per
+destination (phytosanitary permits, cold chain).
+
+## How they trade
+- **Inquiries:** a buyer asks a supplier about a product — quantity,
+  destination, packaging, samples — and they talk in a message thread.
+- **Requests for quotation (RFQ):** a buyer posts what they need (product,
+  quantity, destination, target price, deadline); matching suppliers send
+  quotes.
+- **Quotes:** price per unit, quantity, export terms (Incoterms: EXW, FOB
+  Port-au-Prince / Cap-Haïtien, CIF …), lead time, validity. The buyer
+  accepts a quote and the deal is recorded.
+- **Listings built for volume:** minimum order quantity, price by volume
+  tier (or "price on request"), monthly capacity, lead time, samples,
+  packaging, certifications, HS code.
+- **Payment:** deals settle directly between buyer and supplier at first.
+  A protected-payment service (the platform holds the buyer's payment until
+  delivery is confirmed) comes later, only after legal and banking
+  clearance — it is the same mock-only money path already built.
+
+## Supplier pages are real, promoted by their owners
+Every supplier gets a profile page with a clean, shareable link and their
+full catalogue. Suppliers promote that link to their own buyers, contacts,
+and diaspora networks. The platform gives every supplier a credible
+storefront; suppliers bring their buyers, and the platform brings more.
+
+## Trust is the product
+Buyers abroad cannot visit. Verification must be real and visible:
+identity and business registration checked; site visited (in person or by
+a trusted partner); export documents checked. Each level is a badge with a
+date. A fast, careless approval queue would destroy the main value.
+
+## How the platform earns (to decide — founder)
+Options: commission on deals paid through the platform (10% default exists
+in the ledger), supplier memberships, paid placement, and service fees for
+export help (documents, consolidation, logistics). B2B order values are
+large and margins thin; the mix is a founder decision before launch.
 
 ## Still to decide
-- Which promotion tools the platform hands producers (share buttons,
-  WhatsApp share, link tracking) — the producer-led model itself is
-  decided; the tooling is not.
+- Revenue mix (above).
+- Which promotion tools suppliers get (share buttons, WhatsApp, link
+  tracking) — producer-led promotion itself is decided.
+- Whether the platform offers export services (paperwork, consolidation)
+  itself or through partners.

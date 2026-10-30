@@ -1,7 +1,7 @@
 # Global Haitian Producer Marketplace
 
-Marketplace connecting Haitian producers with customers worldwide, plus free
-independent producer storefronts. Commission 10% by default (configurable,
+B2B sourcing platform (Alibaba-style) connecting verified Haitian suppliers
+with business buyers worldwide, with retail as a second channel. Commission 10% by default (configurable,
 historical rates preserved). English, French, and Haitian Creole.
 
 ## Status: Phase 1 foundation
@@ -51,5 +51,6 @@ otherwise `/admin` returns 404.
 - `docs/DECISIONS.md` — decision log (who decided what, and why)
 
 ## Next: Phase 2
-Producer registration, free storefronts, products, images, inventory —
-then cart + sandbox checkout in Phase 3.
+Verified suppliers, wholesale listings, inquiries, RFQs, and quotes, with
+deals settled off-platform — see `docs/PHASE2.md`. Protected payments
+(sandbox) follow in Phase 3.

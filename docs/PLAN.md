@@ -1,8 +1,9 @@
 # Global Haitian Producer Marketplace — Implementation Plan
 
 ## What this is
-A marketplace connecting Haitian producers with customers worldwide, plus free
-independent producer storefronts. Modular monolith: one Next.js + TypeScript
+A B2B sourcing platform (Alibaba-style) connecting verified Haitian
+suppliers with business buyers worldwide, with retail as a second channel;
+see `docs/VISION.md`. Modular monolith: one Next.js + TypeScript
 app, PostgreSQL, Tailwind. No microservices until scale demands them.
 
 ## Hard guards (non-negotiable)
@@ -29,13 +30,15 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
 - **Phase 1 — Foundation (this build).** App scaffold, auth + RBAC model,
   migration 0001, commission engine + double-entry ledger (tested), mock
   providers, admin dashboard shell. Done when tests + typecheck pass.
-- **Phase 2 — Storefronts + catalog.** Producer registration, free
-  storefronts, products, images, inventory. Done when a producer can publish
-  a storefront and a customer can browse it. Detailed plan, shaped by the
-  diaspora/wholesale vision (`docs/VISION.md`): `docs/PHASE2.md`.
-- **Phase 3 — Cart + checkout (sandbox).** Cart, checkout via the mock
-  payment provider, order creation, commission posting at sale time.
-  Done when a sandbox checkout produces a balanced ledger entry.
+- **Phase 2 — Sourcing without money.** Verified suppliers, wholesale
+  listings (MOQ, price tiers, capacity, export terms), buyer accounts,
+  search, inquiries, RFQs, quotes, and off-platform deals. Detailed plan:
+  `docs/PHASE2.md`.
+- **Phase 3 — Protected payments (sandbox).** The buyer pays the platform,
+  funds are held until delivery is confirmed, then released to the
+  supplier — on the existing ledger via the mock provider. Retail checkout
+  rides the same path. Done when a sandbox deal produces balanced ledger
+  entries. Going live needs legal and banking clearance.
 - **Phase 4 — Payouts (manual).** MonCash account verification (mock),
   withdrawal requests, admin approval queue, payout history, manual bank
   transfer records + reconciliation.

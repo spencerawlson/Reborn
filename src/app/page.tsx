@@ -39,16 +39,11 @@ export default async function Home({
         </Link>
         <div className="rounded-2xl border p-5">
           <h2 className="font-semibold">{t(locale, "navProducer")}</h2>
-          <p className="mt-1 text-sm text-zinc-600">
-            Free storefronts, products, orders, and MonCash withdrawals — coming in Phase 2.
-          </p>
+          <p className="mt-1 text-sm text-zinc-600">{t(locale, "producerCardBody")}</p>
         </div>
       </section>
 
-      <p className="mt-10 text-xs text-zinc-500">
-        Foundation build (Phase 1). Payments, bank transfers, and MonCash payouts are mock
-        only until banking partners and legal advisers confirm the structure is permitted.
-      </p>
+      <p className="mt-10 text-xs text-zinc-500">{t(locale, "foundationNotice")}</p>
     </main>
   );
 }

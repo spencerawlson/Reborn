@@ -5,7 +5,24 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
-## 2026-10-30 — Phase 2 scope (lead)
+## 2026-10-30 — B2B sourcing platform (founder) + Phase 2 replan (lead)
+- **Founder:** the platform is Alibaba-style B2B sourcing — businesses
+  abroad source Haitian goods in volume from verified suppliers; retail to
+  individuals is a second channel. `docs/VISION.md` rewritten.
+- **Lead:** Phase 2 becomes sourcing without money — supplier
+  verification (identity → site visited → export ready), wholesale
+  listings (MOQ, price tiers, capacity, Incoterms), buyer business
+  accounts, inquiries, RFQs, quotes, and deals recorded with off-platform
+  settlement. Phase 3 becomes protected payments (held until delivery),
+  legal clearance first. Launch categories widened to coffee, cacao,
+  spices, essential oils, processed foods, rum, handicrafts, art.
+- **Superseded** below: the art + pantry-only launch, retailer-only
+  modelling, and WhatsApp request-to-order (replaced by on-platform
+  inquiries with WhatsApp/email notifications).
+- **Open (founder):** revenue mix — deal commission, supplier
+  memberships, paid placement, export service fees.
+
+## 2026-10-30 — Phase 2 scope (lead, superseded above)
 - **Launch categories:** art and shelf-stable food (`pantry`) sell to
   buyers abroad first. Fresh produce is in the catalogue but blocked from
   export until import rules are cleared per destination country.

@@ -32,6 +32,10 @@ const en = {
   balanceAvailable: "Available",
   balancePaid: "Paid",
   mockNotice: "Demo data — connected to real figures in a later phase.",
+  producerCardBody:
+    "Verified supplier profiles, wholesale listings, inquiries and quotes — coming in Phase 2.",
+  foundationNotice:
+    "Foundation build (Phase 1). Payments, bank transfers, and MonCash payouts are mock only until banking partners and legal advisers confirm the structure is permitted.",
 };
 
 export type Dictionary = typeof en;
@@ -56,6 +60,10 @@ const fr: Dictionary = {
   balanceAvailable: "Disponible",
   balancePaid: "Payé",
   mockNotice: "Données de démonstration — chiffres réels dans une phase ultérieure.",
+  producerCardBody:
+    "Profils de fournisseurs vérifiés, offres en gros, demandes et devis — en phase 2.",
+  foundationNotice:
+    "Version de base (phase 1). Les paiements, virements bancaires et versements MonCash sont simulés jusqu'à ce que nos partenaires bancaires et conseillers juridiques confirment que la structure est autorisée.",
 };
 
 const ht: Dictionary = {
@@ -78,6 +86,10 @@ const ht: Dictionary = {
   balanceAvailable: "Disponib",
   balancePaid: "Peye",
   mockNotice: "Done demonstrasyon — chif reyèl nan yon faz pita.",
+  producerCardBody:
+    "Pwofil founisè verifye, pwodwi an gwo, demann ak pri — ap vini nan faz 2.",
+  foundationNotice:
+    "Vèsyon fondasyon (faz 1). Peman, transfè labank ak peman MonCash yo se similasyon sèlman jiskaske patnè labank ak konseye jiridik yo konfime estrikti a pèmèt.",
 };
 
 const dictionaries: Record<Locale, Dictionary> = { en, fr, ht };

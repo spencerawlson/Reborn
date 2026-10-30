@@ -1,168 +1,134 @@
-# Phase 2 plan — producer storefronts + catalog, built for diaspora buyers
+# Phase 2 plan — verified suppliers, wholesale listings, inquiries + RFQ
 
-Planned October 30, 2026, around `docs/VISION.md`. Phase 2 ends before any
-money moves: no cart, no checkout. It builds everything a buyer needs to
-*find and trust* a producer, and everything a producer needs to *open a
-real store and share its link*.
+Replanned October 30, 2026 for the B2B sourcing direction in
+`docs/VISION.md`. Phase 2 delivers a working sourcing platform **without
+moving money**: buyers find verified suppliers, ask, request quotes, and
+agree deals that settle off-platform. Payments come later (Phase 3+),
+behind legal clearance.
 
 ## Done when
-1. A producer can register, sign in, create a storefront with a clean
-   public link, and publish a full catalogue with images.
-2. A buyer abroad can open that link (EN/FR/HT) and browse the store, with
-   products in the right units, clear availability, and visible trust
-   signals.
-3. A producer can share their link in one tap (copy, WhatsApp).
-4. The data model already records consumer vs retailer buyers and
-   bulk minimums, so Phase 3 checkout needs no schema rework.
-5. Tests prove tenant isolation: a producer can never read or write
-   another producer's rows.
+1. A Haitian supplier can register, get verified, and publish a profile
+   and wholesale catalogue with a shareable link.
+2. A business buyer abroad can find suppliers and products (EN/FR/HT),
+   send an inquiry, post an RFQ, receive quotes, and accept one.
+3. Every accepted quote is recorded as a deal (product, quantity, price,
+   terms) — the data the later protected-payment service builds on.
+4. Admins run supplier verification and see the funnel: inquiries, RFQs,
+   quotes, deals — by category, supplier, and buyer country.
+5. Tests prove tenant isolation: a supplier never sees another supplier's
+   inquiries, quotes, or buyers' messages to others.
 
-## Decisions (taken October 30, 2026)
-These change the schema, so they came first. The founder appointed Claude
-as project lead; the recommended option was adopted in each case. Any of
-them can be overruled — record the change in `docs/DECISIONS.md`.
-
-1. **Launch categories.** *Recommended:* launch selling **art** and
-   **shelf-stable foods** (coffee, cacao, spices, dried goods) to buyers
-   abroad, with **fresh produce** in the catalogue but blocked from export
-   checkout until import rules are cleared per destination. Fresh
-   vegetables into Canada/France/the US need phytosanitary certificates,
-   import permits, and cold chain; a spoiled box is a refund. Art and
-   shelf-stable goods ship today. *Alternative:* fresh produce from day one,
-   limited to buyers inside Haiti.
-2. **Retailer accounts in Phase 2.** *Recommended:* model them now
-   (account type + verification status), approve them by hand, no special
-   pricing yet. Retailer pricing tiers, invoices, and terms are Phase 3+.
-3. **Producer verification.** *Recommended:* admin approves each producer
-   (KYB) before their storefront goes public. Draft storefronts are
-   private. "Verified producer" is then a real trust signal.
-4. **Public link shape.** *Recommended:* `/{locale}/s/{slug}` (e.g.
-   `/ht/s/kafe-lakay`), plus a short `/s/{slug}` that redirects by the
-   buyer's language. Slugs are lowercase, unique, and checked against a
-   reserved list (`admin`, `api`, `login`, …).
+## Decisions (October 30, 2026)
+Founder: B2B sourcing first, retail second. Lead (Claude), within that:
+- **Launch categories:** coffee, cacao, spices, essential oils, processed
+  foods, rum/spirits, handicrafts, art. Fresh produce listed but
+  export-gated.
+- **Supplier verification levels:** `identity` (registration documents
+  checked) → `site_visited` (in person or trusted partner, with date and
+  photos) → `export_ready` (export licence and certificates checked).
+  Unverified suppliers stay private.
+- **Buyer verification:** light — business name, country, type, website.
+  Unverified buyers can browse and send a limited number of inquiries per
+  day (anti-spam); verified buyers are unlimited.
+- **Links:** `/{locale}/s/{supplier-slug}` and `/{locale}/p/{product-id}`;
+  `/s/{slug}` redirects by the visitor's language.
+- **Messages are stored on the platform** (not only WhatsApp), so deals
+  have a record. Email and a WhatsApp link notify about new messages.
 
 ## Milestones (in order; each ends with tests passing)
 
-### 2a — Plumbing the database and accounts
-Phase 1 has no app code talking to Postgres. Phase 2 needs it first.
-- ✅ Postgres client (`postgres` npm package) behind one `db` module;
-  every producer query goes through a helper that requires
-  `producerScope(session)`.
-- ✅ Migration runner (`npm run db:migrate`, `src/lib/db/migrate.ts`): a small script that applies `db/migrations/*.sql` in
-  order inside a transaction and records them in a `schema_migrations`
-  table. Replaces the psql loop in the README.
-- Real sign-in: email + password (argon2id hashes), database-backed
-  sessions in an HTTP-only cookie, sign-out, password reset by email.
-  Use a maintained auth library rather than hand-rolled crypto; evaluate
-  Better Auth (Postgres adapter, TOTP plugin for Phase 7 MFA). Replaces
-  the `ADMIN_DEV_PREVIEW` stand-in in `src/lib/auth/session.ts`.
-- Roles from the `roles` table; `/admin` uses the real session.
-- Locale routing: `/{locale}/...` for all public pages; the buyer's
-  choice is remembered in a cookie.
-- **Done when:** a user can register, sign in, and sign out; migrations
-  run with one command; CI runs the runner against PGlite.
+### 2a — Database, accounts, languages
+- ✅ Postgres client (`src/lib/db`) and migration runner (`npm run db:migrate`).
+- Sign-in: email + password (argon2id), database sessions in an HTTP-only
+  cookie, password reset by email. Maintained library (evaluate Better
+  Auth). Replaces `ADMIN_DEV_PREVIEW`.
+- Account types: `supplier`, `buyer`, `admin` (roles table).
+- Locale routing `/{locale}/...`; all page text in the dictionaries.
+- **Done when:** register, sign in, sign out, reset password; roles work.
 
-### 2b — Producer onboarding + storefront
-- Producer registration: business name, contact phone (WhatsApp), region
-  of Haiti (department), short story. Creates `producer_profiles` with
-  `kyb_status = pending`.
-- Storefront editor: name, slug, tagline, story, logo, banner, contact
-  preference. Status `draft` until the producer publishes **and** an admin
-  has verified them.
-- Admin queue: approve or reject producers (audit-logged); suspend a
-  storefront.
-- **Done when:** an approved producer's storefront is live at its public
-  link; an unapproved one is a 404 to the public.
+### 2b — Suppliers and verification
+Schema: `producer_profiles` becomes the supplier company: legal name,
+trade name, registration number (Haiti patente/NIF), founded year,
+employees, region (department), story, contact, export licence status,
+monthly capacity summary, `verification_level` + dates, certifications
+(organic, fair trade, …) with document uploads, site photos.
+- Supplier onboarding wizard, built for phones and slow connections.
+- Admin verification queue: approve each level with evidence; every
+  action audit-logged; suspend.
+- **Done when:** a verified supplier's profile is public at its link;
+  badges show level and date.
 
-### 2c — Catalogue built for food and art
-Schema (migration 0004):
-- `categories` — fixed rows, not free text: `art`, `pantry` (shelf-stable
-  food), `fresh_produce`, with `requires_import_clearance` (true for
-  fresh produce). New categories are added by migration.
-- `products` gains:
-  - `category_id`;
-  - `sell_unit` — `each`, `g`, or `ml` — and `unit_size` (integer, e.g.
-    500 for a 500 g bag), so weights stay integers like money;
-  - `min_order_qty` (default 1) and `bulk_min_qty` (nullable: the
-    quantity at which an order counts as bulk);
-  - `origin_department`, `shipping_notes`, `is_perishable`;
-  - `attributes JSONB` for category-specific details, validated in code
-    per category (art: artist, medium, dimensions, year, one-of-a-kind;
-    pantry: net weight, best-before window; fresh: storage and
-    temperature notes).
-- `product_availability` — for fresh produce: harvest/available-from,
-  available-until, and quantity per window. A fresh product outside every
-  window shows as "next harvest: …", not "in stock".
-- `product_translations` — name and description per locale (en/fr/ht),
-  falling back to the producer's original language. Producers write in
-  the language they know; translation is not required to publish.
-- Images: upload to S3-compatible storage (MinIO locally), resized
-  server-side, max size and type enforced, EXIF location data removed.
-  Art needs several large images per piece.
-- One-of-a-kind art: inventory 1, marked sold rather than "out of stock".
-- **Done when:** a producer can create, edit, archive, and reorder
-  products of each category with images, and every rule above has a test.
+### 2c — Wholesale listings
+Migration 0004:
+- `categories` (fixed tree, seeded) with `requires_import_clearance`.
+- `products`: category, `sell_unit` (kg, g, L, ml, piece, carton, …) with
+  integer quantities, `moq` (minimum order quantity), `monthly_capacity`,
+  `lead_time_days`, `incoterms` offered, `hs_code`, packaging options,
+  samples (available, price, lead time), certifications, origin
+  department, `attributes JSONB` per category (art: artist, medium,
+  dimensions, edition; coffee: variety, altitude, process, grade; …).
+- `product_price_tiers`: quantity from → unit price (integer minor units);
+  or `price_on_request`.
+- `product_translations` (en/fr/ht) with fallback to the original.
+- Images: S3-compatible storage, resized, EXIF location removed.
+- **Done when:** a supplier can list, edit, and archive products with
+  tiers, MOQ, and images; every rule has a test.
 
-### 2d — The public store buyers abroad see
-- Storefront page: banner, story, region of origin, member since,
-  verified badge, full catalogue grouped by category, search inside the
-  store.
-- Product page: images, price in the store currency with "approximately
-  CA$ / €" shown as an estimate (from `fx_rates`; labelled as an
-  estimate, never charged), unit and minimum quantity, availability
-  window, shipping notes. Fresh produce shows "not yet available for
-  shipping to your country" when import is not cleared.
-- Share: copy link, WhatsApp share (`wa.me` with a prefilled message in
-  the producer's language), QR code for printing. Link tracking (`?ref=`)
-  waits until the promotion tools are decided.
-- **Request to order (no payment):** until checkout is legally cleared,
-  a buyer can send an order request — items, quantities, their country —
-  that opens WhatsApp to the producer with the request prefilled, and is
-  also saved as an `order_requests` row (no amounts charged, no money
-  through the platform). The producer and buyer settle directly. This
-  validates real demand per producer and product before Phase 3, and the
-  admin dashboard counts requests by producer, category, and country.
-- SEO and link previews: page titles, descriptions, Open Graph images so a
-  shared link shows the product photo in WhatsApp/Facebook.
-- Mobile first: most buyers and producers will open these on phones.
-- **Done when:** a store link opened on a phone in any of the three
-  languages shows the full store, and a shared link renders a preview.
+### 2d — Buyers find suppliers
+- Buyer business accounts: company, country, buyer type (importer,
+  distributor, grocer, restaurant, roaster, gallery, retailer, individual),
+  website; light verification.
+- Search and browse: by category, certification, verification level,
+  MOQ, region. Postgres full-text search first.
+- Supplier page and product page: badges, capacity, MOQ, price tiers in
+  USD with an "approximately CA$ / €" estimate, terms, samples, share
+  buttons (copy, WhatsApp, QR), link previews (Open Graph).
+- **Done when:** a buyer abroad on a phone can find a product by search
+  and see everything needed to decide whether to inquire.
 
-### 2e — Buyers: consumers and retailers
-Schema (migration 0005):
-- `buyer_profiles` — user_id, `account_type` (`consumer` or `retailer`),
-  country, and for retailers: business name, business number, verification
-  status (pending/verified/rejected), approved_by_admin_id.
-- `orders` gains `buyer_account_type` (copied at order time, like the
-  commission rate) so history keeps whether it was a retail or retailer
-  sale.
-- Retailer sign-up form and an admin approval queue. Verified retailers
-  see a "retailer" badge and bulk minimums; prices are the same as
-  everyone's in Phase 2.
-- **Done when:** a retailer can apply and be approved, and the order
-  schema records buyer type for Phase 3.
+### 2e — Inquiries, RFQs, quotes, deals (the core flow)
+Migration 0005:
+- `conversations` + `messages` — buyer ↔ supplier, optionally tied to a
+  product; attachments; read state. Email (and WhatsApp link)
+  notifications on new messages.
+- `rfqs` — buyer, product description, category, quantity + unit,
+  destination country, target price (optional), deadline, status
+  (open/closed/awarded). Visible to suppliers in matching categories.
+- `quotes` — supplier → RFQ or conversation: unit price, quantity,
+  currency, incoterm, lead time, valid until, notes; status (sent,
+  accepted, declined, expired). Immutable once sent; a revision is a new
+  quote.
+- `deals` — created when a buyer accepts a quote: snapshot of the quote,
+  buyer, supplier, `settlement = 'off_platform'`. No ledger entries (no
+  money through the platform); Phase 3's protected payment adds
+  `settlement = 'platform'` and posts to the ledger.
+- Admin funnel view; spam and abuse reporting on messages.
+- **Done when:** inquiry → RFQ → quote → accepted deal works end to end,
+  with notifications, and the admin funnel counts it.
 
 ## Rules carried forward
-- Tenant isolation: every producer-owned query is scoped by
-  `producer_id`, with tests that try to cross it.
-- Every admin approval, rejection, and suspension writes `audit_log`.
+- Tenant isolation on every supplier-owned query, with tests that try
+  to cross it.
+- Audit log on every verification decision and suspension.
 - No money moves in Phase 2. `LIVE_PAYMENTS_ENABLED` stays false.
-- Quantities are integers (grams, millilitres, units), never floats.
-- Creole and French copy gets native review before launch.
+- Quantities and prices are integers; never floats.
+- Native review of French and Creole before launch.
 
 ## Not in Phase 2
-Cart, checkout, and payment (Phase 3); retailer price tiers, invoices,
-and payment terms (Phase 3+); reviews (they need real orders); shipping
-quotes and cold-chain logistics (Phase 5); referral/link tracking (after
-the promotion tools are decided); MFA (Phase 7).
+Protected payments / escrow and retail checkout (Phase 3+, legal first);
+supplier memberships and paid placement (revenue mix is a founder
+decision); logistics and export services (Phase 5); reviews and ratings
+(need completed deals); machine translation of messages; MFA (Phase 7).
 
 ## Risks to watch
-- **Fresh produce import rules** may limit fresh food to buyers inside
-  Haiti for a long time. The catalogue supports it; checkout must respect
-  it.
-- **Trust from abroad** depends on producer verification being real.
-  A fast but careless approval queue undoes the main trust signal.
-- **Connectivity in Haiti:** producers may upload on slow mobile data.
-  Image uploads need resumable or retryable handling and small previews.
-- **Translation quality:** machine-translated Creole damages trust with
-  exactly the buyers the platform targets.
+- **Supply depth:** Haiti's export volumes are small. Honest capacity
+  numbers matter more than catalogue size; overselling ruins trust.
+- **Verification cost:** site visits need people in Haiti. Partner with
+  cooperatives, chambers of commerce, or field agents.
+- **Spam and fraud** in messages and RFQs — rate limits, buyer
+  verification, reporting from day one.
+- **Connectivity:** suppliers upload on slow mobile data; uploads must be
+  retryable and pages light.
+- **Off-platform leakage:** once buyer and supplier meet, they may deal
+  directly. Protected payments and export services are what keep them
+  on the platform later.
