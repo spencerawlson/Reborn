@@ -5,6 +5,33 @@ logistics operation and connects it to the sourcing platform. It is a
 draft: the operating model below needs the founder's answers before the
 schema is fixed.
 
+## Network (founder, October 30, 2026)
+- **Origins:** Port-au-Prince and Cap-Haïtien.
+- **First destinations:** Montréal and Miami.
+- **Next:** Paris, then anywhere in the world.
+
+Design consequences (lead):
+- **Lanes are data, not code.** A lane is origin location → destination
+  location + mode, with its own rates. Adding Paris or Dakar is a new row
+  and a rate card, never a code change.
+- **Locations carry their codes:** city, country, airport (IATA: PAP,
+  CAP, YUL, MIA, CDG) and seaport (UN/LOCODE: HTPAP, HTCAP, CAMTR, USMIA,
+  FRLEH for Le Havre). Paris is served by CDG for air and Le Havre for
+  ocean.
+- **Shipments have legs.** Miami is both a destination and a natural hub:
+  Cap-Haïtien → Miami → Paris is two legs, possibly two modes and two
+  carriers. Tracking, costs, and documents attach per leg. "Anywhere in
+  the world" means onward legs from a hub through partners.
+- **Each destination country is its own rulebook.** Montréal = Canada
+  (CBSA, CFIA), Miami = United States (CBP, FDA), Paris = EU (French
+  customs, EU food and plant rules). Document checklists, duty estimates,
+  and product restrictions are stored per destination country. Duty
+  estimates must account for trade preferences Haiti may qualify for in
+  each market — rates to be confirmed with customs brokers, not guessed
+  in code.
+- **Currencies:** freight priced in USD; buyers in Montréal see CA$ and in
+  Paris € as estimates from `fx_rates`; invoices state one currency.
+
 ## The flow the software must run
 1. **Quote** — a buyer sees a delivered price: supplier price (at the
    company's Haiti warehouse) + freight for the lane and mode + handling +
@@ -50,9 +77,9 @@ schema is fixed.
   per load, exceptions needing action.
 
 ## Questions for the founder (these shape the schema)
-1. **Lanes:** which routes first? (e.g. Port-au-Prince / Cap-Haïtien →
-   Miami → Montréal, New York, Paris.) One direction only, or also
-   diaspora → Haiti (boxes and barrels, a large existing market)?
+1. ~~Lanes~~ — answered above. Still open: also carry the reverse
+   direction (diaspora → Haiti: boxes and barrels, a large existing
+   market), so return loads aren't empty?
 2. **Modes:** air, ocean, or both? Consolidated (LCL) or full containers?
 3. **Assets vs partners:** do you own or lease trucks, a warehouse in
    Haiti, a receiving point abroad? Which carriers, forwarders, and

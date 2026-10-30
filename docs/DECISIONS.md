@@ -5,6 +5,14 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Network: PAP + Cap-Haïtien → Montréal + Miami, then Paris and worldwide (founder)
+- **Founder:** origins Port-au-Prince and Cap-Haïtien; first destinations
+  Montréal and Miami; then Paris and anywhere in the world.
+- **Lead:** lanes and locations are data (IATA/UN-LOCODE codes), shipments
+  have legs (Miami as hub for onward routing), compliance rules and
+  document checklists are stored per destination country (Canada, US, EU
+  first), freight priced in USD with local-currency estimates.
+
 ## 2026-10-30 — The company runs the logistics (founder) + replan (lead)
 - **Founder:** the real business is logistics. The company handles the
   transportation; the sourcing platform feeds it. Freight and logistics
