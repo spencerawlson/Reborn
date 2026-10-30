@@ -1,4 +1,4 @@
-# Global Haitian Producer Marketplace
+# ShipItAyiti
 
 B2B sourcing platform (Alibaba-style) connecting verified Haitian suppliers
 with business buyers worldwide, with retail as a second channel. The company runs

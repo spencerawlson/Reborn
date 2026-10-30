@@ -70,7 +70,7 @@ export function PriceEstimator({ locale, initialTab = "ship" }: { locale: Locale
             <p className="mb-1 font-sans text-xs font-bold uppercase tracking-wide text-blue-700">{t(locale, "shopAddressLabel")}</p>
             Marie Joseph
             <br />
-            <span className="font-bold text-slate-900">Suite RB-10482</span>
+            <span className="font-bold text-slate-900">Suite SIA-10482</span>
             <br />
             Miami, FL · USA
           </div>
@@ -118,7 +118,7 @@ export function PriceEstimator({ locale, initialTab = "ship" }: { locale: Locale
             id="track-n"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
-            placeholder="RB-24-000123"
+            placeholder="SIA-24-000123"
             className={`${field} font-mono uppercase`}
           />
           <button className="min-h-12 rounded-xl bg-blue-700 font-bold text-white shadow-[0_4px_14px_rgba(29,78,216,0.25)] hover:bg-blue-800 active:scale-[0.98]">

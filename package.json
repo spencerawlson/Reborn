@@ -5,7 +5,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "description": "Global Haitian Producer Marketplace — marketplace + free producer storefronts. MOCK payments only until banking/legal approval.",
+  "description": "ShipItAyiti — shipping to and from Haiti (diaspora boxes and barrels, Amazon forwarding, trade freight) plus a B2B sourcing marketplace. MOCK payments only until banking/legal approval.",
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.13",
     "@types/node": "^22.0.0",
@@ -17,7 +17,7 @@
     "typescript": "^5.6.0",
     "vitest": "^4.1.12"
   },
-  "name": "haitian-producer-marketplace",
+  "name": "shipitayiti",
   "private": true,
   "scripts": {
     "build": "next build",

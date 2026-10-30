@@ -94,7 +94,7 @@ Design consequences (lead):
 Customers **in Haiti** shop on Amazon (and other stores) and ship to the
 company's warehouse abroad; the company brings the packages to Haiti.
 - **Personal address:** each customer gets a suite number at the
-  warehouse (e.g. `Suite RB-10482`) to put on their orders.
+  warehouse (e.g. `Suite SIA-10482`) to put on their orders.
 - **Pre-alert:** the customer enters the store order / carrier tracking
   number and declared value (with the store invoice for Haitian customs).
 - **Receiving:** scan the carrier's tracking number, match by suite

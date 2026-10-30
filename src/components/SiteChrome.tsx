@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { t, type Locale } from "@/lib/i18n/index";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { Logo } from "./Logo";
 import { TabBar } from "./TabBar";
 
 /** Thin white top bar: logo + language. Navigation lives in the tab bar on phones. */
@@ -8,11 +9,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
-        <Link href={`/${locale}`} className="flex items-center gap-2">
-          <span aria-hidden className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-700 text-sm font-black text-white">
-            R
-          </span>
-          <span className="text-lg font-extrabold tracking-tight text-slate-900">{t(locale, "siteName")}</span>
+        <Link href={`/${locale}`} aria-label={t(locale, "siteName")}>
+          <Logo />
         </Link>
         <nav className="hidden items-center gap-1 text-sm font-semibold text-slate-600 md:flex">
           <Link href={`/${locale}#ship`} className="rounded-full px-3 py-1.5 hover:bg-slate-100">{t(locale, "navShip")}</Link>

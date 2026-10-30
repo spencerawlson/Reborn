@@ -38,7 +38,7 @@ export default async function TrackPage({
             id="n"
             name="n"
             defaultValue={number ?? ""}
-            placeholder={`${t(locale, "trackLabel")} — RB-24-000123`}
+            placeholder={`${t(locale, "trackLabel")} — SIA-24-000123`}
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono uppercase focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
           />
           <button className="rounded-xl bg-blue-700 px-6 font-semibold text-white hover:bg-blue-700">

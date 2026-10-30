@@ -4,7 +4,7 @@ import { resolveLocale } from "@/lib/i18n/index";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Reborn — Ship to Haiti, door to door",
+  title: "ShipItAyiti — Ship to Haiti, door to door",
   description:
     "Boxes and barrels from Montréal and Miami to every town in Haiti, delivered to the door or ready for warehouse pickup.",
 };

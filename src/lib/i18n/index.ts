@@ -14,8 +14,7 @@ export const LOCALES: { code: Locale; label: string }[] = [
 ];
 
 const en = {
-  // Working name until the founder picks the brand.
-  siteName: "Reborn",
+  siteName: "ShipItAyiti",
   siteTagline: "Haiti and the world, door to door",
   navShip: "Ship",
   navTrack: "Track",
@@ -109,7 +108,7 @@ export type Dictionary = typeof en;
 export type DictionaryKey = keyof Dictionary;
 
 const fr: Dictionary = {
-  siteName: "Reborn",
+  siteName: "ShipItAyiti",
   siteTagline: "Haïti et le monde, porte à porte",
   navShip: "Expédier",
   navTrack: "Suivre",
@@ -200,7 +199,7 @@ const fr: Dictionary = {
 };
 
 const ht: Dictionary = {
-  siteName: "Reborn",
+  siteName: "ShipItAyiti",
   siteTagline: "Ayiti ak tout mond lan, pòt an pòt",
   navShip: "Voye",
   navTrack: "Swiv",

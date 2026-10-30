@@ -1,4 +1,4 @@
-# Global Haitian Producer Marketplace — Implementation Plan
+# ShipItAyiti — Implementation Plan
 
 ## What this is
 A B2B sourcing platform (Alibaba-style) connecting verified Haitian

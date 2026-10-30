@@ -5,6 +5,14 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Brand name: ShipItAyiti (founder)
+- **Founder:** the company and website are named **ShipItAyiti**
+  (replacing the working name "Reborn").
+- **Lead:** wordmark "ShipIt" + "Ayiti" in the accent colour, vector mark
+  (no bitmaps); tracking numbers and personal suites use the `SIA-`
+  prefix. Applied migrations keep their old header comments — editing an
+  applied migration would change its checksum.
+
 ## 2026-10-30 — Online-store forwarding: Amazon → Haiti (founder)
 - **Founder:** people in Haiti order on Amazon and have orders delivered
   to the company's warehouse; the company brings them to Haiti.
