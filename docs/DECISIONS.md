@@ -5,6 +5,14 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Amazon forwarding: customers buy, sign-up required; repo renamed (founder)
+- **Founder:** customers buy on Amazon themselves and ship to the address
+  the company gives them; they must sign up on the website and register
+  their address (in Haiti) so it is on file. The company does not buy on
+  customers' behalf (option B dropped — no customer money for goods).
+- **Founder:** GitHub repository renamed to `spencerawlson/ShipItAyiti`.
+- **Still open:** rate per pound; the real box and barrel price list.
+
 ## 2026-10-30 — Brand name: ShipItAyiti (founder)
 - **Founder:** the company and website are named **ShipItAyiti**
   (replacing the working name "Reborn").

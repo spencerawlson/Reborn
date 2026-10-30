@@ -93,8 +93,14 @@ Design consequences (lead):
 ## Online-store forwarding (abroad → Haiti) — founder, October 30, 2026
 Customers **in Haiti** shop on Amazon (and other stores) and ship to the
 company's warehouse abroad; the company brings the packages to Haiti.
-- **Personal address:** each customer gets a suite number at the
-  warehouse (e.g. `Suite SIA-10482`) to put on their orders.
+- **Who buys (founder):** customers buy themselves and ship to the
+  address the company gives them. The company never buys on their behalf.
+- **Sign-up first (founder):** customers must create an account on the
+  website and register their address in Haiti (kept on file for delivery
+  and customs) before they receive their personal warehouse address.
+- **Personal address:** on sign-up, each customer gets a suite number at
+  the Miami and Montréal warehouses (e.g. `Suite SIA-10482`) to put on
+  their orders.
 - **Pre-alert:** the customer enters the store order / carrier tracking
   number and declared value (with the store invoice for Haitian customs).
 - **Receiving:** scan the carrier's tracking number, match by suite
@@ -111,10 +117,7 @@ company's warehouse abroad; the company brings the packages to Haiti.
   per warehouse in `cash_on_hand`.
 - **Restricted items** checked at receiving (e.g. lithium batteries and
   liquids cannot always fly).
-- **Open (founder):** do customers buy themselves with the company's
-  address (A), does the company buy on their behalf against payment in
-  Haiti (B — customer money for goods; counsel first), or both? Rate per
-  pound.
+- **Open (founder):** rate per pound.
 
 ## Diaspora shipping (abroad → Haiti)
 - **Price table: size × route.** Each size (barrel and box sizes,

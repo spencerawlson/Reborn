@@ -105,11 +105,13 @@ they will in real life:
 
 ### 2g — Online-store forwarding (Amazon → Haiti)
 Same engine as 2b–2f, for customers in Haiti (see `docs/LOGISTICS.md`):
-personal suite address on sign-up, pre-alerts, receiving by carrier
+sign-up with the customer's Haiti address registered on file, then a
+personal suite address (customers buy themselves; the company never buys
+for them), pre-alerts, receiving by carrier
 tracking number with an unidentified-packages queue, weight-based
 pricing, consolidation per customer, payment in Haiti before release.
-Exact scope waits on the founder's answers (who buys, which warehouses,
-rates, payment methods).
+Decided: customers buy, Miami + Montréal receive, priced per pound, paid
+in Haiti by MonCash or cash. Waiting on: the rate per pound.
 - **Done when:** a customer in Haiti gets their address, a package
   arrives at the warehouse and is matched to them, they are notified,
   and it reaches them in Haiti with payment recorded.
