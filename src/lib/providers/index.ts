@@ -92,6 +92,35 @@ export const mockMoncashProvider: PayoutProvider = {
   },
 };
 
+/**
+ * The live-money switch. Only the exact string "true" turns it on; any
+ * other value (unset, "1", "TRUE ", typos) keeps money movement mocked.
+ */
+export function liveMoneyEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.LIVE_PAYMENTS_ENABLED === "true";
+}
+
+/**
+ * The only way application code may obtain a money-moving provider.
+ * While LIVE_PAYMENTS_ENABLED is not "true", it returns the mock. When it
+ * is "true" it refuses, because no live provider has been approved yet —
+ * a live integration must be added here deliberately, after banking and
+ * legal sign-off.
+ */
+export function getPaymentProvider(
+  env: Record<string, string | undefined> = process.env,
+): PaymentProvider {
+  if (!liveMoneyEnabled(env)) return mockPaymentProvider;
+  throw new Error("LIVE_PAYMENTS_ENABLED is true but no live payment provider is approved");
+}
+
+export function getPayoutProvider(
+  env: Record<string, string | undefined> = process.env,
+): PayoutProvider {
+  if (!liveMoneyEnabled(env)) return mockMoncashProvider;
+  throw new Error("LIVE_PAYMENTS_ENABLED is true but no live payout provider is approved");
+}
+
 export const mockShippingProvider: ShippingProvider = {
   kind: "mock-shipping",
   async quote(input: ShippingQuoteRequest): Promise<ShippingQuote[]> {

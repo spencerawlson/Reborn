@@ -1,6 +1,12 @@
+import { notFound } from "next/navigation";
 import { formatMoney } from "@/lib/money/index";
+import { hasRole } from "@/lib/auth/index";
+import { getSession } from "@/lib/auth/session";
 import { getAdminStats } from "@/lib/admin/stats";
 import { t } from "@/lib/i18n/index";
+
+// Auth and figures must be evaluated per request, never frozen at build time.
+export const dynamic = "force-dynamic";
 
 function Card({ label, value }: { label: string; value: string }) {
   return (
@@ -12,6 +18,9 @@ function Card({ label, value }: { label: string; value: string }) {
 }
 
 export default async function AdminPage() {
+  // Admin only. Answer 404 rather than 403 so the route's existence is not advertised.
+  const session = await getSession();
+  if (!hasRole(session, "admin")) notFound();
   const stats = await getAdminStats();
   const locale = "en" as const;
   return (
@@ -53,7 +62,7 @@ export default async function AdminPage() {
           <li>Producer approval and suspension, product and storefront review</li>
           <li>Withdrawal approval queue, bank transfer recording and reconciliation</li>
           <li>Shipping partners and order management, complaint review</li>
-          <li>Business settings including the commission rate (default 5%)</li>
+          <li>Business settings including the commission rate (default 10%)</li>
         </ul>
       </section>
     </main>

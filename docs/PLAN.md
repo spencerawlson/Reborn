@@ -10,7 +10,8 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
   MonCash payouts run through mock providers until banking partners, payment
   providers, and qualified legal advisers confirm the Canada↔Haiti settlement
   and payout structure is permitted. `LIVE_PAYMENTS_ENABLED` defaults to
-  `false` and the code refuses live provider calls while it is false.
+  `false`. `getPaymentProvider`/`getPayoutProvider` return mocks unless it
+  is exactly `"true"`, and refuse even then until a live provider is added.
 - **Corporate accounts only.** Company bank accounts in Canada and Haiti.
   Never personal accounts. No live credential ever goes in chat, code, or
   screenshots.
@@ -46,13 +47,16 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
   backups, monitoring, CI (GitHub Actions), load + security review.
 
 ## Business rules baked into the code
-- Commission: configurable by admin, default **5%** of product subtotal,
-  excluding shipping and taxes. Stored per order at sale time.
+- Commission: configurable by admin, default **10%** of product subtotal,
+  excluding shipping and taxes. Stored per order at sale time. Payment
+  processor fees are borne by the platform out of the commission.
 - Producer balances have three states, always distinct: **pending**
   (sale made, not yet available), **available** (cleared for withdrawal),
   **paid** (withdrawn).
 - Payouts go only to **verified** MonCash accounts, only after admin
   approval, and only from the **available** balance.
+- Ledger amounts stay in the order currency. A MonCash payout records the
+  HTG amount sent and the exact FX rate used.
 - Every money movement is a balanced double-entry posting. An unbalanced
   posting is a bug, and the ledger module refuses it.
 - Every payment/payout request carries an **idempotency key**. Replaying a

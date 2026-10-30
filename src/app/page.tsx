@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LOCALES, t, type Locale } from "@/lib/i18n/index";
+import { LOCALES, resolveLocale, t } from "@/lib/i18n/index";
 
 // Phase 1 home shell. Locale comes from ?lang= for now; full locale
 // routing (EN/FR/HT) lands with Phase 2 storefronts.
@@ -9,7 +9,7 @@ export default async function Home({
   searchParams: Promise<{ lang?: string }>;
 }) {
   const params = await searchParams;
-  const locale: Locale = params.lang === "fr" ? "fr" : params.lang === "ht" ? "ht" : "en";
+  const locale = resolveLocale(params.lang);
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
       <header className="flex flex-wrap items-center justify-between gap-4">

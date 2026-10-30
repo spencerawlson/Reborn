@@ -4,8 +4,9 @@
 - PostgreSQL. `TIMESTAMPTZ` everywhere; `created_at`/`updated_at` on every
   table. Soft deletes via `deleted_at` (financial rows are never hard-deleted).
 - Money: `BIGINT` minor units + `currency CHAR(3)`. Never `FLOAT`/`DOUBLE`.
-- Rates: `NUMERIC(5,4)` (0.0500 = 5%). Commission rates are rows with
-  validity windows, so history is preserved.
+- Rates: commission is `INTEGER` basis points (1000 = 10%); FX rates are
+  `NUMERIC(20,10)`. Commission rates are rows with validity windows, so
+  history is preserved.
 - IDs: `UUID` primary keys (`gen_random_uuid()`), except short public codes
   where noted. Foreign keys with explicit `ON DELETE` behavior.
 - Tenant isolation: every producer-owned row carries `producer_id`. Queries
@@ -45,22 +46,34 @@
   fields, timestamps.
 - `order_items` — order_id, product_id, qty, unit_price_minor, currency.
 - `commission_settings` — rate_bps, effective_from, effective_to (null =
-  current), changed_by_admin_id. Only one row may be current.
+  current), changed_by_admin_id. Exactly one row is current (partial
+  unique index). Seeded 5%, moved to 10% in migration 0002.
 - `ledger_entries` — the double-entry ledger. id, entry_group (one UUID per
-  business event), account (cash, producer_payable, commission_revenue,
-  refunds_payable, shipping_payable, tax_payable), debit_minor,
-  credit_minor, currency, order_id (nullable), producer_id (nullable),
-  description, timestamps. **Invariant: sum(debits) = sum(credits) per
-  entry_group.** The ledger module enforces it before insert.
-- `payouts` — producer_id, moncash_account_id, amount_minor, currency,
-  status (requested/approved/rejected/processing/completed/failed),
-  requested_by, approved_by_admin_id, provider_ref (nullable),
-  proof_of_payment_url (nullable), idempotency_key (unique), timestamps.
+  business event), account (cash, producer_pending, producer_available,
+  commission_revenue, processor_fees, shipping_payable, tax_payable),
+  debit_minor, credit_minor, currency, order_id (nullable), producer_id
+  (nullable), description, created_at. **Invariant: sum(debits) =
+  sum(credits) and one currency per entry_group.** Enforced twice: by the
+  ledger module before insert, and by a deferred constraint trigger at
+  commit. The table is append-only (UPDATE/DELETE/TRUNCATE raise);
+  corrections are reversing entries. Its foreign keys are ON DELETE
+  RESTRICT.
+- `payouts` — producer_id, moncash_account_id, amount_minor + currency
+  (ledger currency), payout_currency + payout_amount_minor + fx_rate +
+  fx_rate_id (what MonCash actually sent, e.g. HTG), status
+  (requested/approved/rejected/processing/completed/failed),
+  approved_by_admin_id, provider_ref (nullable), proof_of_payment_url
+  (nullable), idempotency_key (unique), timestamps. A payout in another
+  currency must carry its FX rate; a completed payout must have a
+  payout_currency.
+- `fx_rates` — base_currency, quote_currency, rate (quote per base),
+  source, effective_at, created_by_admin_id.
 - `bank_transfers` — direction (CA→HT / HT→CA), amount_minor, currency,
   from_account_label, to_account_label, status
   (recorded/reconciled/failed), executed_at, reconciled_at,
   reconciled_by_admin_id, proof_url, notes.
-- `refunds` — order_id, amount_minor, currency, reason, status
+- `refunds` — order_id, amount_minor, product_minor, shipping_minor,
+  tax_minor, commission_refund_minor, currency, reason, status
   (requested/approved/processed/rejected), chargeback flag, timestamps.
 - `idempotency_keys` — key (unique), scope (payment/payout/refund),
   request_hash, response_json, created_at. Replays return the stored
@@ -69,16 +82,21 @@
   before_json, after_json, ip_address (nullable), created_at.
 
 ## Balance derivation (never stored as a single mutable number)
-- `pending` = sum of producer_payable credits on orders not yet cleared.
-- `available` = cleared producer_payable credits minus approved/completed
-  payouts.
-- `paid` = sum of completed payouts.
-Clearing rule (Phase 4): an order's producer share moves pending→available
-when the order is fulfilled and the clearing window passes; the window is
-an admin setting, not a guess in code.
+Every balance is a plain sum over one producer's ledger lines:
+- `pending` = credits − debits on `producer_pending`.
+- `available` = credits − debits on `producer_available`.
+- `paid` = debits on `producer_available` from payout groups.
+Clearing rule (Phase 4): `postClearing` moves an order's producer share
+pending→available when the order is fulfilled and the clearing window
+passes; the window is an admin setting, not a guess in code. A refund after
+payout can drive `available` negative — a clawback the admin resolves.
+
+Processor fees are a platform expense (`processor_fees`), so the producer's
+share is never reduced by them.
 
 ## Indexes that matter
 - `orders(storefront_id, status)`, `orders(customer_id)`,
   `ledger_entries(entry_group)`, `ledger_entries(producer_id)`,
   `payouts(producer_id, status)`, `products(storefront_id, status)`,
-  `audit_log(entity_type, entity_id)`, `idempotency_keys(key)`.
+  `audit_log(entity_type, entity_id)`, `idempotency_keys(key)`, plus an
+  index on every foreign key that is joined or filtered (migration 0002).
