@@ -1,7 +1,9 @@
 # Global Haitian Producer Marketplace
 
 B2B sourcing platform (Alibaba-style) connecting verified Haitian suppliers
-with business buyers worldwide, with retail as a second channel. Commission 10% by default (configurable,
+with business buyers worldwide, with retail as a second channel. The company runs
+the transportation: the platform creates the trade, the logistics business
+moves the goods. Commission 10% by default (configurable,
 historical rates preserved). English, French, and Haitian Creole.
 
 ## Status: Phase 1 foundation
@@ -47,7 +49,8 @@ otherwise `/admin` returns 404.
 - `docs/PLAN.md` — phases, business rules, module map
 - `docs/ARCHITECTURE.md` — database architecture and balance derivation
 - `docs/VISION.md` — product vision: diaspora buyers, producer-led storefronts
-- `docs/PHASE2.md` — Phase 2 plan (storefronts + catalogue)
+- `docs/PHASE2.md` — Phase 2 plan (sourcing platform, no money)
+- `docs/LOGISTICS.md` — Phase 3 plan: the logistics operation (the core business)
 - `docs/DECISIONS.md` — decision log (who decided what, and why)
 
 ## Next: Phase 2

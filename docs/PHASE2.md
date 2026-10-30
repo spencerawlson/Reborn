@@ -69,6 +69,11 @@ Migration 0004:
   dimensions, edition; coffee: variety, altitude, process, grade; …).
 - `product_price_tiers`: quantity from → unit price (integer minor units);
   or `price_on_request`.
+- **Shipping data (required to publish):** per sellable unit — gross
+  weight (g), dimensions (mm), units per carton, carton weight and
+  dimensions, storage needs (dry, cool, frozen), and hazard flags
+  (flammable spirits and essential oils, fragile art). The logistics core
+  (Phase 3) prices freight from these numbers, so they are mandatory.
 - `product_translations` (en/fr/ht) with fallback to the original.
 - Images: S3-compatible storage, resized, EXIF location removed.
 - **Done when:** a supplier can list, edit, and archive products with
@@ -95,11 +100,16 @@ Migration 0005:
   destination country, target price (optional), deadline, status
   (open/closed/awarded). Visible to suppliers in matching categories.
 - `quotes` — supplier → RFQ or conversation: unit price, quantity,
-  currency, incoterm, lead time, valid until, notes; status (sent,
+  currency, lead time, valid until, notes. Suppliers quote **delivered to
+  the company's warehouse in Haiti**; the buyer also sees a freight
+  estimate to their city (from the Phase 3 rate tables, or "freight quote
+  to follow" until they exist); status (sent,
   accepted, declined, expired). Immutable once sent; a revision is a new
   quote.
 - `deals` — created when a buyer accepts a quote: snapshot of the quote,
-  buyer, supplier, `settlement = 'off_platform'`. No ledger entries (no
+  buyer, supplier, `settlement = 'off_platform'`, and a **shipment
+  request** for the logistics team (destination, quantity, weight,
+  volume). No ledger entries (no
   money through the platform); Phase 3's protected payment adds
   `settlement = 'platform'` and posts to the ledger.
 - Admin funnel view; spam and abuse reporting on messages.

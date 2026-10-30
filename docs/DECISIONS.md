@@ -5,6 +5,20 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — The company runs the logistics (founder) + replan (lead)
+- **Founder:** the real business is logistics. The company handles the
+  transportation; the sourcing platform feeds it. Freight and logistics
+  are the core revenue.
+- **Lead:** Phase 3 becomes the logistics core (rates, delivered-price
+  quotes, bookings, pickup, warehouse receiving, consolidation,
+  documents, tracking, freight invoicing); protected payments for goods
+  move to Phase 4. Listings must carry shipping data to publish. Supplier
+  quotes are delivered to the company's Haiti warehouse; buyers see a
+  freight estimate to their city. Accepted deals open a shipment request.
+- **Open (founder):** routes, modes, partners, licences (see
+  `docs/LOGISTICS.md`); whether the marketplace charges anything on top
+  of freight.
+
 ## 2026-10-30 — B2B sourcing platform (founder) + Phase 2 replan (lead)
 - **Founder:** the platform is Alibaba-style B2B sourcing — businesses
   abroad source Haitian goods in volume from verified suppliers; retail to

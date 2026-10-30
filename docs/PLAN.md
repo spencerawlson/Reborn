@@ -34,17 +34,18 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
   listings (MOQ, price tiers, capacity, export terms), buyer accounts,
   search, inquiries, RFQs, quotes, and off-platform deals. Detailed plan:
   `docs/PHASE2.md`.
-- **Phase 3 — Protected payments (sandbox).** The buyer pays the platform,
-  funds are held until delivery is confirmed, then released to the
-  supplier — on the existing ledger via the mock provider. Retail checkout
-  rides the same path. Done when a sandbox deal produces balanced ledger
-  entries. Going live needs legal and banking clearance.
-- **Phase 4 — Payouts (manual).** MonCash account verification (mock),
-  withdrawal requests, admin approval queue, payout history, manual bank
-  transfer records + reconciliation.
-- **Phase 5 — Shipping (manual-first).** Carrier records, quotations,
-  tracking numbers, labels (manual upload), customs doc checklist,
-  delivery notifications, returns/damage flow.
+- **Phase 3 — Logistics core (the business).** Freight rate tables per
+  lane and mode, delivered-price quotes, shipment booking from a deal,
+  supplier pickup, warehouse receiving (weigh, measure, photograph),
+  consolidation into air/ocean loads, export/import documents, tracking
+  for buyers, freight invoicing (the company billing its own service, on
+  the ledger, mock payments until cleared). Plan: `docs/LOGISTICS.md`.
+- **Phase 4 — Protected payments for goods (sandbox).** The buyer pays for
+  the goods through the platform, held until delivery, then released to
+  the supplier; retail checkout on the same path. Legal and banking
+  clearance before live.
+- **Phase 5 — Supplier payouts (manual).** MonCash/bank payout of goods
+  proceeds, verification, approval queue, reconciliation.
 - **Phase 6 — Admin dashboard (full).** Every widget in the brief wired to
   real queries, reports, dispute/complaint review, settings.
 - **Phase 7 — Hardening.** Full i18n (EN/FR/HT) across all routes, MFA,
