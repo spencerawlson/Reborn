@@ -2,30 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Logo animation (after Farelune's): the dashed trail draws in once, then
-   the parcel keeps travelling left → right along it with small hops,
-   pausing at the end before the next trip. */
+/* Logo animation — the same as Farelune's plane: the dashed trail draws
+   in while the parcel flies in from the left (2.2 s, once on load), and
+   both replay on hover. */
 .logo-trail {
   background-image: repeating-linear-gradient(90deg, #dc2626 0 5px, transparent 5px 9px);
   opacity: 0.75;
-  animation: logo-trail 1.2s cubic-bezier(0.45, 0.05, 0.25, 1) both;
+  animation: logo-trail 2.2s cubic-bezier(0.45, 0.05, 0.25, 1) both;
 }
 .logo-parcel {
-  left: calc(100% - 1.4rem);
-  animation: logo-parcel 4s ease-in-out infinite;
+  left: calc(100% - 1.5rem);
+  animation: logo-fly 2.2s cubic-bezier(0.45, 0.05, 0.25, 1) both;
 }
+.logo:hover .logo-trail { animation-name: logo-trail-replay; }
+.logo:hover .logo-parcel { animation-name: logo-fly-replay; }
 
-@keyframes logo-trail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes logo-parcel {
-  0% { opacity: 0; left: -0.75rem; transform: translateY(0) rotate(-8deg); }
-  8% { opacity: 1; }
-  20% { transform: translateY(-4px) rotate(4deg); }
-  32% { transform: translateY(0) rotate(-3deg); }
-  44% { transform: translateY(-3px) rotate(2deg); }
-  55% { left: calc(100% - 1.4rem); transform: none; opacity: 1; }
-  85% { left: calc(100% - 1.4rem); transform: none; opacity: 1; }
-  100% { left: calc(100% - 1.4rem); transform: none; opacity: 0; }
+@keyframes logo-fly {
+  0% { opacity: 0; left: -0.75rem; transform: translateY(5px) rotate(-10deg); }
+  15% { opacity: 1; }
+  55% { transform: translateY(-4px) rotate(-3deg); }
+  to { opacity: 1; left: calc(100% - 1.5rem); transform: none; }
 }
+@keyframes logo-fly-replay {
+  0% { opacity: 0; left: -0.75rem; transform: translateY(5px) rotate(-10deg); }
+  15% { opacity: 1; }
+  55% { transform: translateY(-4px) rotate(-3deg); }
+  to { opacity: 1; left: calc(100% - 1.5rem); transform: none; }
+}
+@keyframes logo-trail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes logo-trail-replay { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 @media (prefers-reduced-motion: reduce) {
   .logo-trail, .logo-parcel { animation: none; }

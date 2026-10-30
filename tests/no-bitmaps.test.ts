@@ -2,15 +2,22 @@
  * Founder rule: the website uses vector graphics only. No emoji (drawn as
  * bitmaps on many phones), no raster image files or references in src/
  * or public/. Icons go through src/components/Icon.tsx (inline SVG).
+ *
+ * The ONE exception (founder): the little parcel in the logo,
+ * public/parcel.png, referenced only from src/components/Logo.tsx.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const ROOT = join(__dirname, "..");
 const RASTER = /\.(png|jpe?g|gif|webp|bmp|avif|ico)$/i;
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
-const RASTER_REF = /\.(png|jpe?g|gif|webp|bmp|avif)\b|next\/image/i;
+const RASTER_REF = /\.(png|jpe?g|gif|webp|bmp|avif)\b|next\/image/gi;
+
+const ALLOWED_BITMAP = "public/parcel.png";
+const ALLOWED_REF_FILE = "src/components/Logo.tsx";
+const ALLOWED_REF = "/parcel.png";
 
 function files(dir: string): string[] {
   if (!existsSync(dir)) return [];
@@ -20,21 +27,29 @@ function files(dir: string): string[] {
   });
 }
 
+const rel = (f: string) => relative(ROOT, f).split(sep).join("/");
+
 describe("vector-only website", () => {
   const all = [...files(join(ROOT, "src")), ...files(join(ROOT, "public"))];
 
-  it("has no raster image files", () => {
-    expect(all.filter((f) => RASTER.test(f)).map((f) => relative(ROOT, f))).toEqual([]);
+  it("has no raster image files except the logo parcel", () => {
+    expect(all.filter((f) => RASTER.test(f)).map(rel)).toEqual([ALLOWED_BITMAP]);
   });
 
-  it("uses no emoji or raster image references in source", () => {
+  it("uses no emoji anywhere in source", () => {
+    const offenders = all.filter((f) => /\.(tsx?|css|mdx?)$/.test(f) && EMOJI.test(readFileSync(f, "utf8")));
+    expect(offenders.map(rel)).toEqual([]);
+  });
+
+  it("references a bitmap only for the logo parcel", () => {
     const offenders = all
       .filter((f) => /\.(tsx?|css|mdx?)$/.test(f))
-      .filter((f) => {
+      .flatMap((f) => {
         const text = readFileSync(f, "utf8");
-        return EMOJI.test(text) || RASTER_REF.test(text);
-      })
-      .map((f) => relative(ROOT, f));
+        return [...text.matchAll(RASTER_REF)]
+          .filter((m) => !(rel(f) === ALLOWED_REF_FILE && text.slice(m.index! - 7, m.index! + 4) === ALLOWED_REF))
+          .map((m) => `${rel(f)}: ${m[0]}`);
+      });
     expect(offenders).toEqual([]);
   });
 });
