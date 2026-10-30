@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Icon, type IconName } from "@/components/Icon";
 import { PriceEstimator } from "@/components/PriceEstimator";
 import { isEstimatorTab } from "@/lib/shipping/tabs";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
@@ -8,10 +9,10 @@ import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 // one tool, three steps, one teaser. Nothing else.
 const CHECKS: DictionaryKey[] = ["heroCheck1", "trust1Title", "heroCheck3"];
 
-const STEPS: { title: DictionaryKey; body: DictionaryKey; icon: string }[] = [
-  { title: "step1Title", body: "step1Body", icon: "📦" },
-  { title: "step2Title", body: "step2Body", icon: "🚢" },
-  { title: "step3Title", body: "step3Body", icon: "🏠" },
+const STEPS: { title: DictionaryKey; body: DictionaryKey; icon: IconName }[] = [
+  { title: "step1Title", body: "step1Body", icon: "box" },
+  { title: "step2Title", body: "step2Body", icon: "ship" },
+  { title: "step3Title", body: "step3Body", icon: "home" },
 ];
 
 export default async function Home({
@@ -40,7 +41,7 @@ export default async function Home({
             <ul className="mt-6 grid gap-2.5 text-[15px] text-slate-700">
               {CHECKS.map((key) => (
                 <li key={key} className="flex items-start gap-2.5">
-                  <span aria-hidden className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-black text-emerald-600">✓</span>
+                  <span aria-hidden className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><Icon name="check" size={14} strokeWidth={3} /></span>
                   {t(locale, key)}
                 </li>
               ))}
@@ -54,7 +55,7 @@ export default async function Home({
           <ol className="mt-4 grid gap-3 md:grid-cols-3">
             {STEPS.map((step) => (
               <li key={step.title} className="flex gap-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200 md:flex-col md:gap-3 md:p-5">
-                <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xl">{step.icon}</span>
+                <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Icon name={step.icon} /></span>
                 <div>
                   <h3 className="font-bold text-slate-900">{t(locale, step.title)}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-slate-500">{t(locale, step.body)}</p>
@@ -66,7 +67,7 @@ export default async function Home({
 
         <section className="py-6">
           <div className="flex items-center gap-4 rounded-2xl bg-red-50 p-4 ring-1 ring-red-100 md:p-5">
-            <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-xl">☕</span>
+            <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-red-600"><Icon name="coffee" /></span>
             <div>
               <p className="flex flex-wrap items-center gap-2 font-bold text-slate-900">
                 {t(locale, "teaserTitle")}
