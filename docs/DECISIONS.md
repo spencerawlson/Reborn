@@ -5,6 +5,15 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Final mile, containers, contractor pay, pricing (founder) + design (lead)
+- **Founder:** door-to-door and warehouse pickup; LCL and FCL; contractors
+  paid per route by bank transfer, cash, or MonCash; diaspora shipping
+  priced by size and route.
+- **Lead:** delivery method per shipment end; Haiti addresses as phone +
+  neighbourhood + landmarks + map pin; pickup released by one-time code
+  and ID; route as the unit of contractor pay with three payout methods
+  and a cash ledger account; versioned size × route price table.
+
 ## 2026-10-30 — Operating model (founder) + design (lead)
 - **Founder:** air and ocean; owned trucks plus independent contractors;
   warehouses in Haiti, Montréal, and Miami; prior freight experience China

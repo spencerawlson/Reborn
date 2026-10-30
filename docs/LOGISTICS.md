@@ -2,8 +2,7 @@
 
 The company moves the goods. This plan covers the software that runs the
 logistics operation and connects it to the sourcing platform. Operating
-model confirmed by the founder on October 30, 2026 (below); final-mile
-delivery is the one open question.
+model confirmed by the founder on October 30, 2026 (below).
 
 ## Operating model (founder, October 30, 2026)
 - **Modes:** air and ocean.
@@ -14,6 +13,11 @@ delivery is the one open question.
   deal.
 - **Both directions:** Haiti → abroad carries Haitian goods; abroad →
   Haiti carries diaspora boxes and barrels, so loads are full both ways.
+- **Final mile:** door-to-door delivery and warehouse pickup, at both
+  ends.
+- **Ocean loads:** shared containers (LCL) and full containers (FCL).
+- **Contractors:** paid per route, by bank transfer, cash, or MonCash.
+- **Diaspora shipping prices:** by item size and route.
 
 ## Network (founder, October 30, 2026)
 - **Origins:** Port-au-Prince and Cap-Haïtien.
@@ -53,9 +57,23 @@ Design consequences (lead):
 - **Fleet and dispatch:** vehicles, drivers (employees and contractors),
   routes for pickups and deliveries, and a phone-friendly driver view for
   proof of pickup and delivery (photo, signature, GPS time-stamp).
-- **Contractor settlement:** jobs completed by contractors accrue to a
-  `contractor_payable` ledger account; paid in batches, with an audit
-  trail. Contractors see only their own jobs.
+- **Contractor settlement:** the unit of pay is a **route** (one run of
+  pickups/deliveries). Its price is fixed when the route is assigned;
+  completing it accrues the amount to a `contractor_payable` ledger
+  account. Payouts go in batches by the contractor's chosen method —
+  bank transfer, MonCash (same mock-first provider as supplier payouts),
+  or cash (recorded with who paid, when, and a signed receipt photo; cash
+  on hand is its own ledger account so it reconciles). Contractors see
+  only their own routes.
+- **Final mile, both ends:** each shipment end is `door` or
+  `warehouse_pickup`. Door delivery in Haiti cannot rely on street
+  addresses: store phone, city, neighbourhood, landmark directions, and a
+  map pin. Warehouse pickup releases only against a one-time code sent to
+  the recipient's phone plus ID check, logged.
+- **Ocean LCL and FCL:** a consolidation is either a shared load (many
+  shipments, charged per cubic metre / chargeable weight) or a full
+  container (one customer, charged per container); both carry container
+  and seal numbers.
 - **Two products on one engine:**
   1. *Trade freight* (Haiti → abroad): commercial goods from deals,
      palletised or cartoned, with export documents.
@@ -66,8 +84,11 @@ Design consequences (lead):
   tracking, and billing.
 
 ## Diaspora shipping (abroad → Haiti)
-- **Catalogue of sizes** with flat prices per lane: standard barrels,
-  box sizes, and over-size items, plus extra weight charges.
+- **Price table: size × route.** Each size (barrel and box sizes,
+  over-size items) has a flat price per route (e.g. Montréal → Port-au-
+  Prince, Miami → Cap-Haïtien), plus door-delivery and extra-weight
+  charges where they apply. Prices are rows, editable by admins and
+  versioned so past bookings keep their price.
 - **Booking:** drop off at the Montréal or Miami warehouse, or book a
   pickup by truck. Sender pays at booking.
 - **Contents declaration:** list of items and declared value (required
@@ -128,17 +149,13 @@ Design consequences (lead):
   per load, exceptions needing action.
 
 ## Questions for the founder (these shape the schema)
-Answered October 30: lanes, modes, fleet, warehouses, experience,
-freight payer, and the reverse direction (see above). Still open:
-1. **Final delivery:** door-to-door, warehouse pickup, or both — abroad
-   and in Haiti? Which Haitian cities do you deliver to?
-2. **Containers:** shared (LCL) loads, full containers (FCL), or both?
-   Which ocean and air carriers, and which customs brokers in Canada, the
-   US, and Haiti, do you use today?
-3. **Contractors:** paid per job, per route, or per day? By bank transfer,
-   cash, or MonCash?
-4. **Barrel prices:** do you have current prices by size and lane? They
-   seed the diaspora shipping catalogue.
+All operating-model questions answered October 30 (see above). Details
+still needed when we build:
+1. **Haiti delivery coverage:** which cities and areas get door delivery?
+2. **Partners:** which ocean and air carriers, and which customs brokers
+   in Canada, the US, and Haiti?
+3. **The price list:** actual sizes and prices per route, to seed the
+   diaspora shipping catalogue.
 
 ## Licences and compliance to confirm (counsel / brokers)
 Each depends on the operating model; listed so none is missed.
