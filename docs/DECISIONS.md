@@ -5,6 +5,13 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Door delivery everywhere in Haiti (founder) + zones (lead)
+- **Founder:** door delivery covers all of Haiti.
+- **Lead:** communes map to delivery zones with their own charge, time
+  estimate, and service status (open / delayed / paused) so a zone can be
+  paused immediately when road access changes; contractors assigned by
+  zone.
+
 ## 2026-10-30 — Final mile, containers, contractor pay, pricing (founder) + design (lead)
 - **Founder:** door-to-door and warehouse pickup; LCL and FCL; contractors
   paid per route by bank transfer, cash, or MonCash; diaspora shipping

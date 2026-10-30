@@ -14,7 +14,7 @@ model confirmed by the founder on October 30, 2026 (below).
 - **Both directions:** Haiti → abroad carries Haitian goods; abroad →
   Haiti carries diaspora boxes and barrels, so loads are full both ways.
 - **Final mile:** door-to-door delivery and warehouse pickup, at both
-  ends.
+  ends. Door delivery covers **all of Haiti**.
 - **Ocean loads:** shared containers (LCL) and full containers (FCL).
 - **Contractors:** paid per route, by bank transfer, cash, or MonCash.
 - **Diaspora shipping prices:** by item size and route.
@@ -70,6 +70,13 @@ Design consequences (lead):
   addresses: store phone, city, neighbourhood, landmark directions, and a
   map pin. Warehouse pickup releases only against a one-time code sent to
   the recipient's phone plus ID check, logged.
+- **Nationwide delivery zones in Haiti:** every commune maps to a delivery
+  zone (by department and distance from the Port-au-Prince or Cap-Haïtien
+  warehouse). Each zone has a door-delivery charge, a delivery-time
+  estimate, and a service status — `open`, `delayed`, or `paused` — so
+  operations can pause a zone at once when road access changes, and
+  bookings to it switch to warehouse pickup or wait. Contractors are
+  assigned by zone.
 - **Ocean LCL and FCL:** a consolidation is either a shared load (many
   shipments, charged per cubic metre / chargeable weight) or a full
   container (one customer, charged per container); both carry container
@@ -151,10 +158,9 @@ Design consequences (lead):
 ## Questions for the founder (these shape the schema)
 All operating-model questions answered October 30 (see above). Details
 still needed when we build:
-1. **Haiti delivery coverage:** which cities and areas get door delivery?
-2. **Partners:** which ocean and air carriers, and which customs brokers
+1. **Partners:** which ocean and air carriers, and which customs brokers
    in Canada, the US, and Haiti?
-3. **The price list:** actual sizes and prices per route, to seed the
+2. **The price list:** actual sizes and prices per route, to seed the
    diaspora shipping catalogue.
 
 ## Licences and compliance to confirm (counsel / brokers)
