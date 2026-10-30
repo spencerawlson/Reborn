@@ -5,6 +5,17 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Online-store forwarding: Amazon → Haiti (founder)
+- **Founder:** people in Haiti order on Amazon and have orders delivered
+  to the company's warehouse; the company brings them to Haiti.
+- **Lead:** a third service on the same engine (abroad → Haiti), added to
+  Phase 2 as milestone 2g: personal suite addresses, pre-alerts,
+  receiving and matching, weight pricing, consolidation, payment in
+  Haiti.
+- **Open (founder):** customers buy themselves (A), the company buys for
+  them (B, counsel first), or both; receiving warehouses; rates; payment
+  methods in Haiti.
+
 ## 2026-10-30 — Diaspora shipping first (founder, on lead's recommendation)
 - **Founder:** build the diaspora box-and-barrel service (abroad → Haiti)
   before the marketplace.

@@ -90,6 +90,30 @@ Design consequences (lead):
   Both use the same locations, warehouses, legs, consolidations,
   tracking, and billing.
 
+## Online-store forwarding (abroad → Haiti) — founder, October 30, 2026
+Customers **in Haiti** shop on Amazon (and other stores) and ship to the
+company's warehouse abroad; the company brings the packages to Haiti.
+- **Personal address:** each customer gets a suite number at the
+  warehouse (e.g. `Suite RB-10482`) to put on their orders.
+- **Pre-alert:** the customer enters the store order / carrier tracking
+  number and declared value (with the store invoice for Haitian customs).
+- **Receiving:** scan the carrier's tracking number, match by suite
+  number or pre-alert, weigh, photograph, notify the customer. Packages
+  with no match go to an unidentified-packages queue.
+- **Storage and consolidation:** free storage for a set number of days;
+  several packages for one customer combine into one shipment.
+- **Pricing:** by weight (air, per lb/kg) or volume (sea), with a minimum
+  charge — rates to come from the founder.
+- **Payment in Haiti:** HTG, likely MonCash or cash at the warehouse,
+  before release; FX from `fx_rates`.
+- **Restricted items** checked at receiving (e.g. lithium batteries and
+  liquids cannot always fly).
+- **Open (founder):** do customers buy themselves with the company's
+  address (A), does the company buy on their behalf against payment in
+  Haiti (B — customer money for goods; counsel first), or both? Which
+  warehouses receive (Miami for Amazon.com, Montréal for Amazon.ca)?
+  Rates? Payment methods in Haiti?
+
 ## Diaspora shipping (abroad → Haiti)
 - **Price table: size × route.** Each size (barrel and box sizes,
   over-size items) has a flat price per route (e.g. Montréal → Port-au-

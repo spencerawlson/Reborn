@@ -8,6 +8,16 @@ Haiti, export, freight, import, and delivery. Freight and logistics
 services are the main revenue; the marketplace exists to fill the trucks,
 containers, and air cargo.
 
+Services on the logistics engine:
+1. **Diaspora shipping** (abroad → Haiti): boxes and barrels from
+   Haitians abroad to family in Haiti.
+2. **Amazon / online-store forwarding** (abroad → Haiti, founder,
+   October 30, 2026): people **in Haiti** shop on Amazon and other stores
+   and have orders delivered to the company's warehouse abroad; the
+   company brings them to Haiti and delivers them.
+3. **Trade freight** (Haiti → abroad): Haitian goods from the sourcing
+   marketplace to buyers abroad.
+
 What follows from that:
 - **Buyers see a delivered price.** Suppliers quote at the company's
   warehouse in Haiti; the platform adds freight, duties estimate, and

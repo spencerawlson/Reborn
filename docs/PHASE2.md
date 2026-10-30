@@ -103,6 +103,17 @@ they will in real life:
 - **Done when:** a shipment's full journey sends the right messages to
   the right people in the right language.
 
+### 2g — Online-store forwarding (Amazon → Haiti)
+Same engine as 2b–2f, for customers in Haiti (see `docs/LOGISTICS.md`):
+personal suite address on sign-up, pre-alerts, receiving by carrier
+tracking number with an unidentified-packages queue, weight-based
+pricing, consolidation per customer, payment in Haiti before release.
+Exact scope waits on the founder's answers (who buys, which warehouses,
+rates, payment methods).
+- **Done when:** a customer in Haiti gets their address, a package
+  arrives at the warehouse and is matched to them, they are notified,
+  and it reaches them in Haiti with payment recorded.
+
 ## Ledger additions (new migration)
 Accounts: `shipping_revenue`, `accounts_receivable` (invoiced, unpaid),
 `cash_on_hand` (counter and driver cash), `customer_deposits` (paid
