@@ -32,6 +32,22 @@
 @keyframes logo-trail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes logo-trail-replay { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
+/* Network map: dashes flow along each route; warehouse nodes pulse softly. */
+.route-flow {
+  stroke-dasharray: 6 9;
+  animation: route-flow 1.4s linear infinite;
+}
+@keyframes route-flow { to { stroke-dashoffset: -30; } }
+.node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: node-pulse 2.6s ease-out infinite;
+}
+@keyframes node-pulse {
+  0% { transform: scale(0.6); opacity: 0.35; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .logo-trail, .logo-parcel { animation: none; }
+  .logo-trail, .logo-parcel, .route-flow, .node-pulse { animation: none; }
 }

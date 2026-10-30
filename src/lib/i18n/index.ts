@@ -16,30 +16,63 @@ export const LOCALES: { code: Locale; label: string }[] = [
 const en = {
   siteName: "ShipItAyiti",
   siteTagline: "Haiti and the world, door to door",
+  haiti: "Haiti",
+  soon: "Soon",
+
+  navServices: "Services",
   navShip: "Ship",
   navTrack: "Track",
   navMarketplace: "Marketplace",
-  soon: "Soon",
-  haiti: "Haiti",
-
-  heroTitle: "Ship to Haiti",
-  heroBody: "Boxes, barrels, and your Amazon orders — delivered anywhere in Haiti.",
-  tabShop: "Shop",
-  shopTitle: "Shop on Amazon, receive in Haiti",
-  shopStep1: "Sign up and register your address in Haiti — you get a free personal address in Miami and Montréal.",
-  shopStep2: "Shop on Amazon or any store and ship to that address.",
-  shopStep3: "We bring it to Haiti. Pay by MonCash or cash at our warehouse.",
-  shopAddressLabel: "Your address (example)",
-  shopWeight: "Package weight (lb)",
-  shopPerLb: "per lb",
-  shopSignupSoon: "Sign-up opens soon",
-  heroCheck1: "Door to door, or pickup at our warehouse",
-  heroCheck3: "WhatsApp updates in Creole for your family",
+  navQuote: "Get a quote",
   tabHome: "Home",
+  tabShop: "Shop",
   tabHelp: "Help",
-  bookingSoon: "Online booking opens soon",
 
-  estimateTitle: "Estimate your price",
+  heroTitle: "The reliable way to ship to Haiti.",
+  heroBody:
+    "Boxes, barrels, Amazon orders and freight — from Montréal and Miami to every town in Haiti. Our own trucks and warehouses, tracked at every step.",
+
+  kpi1Value: "3",
+  kpi1Label: "countries, one network",
+  kpi2Value: "10/10",
+  kpi2Label: "departments of Haiti, door to door",
+  kpi3Value: "Air + Sea",
+  kpi3Label: "two ways to ship",
+
+  servicesTitle: "One network, three ways to move what matters.",
+  svc1Title: "Boxes & barrels",
+  svc1Body: "Send to family anywhere in Haiti. Drop off in Montréal or Miami, or we pick up.",
+  svc2Title: "Shop & ship",
+  svc2Body: "Shop on Amazon with your personal Miami or Montréal address. We bring it home to Haiti.",
+  svc3Title: "Freight & sourcing",
+  svc3Body: "Haitian coffee, cacao, rum, oils and art for businesses abroad — sourced and shipped by us.",
+  svcCta: "Get a price",
+
+  howTitle: "How it works",
+  how1Title: "Book online",
+  how1Body: "Get your price in seconds and book in a few taps.",
+  how2Title: "Drop off or pickup",
+  how2Body: "Bring it to our Montréal or Miami warehouse, or our truck collects it.",
+  how3Title: "Scanned and shipped",
+  how3Body: "Weighed, photographed and loaded on our next sailing or flight.",
+  how4Title: "Delivered in Haiti",
+  how4Body: "To the door anywhere in Haiti, or pickup at our warehouse — with updates on WhatsApp.",
+
+  networkTitle: "Our network",
+  networkBody:
+    "Warehouses in Montréal, Miami and Haiti, linked by air and sea — then our own trucks to every department.",
+  networkNext: "Paris and more destinations next.",
+  legendWarehouse: "Warehouse",
+  legendRoute: "Air & sea route",
+
+  ctaTitle: "Ready when you are.",
+  ctaBody: "Get an instant price for your box, barrel or package.",
+
+  footerServices: "Services",
+  footerHelp: "Help",
+  footerLanguage: "Language",
+  previewNotice: "Preview — bookings and payments are not live yet.",
+
   estimateFrom: "From",
   estimateTo: "To",
   estimateSize: "Size",
@@ -49,6 +82,7 @@ const en = {
   estimateZone: "Delivery area",
   estimateTotal: "Estimated price",
   estimateSample: "Sample prices for this preview — the final price list is coming.",
+  bookingSoon: "Online booking opens soon",
 
   sizeSmallBox: "Small box",
   sizeMediumBox: "Medium box",
@@ -58,25 +92,14 @@ const en = {
   zoneCity: "Other cities and towns",
   zoneRemote: "Rural and remote areas",
 
-  howTitle: "How it works",
-  step1Title: "Drop it off, or we pick it up",
-  step1Body:
-    "Bring your box or barrel to our Montréal or Miami warehouse, or book a truck to collect it.",
-  step2Title: "We ship it",
-  step2Body:
-    "By sea or by air, in our own consolidated loads. Every item is weighed, photographed, and scanned.",
-  step3Title: "Delivered in Haiti",
-  step3Body:
-    "To the door anywhere in Haiti, or ready at our Port-au-Prince or Cap-Haïtien warehouse. Your recipient gets updates in Creole.",
-
-
-  trust1Title: "Our own trucks and warehouses",
-
-  teaserTitle: "Coming next: Haitian goods to the world",
-  teaserBody:
-    "Coffee, cacao, rum, essential oils, art, and more from verified Haitian suppliers — sourced on our marketplace and shipped by us.",
-
-  previewNotice: "Preview — bookings and payments are not live yet.",
+  shopTitle: "Shop on Amazon, receive in Haiti",
+  shopStep1: "Sign up and register your address in Haiti — you get a free personal address in Miami and Montréal.",
+  shopStep2: "Shop on Amazon or any store and ship to that address.",
+  shopStep3: "We bring it to Haiti. Pay by MonCash or cash at our warehouse.",
+  shopAddressLabel: "Your address (example)",
+  shopWeight: "Package weight (lb)",
+  shopPerLb: "per lb",
+  shopSignupSoon: "Sign-up opens soon",
 
   trackTitle: "Track a shipment",
   trackLabel: "Tracking number",
@@ -110,30 +133,63 @@ export type DictionaryKey = keyof Dictionary;
 const fr: Dictionary = {
   siteName: "ShipItAyiti",
   siteTagline: "Haïti et le monde, porte à porte",
+  haiti: "Haïti",
+  soon: "Bientôt",
+
+  navServices: "Services",
   navShip: "Expédier",
   navTrack: "Suivre",
   navMarketplace: "Marché",
-  soon: "Bientôt",
-  haiti: "Haïti",
-
-  heroTitle: "Expédiez en Haïti",
-  heroBody: "Boîtes, barils et vos commandes Amazon — livrés partout en Haïti.",
-  tabShop: "Achats",
-  shopTitle: "Achetez sur Amazon, recevez en Haïti",
-  shopStep1: "Inscrivez-vous et enregistrez votre adresse en Haïti — vous recevez une adresse personnelle gratuite à Miami et Montréal.",
-  shopStep2: "Achetez sur Amazon ou ailleurs et faites livrer à cette adresse.",
-  shopStep3: "Nous l'apportons en Haïti. Payez par MonCash ou en espèces à notre entrepôt.",
-  shopAddressLabel: "Votre adresse (exemple)",
-  shopWeight: "Poids du colis (lb)",
-  shopPerLb: "la livre",
-  shopSignupSoon: "Inscription bientôt",
-  heroCheck1: "À domicile, ou retrait à notre entrepôt",
-  heroCheck3: "Nouvelles par WhatsApp en créole pour votre famille",
+  navQuote: "Obtenir un prix",
   tabHome: "Accueil",
+  tabShop: "Achats",
   tabHelp: "Aide",
-  bookingSoon: "Réservation en ligne bientôt",
 
-  estimateTitle: "Estimez votre prix",
+  heroTitle: "La façon fiable d'expédier en Haïti.",
+  heroBody:
+    "Boîtes, barils, commandes Amazon et fret — de Montréal et Miami vers toutes les villes d'Haïti. Nos propres camions et entrepôts, suivis à chaque étape.",
+
+  kpi1Value: "3",
+  kpi1Label: "pays, un seul réseau",
+  kpi2Value: "10/10",
+  kpi2Label: "départements d'Haïti, porte à porte",
+  kpi3Value: "Air + Mer",
+  kpi3Label: "deux modes d'envoi",
+
+  servicesTitle: "Un réseau, trois façons d'acheminer ce qui compte.",
+  svc1Title: "Boîtes et barils",
+  svc1Body: "Envoyez à votre famille partout en Haïti. Déposez à Montréal ou Miami, ou nous ramassons.",
+  svc2Title: "Achats et envoi",
+  svc2Body: "Achetez sur Amazon avec votre adresse personnelle à Miami ou Montréal. Nous l'apportons en Haïti.",
+  svc3Title: "Fret et approvisionnement",
+  svc3Body: "Café, cacao, rhum, huiles et art haïtiens pour les entreprises à l'étranger — trouvés et expédiés par nous.",
+  svcCta: "Voir le prix",
+
+  howTitle: "Comment ça marche",
+  how1Title: "Réservez en ligne",
+  how1Body: "Obtenez votre prix en quelques secondes et réservez en quelques gestes.",
+  how2Title: "Dépôt ou ramassage",
+  how2Body: "Apportez-le à notre entrepôt de Montréal ou Miami, ou notre camion vient le chercher.",
+  how3Title: "Scanné et expédié",
+  how3Body: "Pesé, photographié et chargé sur notre prochain départ par mer ou par air.",
+  how4Title: "Livré en Haïti",
+  how4Body: "À domicile partout en Haïti, ou retrait à notre entrepôt — avec des nouvelles sur WhatsApp.",
+
+  networkTitle: "Notre réseau",
+  networkBody:
+    "Des entrepôts à Montréal, Miami et en Haïti, reliés par air et par mer — puis nos propres camions vers tous les départements.",
+  networkNext: "Paris et d'autres destinations ensuite.",
+  legendWarehouse: "Entrepôt",
+  legendRoute: "Trajet air et mer",
+
+  ctaTitle: "Prêts quand vous l'êtes.",
+  ctaBody: "Obtenez un prix instantané pour votre boîte, baril ou colis.",
+
+  footerServices: "Services",
+  footerHelp: "Aide",
+  footerLanguage: "Langue",
+  previewNotice: "Aperçu — les réservations et paiements ne sont pas encore actifs.",
+
   estimateFrom: "De",
   estimateTo: "Vers",
   estimateSize: "Taille",
@@ -143,6 +199,7 @@ const fr: Dictionary = {
   estimateZone: "Zone de livraison",
   estimateTotal: "Prix estimé",
   estimateSample: "Prix d'exemple pour cet aperçu — la grille finale arrive bientôt.",
+  bookingSoon: "Réservation en ligne bientôt",
 
   sizeSmallBox: "Petite boîte",
   sizeMediumBox: "Boîte moyenne",
@@ -152,25 +209,15 @@ const fr: Dictionary = {
   zoneCity: "Autres villes",
   zoneRemote: "Zones rurales et éloignées",
 
-  howTitle: "Comment ça marche",
-  step1Title: "Déposez-le, ou nous venons le chercher",
-  step1Body:
-    "Apportez votre boîte ou baril à notre entrepôt de Montréal ou de Miami, ou réservez un ramassage par camion.",
-  step2Title: "Nous l'expédions",
-  step2Body:
-    "Par mer ou par avion, dans nos propres chargements groupés. Chaque article est pesé, photographié et scanné.",
-  step3Title: "Livré en Haïti",
-  step3Body:
-    "À domicile partout en Haïti, ou prêt à notre entrepôt de Port-au-Prince ou du Cap-Haïtien. Votre destinataire reçoit des nouvelles en créole.",
-
-
-  trust1Title: "Nos propres camions et entrepôts",
-
-  teaserTitle: "Bientôt : les produits haïtiens pour le monde",
-  teaserBody:
-    "Café, cacao, rhum, huiles essentielles, art et plus, de fournisseurs haïtiens vérifiés — trouvés sur notre marché et expédiés par nous.",
-
-  previewNotice: "Aperçu — les réservations et paiements ne sont pas encore actifs.",
+  shopTitle: "Achetez sur Amazon, recevez en Haïti",
+  shopStep1:
+    "Inscrivez-vous et enregistrez votre adresse en Haïti — vous recevez une adresse personnelle gratuite à Miami et Montréal.",
+  shopStep2: "Achetez sur Amazon ou ailleurs et faites livrer à cette adresse.",
+  shopStep3: "Nous l'apportons en Haïti. Payez par MonCash ou en espèces à notre entrepôt.",
+  shopAddressLabel: "Votre adresse (exemple)",
+  shopWeight: "Poids du colis (lb)",
+  shopPerLb: "la livre",
+  shopSignupSoon: "Inscription bientôt",
 
   trackTitle: "Suivre un envoi",
   trackLabel: "Numéro de suivi",
@@ -201,30 +248,63 @@ const fr: Dictionary = {
 const ht: Dictionary = {
   siteName: "ShipItAyiti",
   siteTagline: "Ayiti ak tout mond lan, pòt an pòt",
+  haiti: "Ayiti",
+  soon: "Talè",
+
+  navServices: "Sèvis",
   navShip: "Voye",
   navTrack: "Swiv",
   navMarketplace: "Mache",
-  soon: "Talè",
-  haiti: "Ayiti",
-
-  heroTitle: "Voye bay Ayiti",
-  heroBody: "Bwat, barik ak kòmann Amazon ou — livre nenpòt kote an Ayiti.",
-  tabShop: "Achte",
-  shopTitle: "Achte sou Amazon, resevwa an Ayiti",
-  shopStep1: "Enskri epi anrejistre adrès ou an Ayiti — w ap jwenn yon adrès pèsonèl gratis Miyami ak Monreyal.",
-  shopStep2: "Achte sou Amazon oswa nenpòt magazen epi fè yo voye l nan adrès sa a.",
-  shopStep3: "Nou pote l an Ayiti. Peye ak MonCash oswa kach nan depo nou.",
-  shopAddressLabel: "Adrès ou (egzanp)",
-  shopWeight: "Pwa koli a (liv)",
-  shopPerLb: "pa liv",
-  shopSignupSoon: "Enskripsyon ap louvri talè",
-  heroCheck1: "Lakay moun nan, oswa pran l nan depo nou",
-  heroCheck3: "Nouvèl sou WhatsApp an kreyòl pou fanmi w",
+  navQuote: "Mande yon pri",
   tabHome: "Akèy",
+  tabShop: "Achte",
   tabHelp: "Èd",
-  bookingSoon: "Rezèvasyon an liy ap louvri talè",
 
-  estimateTitle: "Kalkile pri a",
+  heroTitle: "Fason ki serye pou voye bay Ayiti.",
+  heroBody:
+    "Bwat, barik, kòmann Amazon ak machandiz — soti Monreyal ak Miyami pou tout vil an Ayiti. Pwòp kamyon ak depo pa nou, swiv nan chak etap.",
+
+  kpi1Value: "3",
+  kpi1Label: "peyi, yon sèl rezo",
+  kpi2Value: "10/10",
+  kpi2Label: "depatman Ayiti, pòt an pòt",
+  kpi3Value: "Avyon + Bato",
+  kpi3Label: "de fason pou voye",
+
+  servicesTitle: "Yon sèl rezo, twa fason pou deplase sa ki konte.",
+  svc1Title: "Bwat ak barik",
+  svc1Body: "Voye bay fanmi w nenpòt kote an Ayiti. Depoze l Monreyal oswa Miyami, oswa nou vin chèche l.",
+  svc2Title: "Achte epi voye",
+  svc2Body: "Achte sou Amazon ak adrès pèsonèl ou Miyami oswa Monreyal. Nou pote l lakay an Ayiti.",
+  svc3Title: "Machandiz ak founisè",
+  svc3Body: "Kafe, kakawo, wonm, lwil ak atizay ayisyen pou biznis lòt bò dlo — nou jwenn yo epi nou voye yo.",
+  svcCta: "Wè pri a",
+
+  howTitle: "Kijan sa mache",
+  how1Title: "Rezève sou entènèt",
+  how1Body: "Jwenn pri a nan kèk segonn epi rezève fasil.",
+  how2Title: "Depoze oswa nou vin chèche",
+  how2Body: "Pote l nan depo nou Monreyal oswa Miyami, oswa kamyon nou vin chèche l.",
+  how3Title: "Eskane epi voye",
+  how3Body: "Nou peze l, fè foto l epi chaje l nan pwochen depa bato oswa avyon.",
+  how4Title: "Livre an Ayiti",
+  how4Body: "Lakay moun nan nenpòt kote an Ayiti, oswa pran l nan depo nou — ak nouvèl sou WhatsApp.",
+
+  networkTitle: "Rezo nou",
+  networkBody:
+    "Depo Monreyal, Miyami ak Ayiti, konekte pa avyon ak bato — epi pwòp kamyon nou rive nan tout depatman.",
+  networkNext: "Pari ak lòt destinasyon apre.",
+  legendWarehouse: "Depo",
+  legendRoute: "Wout avyon ak bato",
+
+  ctaTitle: "Nou pare lè w pare.",
+  ctaBody: "Jwenn pri a touswit pou bwat, barik oswa koli ou.",
+
+  footerServices: "Sèvis",
+  footerHelp: "Èd",
+  footerLanguage: "Lang",
+  previewNotice: "Apèsi — rezèvasyon ak peman poko aktif.",
+
   estimateFrom: "Soti",
   estimateTo: "Pou",
   estimateSize: "Gwosè",
@@ -234,6 +314,7 @@ const ht: Dictionary = {
   estimateZone: "Zòn livrezon",
   estimateTotal: "Pri estime",
   estimateSample: "Pri egzanp pou apèsi sa a — lis pri final la ap vini.",
+  bookingSoon: "Rezèvasyon an liy ap louvri talè",
 
   sizeSmallBox: "Ti bwat",
   sizeMediumBox: "Bwat mwayen",
@@ -243,25 +324,14 @@ const ht: Dictionary = {
   zoneCity: "Lòt vil",
   zoneRemote: "Zòn andeyò ak zòn ki lwen",
 
-  howTitle: "Kijan sa mache",
-  step1Title: "Depoze l, oswa nou vin chèche l",
-  step1Body:
-    "Pote bwat oswa barik ou nan depo nou Monreyal oswa Miyami, oswa mande yon kamyon vin chèche l.",
-  step2Title: "Nou voye l",
-  step2Body:
-    "Pa bato oswa pa avyon, nan pwòp chajman pa nou. Nou peze, foto ak eskane chak atik.",
-  step3Title: "Livre an Ayiti",
-  step3Body:
-    "Lakay moun nan nenpòt kote an Ayiti, oswa pare nan depo nou Pòtoprens oswa Okap. Moun k ap resevwa a jwenn nouvèl an kreyòl.",
-
-
-  trust1Title: "Pwòp kamyon ak depo pa nou",
-
-  teaserTitle: "Talè konsa: pwodwi ayisyen pou tout mond lan",
-  teaserBody:
-    "Kafe, kakawo, wonm, lwil esansyèl, atizay ak plis ankò, soti nan founisè ayisyen verifye — jwenn yo sou mache nou epi se nou ki voye yo.",
-
-  previewNotice: "Apèsi — rezèvasyon ak peman poko aktif.",
+  shopTitle: "Achte sou Amazon, resevwa an Ayiti",
+  shopStep1: "Enskri epi anrejistre adrès ou an Ayiti — w ap jwenn yon adrès pèsonèl gratis Miyami ak Monreyal.",
+  shopStep2: "Achte sou Amazon oswa nenpòt magazen epi fè yo voye l nan adrès sa a.",
+  shopStep3: "Nou pote l an Ayiti. Peye ak MonCash oswa kach nan depo nou.",
+  shopAddressLabel: "Adrès ou (egzanp)",
+  shopWeight: "Pwa koli a (liv)",
+  shopPerLb: "pa liv",
+  shopSignupSoon: "Enskripsyon ap louvri talè",
 
   trackTitle: "Swiv yon anvwa",
   trackLabel: "Nimewo swivi",
