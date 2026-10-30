@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { resolveLocale } from "@/lib/i18n/index";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Haitian Producer Marketplace",
-  description: "Haitian products for the world — marketplace and free producer storefronts.",
+  title: "Reborn — Ship to Haiti, door to door",
+  description:
+    "Boxes and barrels from Montréal and Miami to every town in Haiti, delivered to the door or ready for warehouse pickup.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Set by src/middleware.ts for localized routes; admin falls back to English.
+  const lang = resolveLocale((await headers()).get("x-locale"));
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-white text-zinc-900 antialiased">{children}</body>
+    <html lang={lang}>
+      <body className="min-h-screen bg-stone-50 text-stone-900 antialiased">{children}</body>
     </html>
   );
 }
