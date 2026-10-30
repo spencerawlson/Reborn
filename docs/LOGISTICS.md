@@ -1,4 +1,4 @@
-# Logistics core — Phase 3 plan (draft)
+# Logistics — operating model and engine design
 
 The company moves the goods. This plan covers the software that runs the
 logistics operation and connects it to the sourcing platform. Operating
@@ -185,7 +185,7 @@ Each depends on the operating model; listed so none is missed.
   through the legal review.
 
 ## Order of build
-Phase 2 first (the platform that creates the trade), with shipping data
-on listings and shipment requests on deals. Then Phase 3 in this order:
-rates + delivered-price quotes → shipments + tracking → warehouse
-receiving → consolidations → billing → ops dashboard.
+Phase 2 builds the engine as the diaspora shipping service (abroad →
+Haiti): `docs/PHASE2.md`. Phase 3 adds trade freight (Haiti → abroad) on
+the same engine — export documents, delivered-price quotes, shipments
+from marketplace deals: `docs/MARKETPLACE.md`.

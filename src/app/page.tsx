@@ -38,7 +38,7 @@ export default async function Home({
           <p className="mt-1 text-sm text-zinc-600">{t(locale, "adminSubtitle")}</p>
         </Link>
         <div className="rounded-2xl border p-5">
-          <h2 className="font-semibold">{t(locale, "navProducer")}</h2>
+          <h2 className="font-semibold">{t(locale, "navShipping")}</h2>
           <p className="mt-1 text-sm text-zinc-600">{t(locale, "producerCardBody")}</p>
         </div>
       </section>

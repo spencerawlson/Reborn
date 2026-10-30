@@ -30,16 +30,17 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
 - **Phase 1 — Foundation (this build).** App scaffold, auth + RBAC model,
   migration 0001, commission engine + double-entry ledger (tested), mock
   providers, admin dashboard shell. Done when tests + typecheck pass.
-- **Phase 2 — Sourcing without money.** Verified suppliers, wholesale
-  listings (MOQ, price tiers, capacity, export terms), buyer accounts,
-  search, inquiries, RFQs, quotes, and off-platform deals. Detailed plan:
-  `docs/PHASE2.md`.
-- **Phase 3 — Logistics core (the business).** Freight rate tables per
-  lane and mode, delivered-price quotes, shipment booking from a deal,
-  supplier pickup, warehouse receiving (weigh, measure, photograph),
-  consolidation into air/ocean loads, export/import documents, tracking
-  for buyers, freight invoicing (the company billing its own service, on
-  the ledger, mock payments until cleared). Plan: `docs/LOGISTICS.md`.
+- **Phase 2 — Diaspora shipping (abroad → Haiti).** The logistics
+  engine, launched as the box-and-barrel service: accounts, network and
+  prices, booking (online and counter), warehouse scanning,
+  consolidations, final mile with drivers and contractors, tracking and
+  notifications, invoicing on the ledger. Plan: `docs/PHASE2.md`;
+  operating model: `docs/LOGISTICS.md`.
+- **Phase 3 — The sourcing marketplace + trade freight (Haiti →
+  abroad).** Verified suppliers, wholesale listings, buyer accounts,
+  search, inquiries, RFQs, quotes, deals — shipped on the Phase 2 engine
+  with export documents and delivered-price quotes. Plan:
+  `docs/MARKETPLACE.md`.
 - **Phase 4 — Protected payments for goods (sandbox).** The buyer pays for
   the goods through the platform, held until delivery, then released to
   the supplier; retail checkout on the same path. Legal and banking
@@ -81,5 +82,5 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
 ## What is deliberately NOT in Phase 1
 Live payment providers, live MonCash API, live carrier APIs, automated
 banking, subscriptions, listing fees, warehouses/vehicles, and the
-company-owned logistics operation. Those are Phase 4+ or future work, behind
-the same interfaces.
+company-owned logistics operation. Those come in later phases (see above),
+behind the same interfaces.

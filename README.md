@@ -49,11 +49,12 @@ otherwise `/admin` returns 404.
 - `docs/PLAN.md` — phases, business rules, module map
 - `docs/ARCHITECTURE.md` — database architecture and balance derivation
 - `docs/VISION.md` — product vision: diaspora buyers, producer-led storefronts
-- `docs/PHASE2.md` — Phase 2 plan (sourcing platform, no money)
-- `docs/LOGISTICS.md` — Phase 3 plan: the logistics operation (the core business)
+- `docs/PHASE2.md` — Phase 2 plan: diaspora shipping (abroad → Haiti), the logistics engine
+- `docs/MARKETPLACE.md` — Phase 3 plan: the sourcing marketplace + trade freight
+- `docs/LOGISTICS.md` — logistics operating model and engine design
 - `docs/DECISIONS.md` — decision log (who decided what, and why)
 
 ## Next: Phase 2
-Verified suppliers, wholesale listings, inquiries, RFQs, and quotes, with
-deals settled off-platform — see `docs/PHASE2.md`. Protected payments
-(sandbox) follow in Phase 3.
+Diaspora box-and-barrel shipping to Haiti on the company's own logistics
+engine — see `docs/PHASE2.md`. The sourcing marketplace follows in Phase 3
+on the same engine.

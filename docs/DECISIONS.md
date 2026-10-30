@@ -5,6 +5,18 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Diaspora shipping first (founder, on lead's recommendation)
+- **Founder:** build the diaspora box-and-barrel service (abroad → Haiti)
+  before the marketplace.
+- **Why:** it earns with trucks, contractors, and warehouses the company
+  already runs; it is the simplest payment case (the company charging for
+  its own service); it builds the logistics engine the marketplace needs;
+  its customers are the marketplace's future buyers.
+- **Plan:** Phase 2 = diaspora shipping (`docs/PHASE2.md`, milestones
+  2a–2f); Phase 3 = sourcing marketplace + trade freight
+  (`docs/MARKETPLACE.md`, formerly the Phase 2 plan); Phase 4 = payments
+  for goods; Phase 5 = supplier payouts.
+
 ## 2026-10-30 — Door delivery everywhere in Haiti (founder) + zones (lead)
 - **Founder:** door delivery covers all of Haiti.
 - **Lead:** communes map to delivery zones with their own charge, time

@@ -87,7 +87,7 @@ Every balance is a plain sum over one producer's ledger lines:
 - `pending` = credits − debits on `producer_pending`.
 - `available` = credits − debits on `producer_available`.
 - `paid` = debits on `producer_available` from payout groups.
-Clearing rule (Phase 4): `postClearing` moves an order's producer share
+Clearing rule (supplier payouts phase): `postClearing` moves an order's producer share
 pending→available when the order is fulfilled and the clearing window
 passes; the window is an admin setting, not a guess in code. A refund after
 payout can drive `available` negative — a clawback the admin resolves.

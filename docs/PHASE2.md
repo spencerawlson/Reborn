@@ -1,145 +1,128 @@
-# Phase 2 plan — verified suppliers, wholesale listings, inquiries + RFQ
+# Phase 2 plan — diaspora shipping (abroad → Haiti)
 
-Replanned October 30, 2026 for the B2B sourcing direction in
-`docs/VISION.md`. Phase 2 delivers a working sourcing platform **without
-moving money**: buyers find verified suppliers, ask, request quotes, and
-agree deals that settle off-platform. Payments come later (Phase 3+),
-behind legal clearance.
+Decided October 30, 2026 (founder): build the diaspora box-and-barrel
+shipping service first. It earns with assets the company already runs —
+trucks, contractors, and warehouses in Montréal, Miami, and Haiti — and it
+builds the logistics engine the sourcing marketplace (Phase 3,
+`docs/MARKETPLACE.md`) will ship through. Operating model and design
+rules: `docs/LOGISTICS.md`.
 
 ## Done when
-1. A Haitian supplier can register, get verified, and publish a profile
-   and wholesale catalogue with a shareable link.
-2. A business buyer abroad can find suppliers and products (EN/FR/HT),
-   send an inquiry, post an RFQ, receive quotes, and accept one.
-3. Every accepted quote is recorded as a deal (product, quantity, price,
-   terms) — the data the later protected-payment service builds on.
-4. Admins run supplier verification and see the funnel: inquiries, RFQs,
-   quotes, deals — by category, supplier, and buyer country.
-5. Tests prove tenant isolation: a supplier never sees another supplier's
-   inquiries, quotes, or buyers' messages to others.
+One barrel and one box can go all the way, in the software, exactly as
+they will in real life:
+1. A sender in Montréal books a barrel online (and a walk-in sender books
+   a box at the Miami counter), sees the price, declares contents, and
+   names a recipient in Haiti.
+2. The warehouse scans both in, weighs and photographs them, loads them
+   into a consolidation (container or air load), and closes it with a
+   manifest.
+3. The load departs, arrives, clears customs, and is scanned into the
+   Haiti warehouse.
+4. One goes door-to-door to a delivery zone on a contractor's route, with
+   proof of delivery; the other is collected at the warehouse with a
+   one-time code and ID.
+5. Sender and recipient are notified at each step, in their language,
+   and can follow a public tracking page.
+6. The booking invoice and the contractor's route pay are on the ledger,
+   balanced; payments are recorded but mock until cleared.
 
-## Decisions (October 30, 2026)
-Founder: B2B sourcing first, retail second. Lead (Claude), within that:
-- **Launch categories:** coffee, cacao, spices, essential oils, processed
-  foods, rum/spirits, handicrafts, art. Fresh produce listed but
-  export-gated.
-- **Supplier verification levels:** `identity` (registration documents
-  checked) → `site_visited` (in person or trusted partner, with date and
-  photos) → `export_ready` (export licence and certificates checked).
-  Unverified suppliers stay private.
-- **Buyer verification:** light — business name, country, type, website.
-  Unverified buyers can browse and send a limited number of inquiries per
-  day (anti-spam); verified buyers are unlimited.
-- **Links:** `/{locale}/s/{supplier-slug}` and `/{locale}/p/{product-id}`;
-  `/s/{slug}` redirects by the visitor's language.
-- **Messages are stored on the platform** (not only WhatsApp), so deals
-  have a record. Email and a WhatsApp link notify about new messages.
+## Milestones (in order; each ends tested, merged, pushed)
 
-## Milestones (in order; each ends with tests passing)
-
-### 2a — Database, accounts, languages
+### 2a — Accounts, sign-in, languages
 - ✅ Postgres client (`src/lib/db`) and migration runner (`npm run db:migrate`).
-- Sign-in: email + password (argon2id), database sessions in an HTTP-only
-  cookie, password reset by email. Maintained library (evaluate Better
+- Sign-in: email or phone + password (argon2id), database sessions in an
+  HTTP-only cookie, password reset. Maintained library (evaluate Better
   Auth). Replaces `ADMIN_DEV_PREVIEW`.
-- Account types: `supplier`, `buyer`, `admin` (roles table).
-- Locale routing `/{locale}/...`; all page text in the dictionaries.
-- **Done when:** register, sign in, sign out, reset password; roles work.
+- Roles: `customer` (sender), `staff` (counter and warehouse, per
+  warehouse), `driver` (employee or contractor), `admin`. Staff and
+  drivers see only their site's or their own work.
+- Locale routing `/{locale}/...`; all page text in the dictionaries;
+  Creole default for Haiti-side screens and recipient messages.
+- **Done when:** each role can sign in and sees only what it should.
 
-### 2b — Suppliers and verification
-Schema: `producer_profiles` becomes the supplier company: legal name,
-trade name, registration number (Haiti patente/NIF), founded year,
-employees, region (department), story, contact, export licence status,
-monthly capacity summary, `verification_level` + dates, certifications
-(organic, fair trade, …) with document uploads, site photos.
-- Supplier onboarding wizard, built for phones and slow connections.
-- Admin verification queue: approve each level with evidence; every
-  action audit-logged; suspend.
-- **Done when:** a verified supplier's profile is public at its link;
-  badges show level and date.
+### 2b — Network and prices
+- `locations`: the four warehouses (Montréal, Miami, Port-au-Prince,
+  Cap-Haïtien) with airport and seaport codes.
+- `lanes`: origin warehouse → destination warehouse + mode (air, ocean).
+- `delivery_zones`: every Haitian commune mapped to a zone, with a
+  door-delivery charge, time estimate, and status (open / delayed /
+  paused). Same for door pickup zones around Montréal and Miami.
+- `item_sizes`: barrel and box sizes and over-size items (dimensions,
+  max weight).
+- `prices`: size × lane → price, plus extra-weight charges; versioned,
+  so past bookings keep their price.
+- A tested pricing function: (size, lane, pickup zone?, delivery zone?,
+  weight) → itemised price in integer cents.
+- Admin screens to edit all of the above; every change audit-logged.
+- **Done when:** an admin can load the real price list and the pricing
+  function reproduces it exactly.
 
-### 2c — Wholesale listings
-Migration 0004:
-- `categories` (fixed tree, seeded) with `requires_import_clearance`.
-- `products`: category, `sell_unit` (kg, g, L, ml, piece, carton, …) with
-  integer quantities, `moq` (minimum order quantity), `monthly_capacity`,
-  `lead_time_days`, `incoterms` offered, `hs_code`, packaging options,
-  samples (available, price, lead time), certifications, origin
-  department, `attributes JSONB` per category (art: artist, medium,
-  dimensions, edition; coffee: variety, altitude, process, grade; …).
-- `product_price_tiers`: quantity from → unit price (integer minor units);
-  or `price_on_request`.
-- **Shipping data (required to publish):** per sellable unit — gross
-  weight (g), dimensions (mm), units per carton, carton weight and
-  dimensions, storage needs (dry, cool, frozen), and hazard flags
-  (flammable spirits and essential oils, fragile art). The logistics core
-  (Phase 3) prices freight from these numbers, so they are mandatory.
-- `product_translations` (en/fr/ht) with fallback to the original.
-- Images: S3-compatible storage, resized, EXIF location removed.
-- **Done when:** a supplier can list, edit, and archive products with
-  tiers, MOQ, and images; every rule has a test.
+### 2c — Booking and the counter
+- Online booking for senders: items by size, contents and declared value
+  (required by Haitian customs), prohibited items enforced, optional
+  insurance, recipient (phone, city, neighbourhood, landmarks, map pin),
+  drop-off or truck pickup, door delivery or warehouse pickup in Haiti.
+- Counter mode for staff: the same booking in a few taps for walk-ins.
+- Price snapshot on the booking; invoice issued; payment recorded —
+  online (mock until cleared) or at the counter (cash or card terminal,
+  recorded by staff).
+- Each piece gets a tracking number and a printable barcode label.
+- **Done when:** both booking paths produce a priced, invoiced, labelled
+  booking, and the invoice posts a balanced ledger entry.
 
-### 2d — Buyers find suppliers
-- Buyer business accounts: company, country, buyer type (importer,
-  distributor, grocer, restaurant, roaster, gallery, retailer, individual),
-  website; light verification.
-- Search and browse: by category, certification, verification level,
-  MOQ, region. Postgres full-text search first.
-- Supplier page and product page: badges, capacity, MOQ, price tiers in
-  USD with an "approximately CA$ / €" estimate, terms, samples, share
-  buttons (copy, WhatsApp, QR), link previews (Open Graph).
-- **Done when:** a buyer abroad on a phone can find a product by search
-  and see everything needed to decide whether to inquire.
+### 2d — Warehouses and loads
+- Scan in at Montréal/Miami: actual weight, photos, condition; weight
+  over the booked size triggers an extra-charge invoice.
+- Consolidations: shared container (LCL), full container (FCL), or air
+  load; cut-off date; container and seal numbers; manifest export for
+  the carrier and Haitian customs.
+- Milestones per load: closed, departed, arrived, customs released.
+- Scan in at Port-au-Prince / Cap-Haïtien; mismatches flagged.
+- **Done when:** a load's manifest matches every scanned piece, and every
+  piece's location is known at all times.
 
-### 2e — Inquiries, RFQs, quotes, deals (the core flow)
-Migration 0005:
-- `conversations` + `messages` — buyer ↔ supplier, optionally tied to a
-  product; attachments; read state. Email (and WhatsApp link)
-  notifications on new messages.
-- `rfqs` — buyer, product description, category, quantity + unit,
-  destination country, target price (optional), deadline, status
-  (open/closed/awarded). Visible to suppliers in matching categories.
-- `quotes` — supplier → RFQ or conversation: unit price, quantity,
-  currency, lead time, valid until, notes. Suppliers quote **at the
-  company's warehouse in Haiti**, plus `freight_payer` (buyer, supplier,
-  or split — negotiated per deal) and the matching Incoterm; the buyer
-  also sees a freight estimate to their city (from the Phase 3 rate
-  tables, or "freight quote to follow" until they exist); status (sent,
-  accepted, declined, expired). Immutable once sent; a revision is a new
-  quote.
-- `deals` — created when a buyer accepts a quote: snapshot of the quote,
-  buyer, supplier, `settlement = 'off_platform'`, and a **shipment
-  request** for the logistics team (destination, quantity, weight,
-  volume). No ledger entries (no
-  money through the platform); Phase 3's protected payment adds
-  `settlement = 'platform'` and posts to the ledger.
-- Admin funnel view; spam and abuse reporting on messages.
-- **Done when:** inquiry → RFQ → quote → accepted deal works end to end,
-  with notifications, and the admin funnel counts it.
+### 2e — Final mile and drivers
+- Routes: delivery stops grouped by zone, assigned to an employee driver
+  or a contractor at a fixed route price; paused zones are excluded.
+- Driver phone view: stop list with directions and landmarks; proof of
+  delivery (photo, signature or recipient code, time and GPS).
+- Warehouse pickup: release against a one-time code sent to the recipient
+  plus ID check, logged.
+- Truck pickups abroad use the same routes and driver view.
+- Contractor pay: completed routes accrue to `contractor_payable`;
+  batch payouts by bank transfer, MonCash (mock), or cash with a signed
+  receipt photo.
+- **Done when:** a contractor can run a route on a phone and see what
+  they are owed, and a payout batch balances on the ledger.
 
-## Rules carried forward
-- Tenant isolation on every supplier-owned query, with tests that try
-  to cross it.
-- Audit log on every verification decision and suspension.
-- No money moves in Phase 2. `LIVE_PAYMENTS_ENABLED` stays false.
-- Quantities and prices are integers; never floats.
-- Native review of French and Creole before launch.
+### 2f — Tracking and notifications
+- Public tracking page per tracking number (EN/FR/HT), no login.
+- Notifications to sender and recipient at booking, departure, arrival,
+  out for delivery, delivered: SMS and WhatsApp, Creole by default for
+  recipients in Haiti.
+- **Done when:** a shipment's full journey sends the right messages to
+  the right people in the right language.
+
+## Ledger additions (new migration)
+Accounts: `shipping_revenue`, `accounts_receivable` (invoiced, unpaid),
+`cash_on_hand` (counter and driver cash), `customer_deposits` (paid
+before delivery, if counsel prefers revenue on delivery),
+`contractor_payable`, `carrier_costs`. Postings for: booking invoice,
+payment received (online / counter / cash), extra-weight charge, refund,
+route completed, contractor payout, carrier bill. Same rules as today:
+balanced groups, append-only, integers.
+
+## Needed from the founder
+- **The price list:** sizes and prices per route (2b can't finish
+  without it).
+- **Prohibited and restricted items** you already enforce.
+- **Messaging account** for SMS/WhatsApp (e.g. Twilio or the WhatsApp
+  Business platform) — an account and a cost, needed for 2f.
+- **Counsel:** the company charging for its own shipping service is the
+  first candidate for live payments.
 
 ## Not in Phase 2
-Protected payments / escrow and retail checkout (Phase 3+, legal first);
-supplier memberships and paid placement (revenue mix is a founder
-decision); logistics and export services (Phase 5); reviews and ratings
-(need completed deals); machine translation of messages; MFA (Phase 7).
-
-## Risks to watch
-- **Supply depth:** Haiti's export volumes are small. Honest capacity
-  numbers matter more than catalogue size; overselling ruins trust.
-- **Verification cost:** site visits need people in Haiti. Partner with
-  cooperatives, chambers of commerce, or field agents.
-- **Spam and fraud** in messages and RFQs — rate limits, buyer
-  verification, reporting from day one.
-- **Connectivity:** suppliers upload on slow mobile data; uploads must be
-  retryable and pages light.
-- **Off-platform leakage:** once buyer and supplier meet, they may deal
-  directly. Protected payments and export services are what keep them
-  on the platform later.
+The sourcing marketplace and trade freight Haiti → abroad (Phase 3);
+payments for goods (Phase 4); supplier payouts (Phase 5); customer
+mobile apps (the web works on phones); route optimisation (zones and
+manual grouping first).

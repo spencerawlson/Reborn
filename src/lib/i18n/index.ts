@@ -19,6 +19,7 @@ const en = {
   navShops: "Shops",
   navAdmin: "Admin",
   navProducer: "Producer",
+  navShipping: "Ship to Haiti",
   adminTitle: "Administrator dashboard",
   adminSubtitle: "The whole business, in one place",
   statTotalSales: "Total sales",
@@ -33,7 +34,7 @@ const en = {
   balancePaid: "Paid",
   mockNotice: "Demo data — connected to real figures in a later phase.",
   producerCardBody:
-    "Verified supplier profiles, wholesale listings, inquiries and quotes — coming in Phase 2.",
+    "Boxes and barrels from Montréal and Miami to anywhere in Haiti — door to door or warehouse pickup. Coming in Phase 2.",
   foundationNotice:
     "Foundation build (Phase 1). Payments, bank transfers, and MonCash payouts are mock only until banking partners and legal advisers confirm the structure is permitted.",
 };
@@ -47,6 +48,7 @@ const fr: Dictionary = {
   navShops: "Boutiques",
   navAdmin: "Admin",
   navProducer: "Producteur",
+  navShipping: "Expédier en Haïti",
   adminTitle: "Tableau de bord administrateur",
   adminSubtitle: "Toute l'entreprise, en un seul endroit",
   statTotalSales: "Ventes totales",
@@ -61,7 +63,7 @@ const fr: Dictionary = {
   balancePaid: "Payé",
   mockNotice: "Données de démonstration — chiffres réels dans une phase ultérieure.",
   producerCardBody:
-    "Profils de fournisseurs vérifiés, offres en gros, demandes et devis — en phase 2.",
+    "Boîtes et barils de Montréal et Miami partout en Haïti — livraison à domicile ou retrait en entrepôt. En phase 2.",
   foundationNotice:
     "Version de base (phase 1). Les paiements, virements bancaires et versements MonCash sont simulés jusqu'à ce que nos partenaires bancaires et conseillers juridiques confirment que la structure est autorisée.",
 };
@@ -73,6 +75,7 @@ const ht: Dictionary = {
   navShops: "Boutik",
   navAdmin: "Admin",
   navProducer: "Pwodiktè",
+  navShipping: "Voye bay Ayiti",
   adminTitle: "Tablo kontwòl administratè",
   adminSubtitle: "Tout biznis la, nan yon sèl kote",
   statTotalSales: "Vant total",
@@ -87,7 +90,7 @@ const ht: Dictionary = {
   balancePaid: "Peye",
   mockNotice: "Done demonstrasyon — chif reyèl nan yon faz pita.",
   producerCardBody:
-    "Pwofil founisè verifye, pwodwi an gwo, demann ak pri — ap vini nan faz 2.",
+    "Bwat ak barik soti Monreyal ak Miyami pou tout kote an Ayiti — livrezon lakay oswa pran nan depo. Ap vini nan faz 2.",
   foundationNotice:
     "Vèsyon fondasyon (faz 1). Peman, transfè labank ak peman MonCash yo se similasyon sèlman jiskaske patnè labank ak konseye jiridik yo konfime estrikti a pèmèt.",
 };

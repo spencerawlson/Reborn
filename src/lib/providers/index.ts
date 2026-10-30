@@ -87,7 +87,7 @@ export const mockMoncashProvider: PayoutProvider = {
     return {
       providerRef: mockRef("moncash", input.idempotencyKey),
       status: "completed",
-      proofUrl: undefined, // Real proofs attach in Phase 4.
+      proofUrl: undefined, // Real proofs attach with supplier payouts.
     };
   },
 };
