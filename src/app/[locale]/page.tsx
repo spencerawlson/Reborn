@@ -145,8 +145,8 @@ export default async function Home({
 
         {/* Network */}
         <section className="bg-white">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:py-28">
-            <div>
+          <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 lg:py-28">
+            <div className="max-w-2xl">
               <h2 className="text-3xl font-semibold tracking-[-0.02em] text-navy-900 sm:text-4xl">{t(locale, "networkTitle")}</h2>
               <p className="mt-4 text-lg leading-relaxed text-slate-600">{t(locale, "networkBody")}</p>
               <p className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-red-600">

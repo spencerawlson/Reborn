@@ -1,73 +1,138 @@
 import { t, type Locale } from "@/lib/i18n/index";
+import { HAITI_MAP, MAIN_MAP } from "./map-data";
 
 /**
- * Vector network map: Montréal and Miami warehouses linked to Port-au-
- * Prince and Cap-Haïtien by animated dashed routes (CSS .route-flow).
- * Positions follow real longitude/latitude roughly (Haiti nudged apart
- * so labels don't collide); it is a diagram, not a survey map.
+ * "Our network" map — real geography (Natural Earth, public domain),
+ * pre-projected to SVG by scripts/build-map.mts:
+ * - left: eastern North America to Hispaniola, warehouses at their true
+ *   positions, animated air & sea routes (CSS .route-flow);
+ * - right: Haiti's 10 departments with their real borders, all served
+ *   door to door.
  */
-const NODES = [
-  { id: "yul", name: "Montréal", x: 420, y: 46, anchor: "start" as const, dx: 14, dy: 5 },
-  { id: "mia", name: "Miami", x: 120, y: 236, anchor: "end" as const, dx: -14, dy: 5 },
-  { id: "cap", name: "Cap-Haïtien", x: 482, y: 280, anchor: "start" as const, dx: 14, dy: 5 },
-  { id: "pap", name: "Port-au-Prince", x: 462, y: 330, anchor: "start" as const, dx: 14, dy: 5 },
-];
+type City = { id: string; name: string; x: number; y: number };
 
-const ROUTES = [
-  "M420 46 C 560 120, 540 220, 482 280",
-  "M420 46 C 330 170, 380 290, 462 330",
-  "M120 236 C 230 200, 380 220, 482 280",
-  "M120 236 C 220 300, 360 340, 462 330",
-];
+const byId = (cities: readonly City[], id: string) => cities.find((c) => c.id === id)!;
+
+/** Curved route between two points, bowed to the right of travel. */
+function arc(a: City, b: City, bend: number) {
+  const mx = (a.x + b.x) / 2;
+  const my = (a.y + b.y) / 2;
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  return `M${a.x} ${a.y} Q${mx - dy * bend} ${my + dx * bend} ${b.x} ${b.y}`;
+}
+
+// Haiti labels sit to the left (over the sea) so they never cover the Dominican Republic.
+const LABEL_SIDE: Record<string, "start" | "end"> = { yul: "start", mia: "end", cap: "end", pap: "end" };
+
+// Department label nudges where the centroid collides with a city dot.
+const LABEL_NUDGE: Record<string, [number, number]> = { "HT-OU": [4, 13] };
 
 export function RouteMap({ locale }: { locale: Locale }) {
+  const c = MAIN_MAP.cities;
+  const routes = [
+    arc(byId(c, "yul"), byId(c, "cap"), -0.22),
+    arc(byId(c, "yul"), byId(c, "pap"), -0.3),
+    arc(byId(c, "mia"), byId(c, "cap"), 0.18),
+    arc(byId(c, "mia"), byId(c, "pap"), 0.28),
+  ];
+
   return (
-    <figure className="relative">
-      <svg viewBox="0 0 640 380" className="h-auto w-full" role="img" aria-label={t(locale, "networkTitle")}>
-        <defs>
-          <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.2" fill="#cbd5e1" />
-          </pattern>
-          <radialGradient id="fade" cx="50%" cy="50%" r="60%">
-            <stop offset="0%" stopColor="#fff" stopOpacity="0" />
-            <stop offset="100%" stopColor="#fff" stopOpacity="1" />
-          </radialGradient>
-        </defs>
-        <rect width="640" height="380" fill="url(#dots)" />
-        <rect width="640" height="380" fill="url(#fade)" />
+    <figure className="grid gap-5 lg:grid-cols-[1fr_1.05fr]">
+      {/* Main map */}
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-[#dbe8f7]">
+        <svg
+          viewBox={`0 0 ${MAIN_MAP.width} ${MAIN_MAP.height}`}
+          className="h-auto w-full"
+          role="img"
+          aria-label={`${t(locale, "networkTitle")}: Montréal, Miami → Cap-Haïtien, Port-au-Prince`}
+        >
+          {MAIN_MAP.land.map((country) => (
+            <path
+              key={country.name}
+              d={country.d}
+              fill={country.haiti ? "#1d4ed8" : "#ffffff"}
+              stroke={country.haiti ? "#1d4ed8" : "#9fb0c8"}
+              strokeWidth="0.7"
+              strokeLinejoin="round"
+            />
+          ))}
 
-        {ROUTES.map((d) => (
-          <g key={d}>
-            <path d={d} fill="none" stroke="#bfdbfe" strokeWidth="3" strokeLinecap="round" />
-            <path d={d} fill="none" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" className="route-flow" />
-          </g>
-        ))}
+          {routes.map((d) => (
+            <g key={d}>
+              <path d={d} fill="none" stroke="#bfdbfe" strokeWidth="3" strokeLinecap="round" />
+              <path d={d} fill="none" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round" className="route-flow" />
+            </g>
+          ))}
 
-        {NODES.map((n) => (
-          <g key={n.id}>
-            <circle cx={n.x} cy={n.y} r="14" fill="#1d4ed8" opacity="0.12" className="node-pulse" />
-            <circle cx={n.x} cy={n.y} r="6.5" fill="#fff" stroke="#0b1b3f" strokeWidth="3" />
-            <text
-              x={n.x + n.dx}
-              y={n.y + n.dy}
-              textAnchor={n.anchor}
-              className="fill-slate-900"
-              style={{ font: "600 15px var(--font-inter), system-ui, sans-serif" }}
+          {c.map((city) => {
+            const side = LABEL_SIDE[city.id];
+            const nudgeY = city.id === "cap" ? -7 : city.id === "pap" ? 14 : 4;
+            return (
+              <g key={city.id}>
+                <circle cx={city.x} cy={city.y} r="11" fill="#1d4ed8" opacity="0.15" className="node-pulse" />
+                <circle cx={city.x} cy={city.y} r="4.5" fill="#fff" stroke="#0b1b3f" strokeWidth="2.5" />
+                <text
+                  x={city.x + (side === "start" ? 10 : -10)}
+                  y={city.y + nudgeY}
+                  textAnchor={side}
+                  className="fill-slate-900"
+                  style={{ font: "600 14px var(--font-inter), system-ui, sans-serif", paintOrder: "stroke", stroke: "#ffffff", strokeWidth: 4 }}
+                >
+                  {city.name}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* Haiti, department by department */}
+      <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5">
+        <p className="text-sm text-slate-500">
+          <span className="font-semibold text-blue-700">{t(locale, "kpi2Value")}</span> {t(locale, "kpi2Label")}
+        </p>
+        <svg viewBox={`0 0 ${HAITI_MAP.width} ${HAITI_MAP.height}`} className="mt-3 h-auto w-full" role="img" aria-label={t(locale, "kpi2Label")}>
+          {HAITI_MAP.departments.map((dept) => (
+            <path
+              key={dept.iso}
+              d={dept.d}
+              className="fill-blue-100 transition-colors hover:fill-blue-200"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
             >
-              {n.name}
+              <title>{dept.name}</title>
+            </path>
+          ))}
+          {HAITI_MAP.departments.map((dept) => (
+            <text
+              key={`${dept.iso}-label`}
+              x={dept.cx + (LABEL_NUDGE[dept.iso]?.[0] ?? 0)}
+              y={dept.cy + (LABEL_NUDGE[dept.iso]?.[1] ?? 0)}
+              textAnchor="middle"
+              className="pointer-events-none fill-navy-800"
+              style={{ font: "600 9px var(--font-inter), system-ui, sans-serif" }}
+            >
+              {dept.name}
             </text>
-          </g>
-        ))}
-      </svg>
-      <figcaption className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
-        <span className="inline-flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full border-[3px] border-navy-900 bg-white" /> {t(locale, "legendWarehouse")}
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="h-0.5 w-6 bg-[repeating-linear-gradient(90deg,#1d4ed8_0_5px,transparent_5px_9px)]" />{" "}
-          {t(locale, "legendRoute")}
-        </span>
-      </figcaption>
+          ))}
+          {HAITI_MAP.cities.map((city) => (
+            <g key={city.id}>
+              <circle cx={city.x} cy={city.y} r="4" fill="#fff" stroke="#0b1b3f" strokeWidth="2" />
+            </g>
+          ))}
+        </svg>
+        <figcaption className="mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm text-slate-500">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full border-[3px] border-navy-900 bg-white" /> {t(locale, "legendWarehouse")}
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-0.5 w-6 bg-[repeating-linear-gradient(90deg,#1d4ed8_0_5px,transparent_5px_9px)]" />{" "}
+            {t(locale, "legendRoute")}
+          </span>
+        </figcaption>
+      </div>
     </figure>
   );
 }

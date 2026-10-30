@@ -8,14 +8,20 @@
   "description": "ShipItAyiti — shipping to and from Haiti (diaspora boxes and barrels, Amazon forwarding, trade freight) plus a B2B sourcing marketplace. MOCK payments only until banking/legal approval.",
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.13",
+    "@types/d3-geo": "^3.1.1",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@types/topojson-client": "^3.1.5",
     "autoprefixer": "^10.4.0",
+    "d3-geo": "^3.1.1",
     "postcss": "^8.5.32",
     "tailwindcss": "^3.4.0",
+    "topojson-client": "^3.1.0",
     "typescript": "^5.6.0",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "world-atlas": "^2.0.2"
   },
   "name": "shipitayiti",
   "private": true,
@@ -25,7 +31,8 @@
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "node scripts/migrate.mts"
+    "db:migrate": "node scripts/migrate.mts",
+    "build:map": "node scripts/build-map.mts"
   },
   "version": "0.1.0",
   "overrides": {
