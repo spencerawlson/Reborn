@@ -44,6 +44,8 @@ otherwise `/admin` returns 404.
 ## Docs
 - `docs/PLAN.md` — phases, business rules, module map
 - `docs/ARCHITECTURE.md` — database architecture and balance derivation
+- `docs/VISION.md` — product vision: diaspora buyers, producer-led storefronts
+- `docs/PHASE2.md` — Phase 2 plan (storefronts + catalogue)
 
 ## Next: Phase 2
 Producer registration, free storefronts, products, images, inventory —

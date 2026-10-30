@@ -31,7 +31,8 @@ app, PostgreSQL, Tailwind. No microservices until scale demands them.
   providers, admin dashboard shell. Done when tests + typecheck pass.
 - **Phase 2 — Storefronts + catalog.** Producer registration, free
   storefronts, products, images, inventory. Done when a producer can publish
-  a storefront and a customer can browse it.
+  a storefront and a customer can browse it. Detailed plan, shaped by the
+  diaspora/wholesale vision (`docs/VISION.md`): `docs/PHASE2.md`.
 - **Phase 3 — Cart + checkout (sandbox).** Cart, checkout via the mock
   payment provider, order creation, commission posting at sale time.
   Done when a sandbox checkout produces a balanced ledger entry.

@@ -1,7 +1,8 @@
 # Product vision — diaspora buyers, producer storefronts, bulk and retail
 
 This document records the founder's product direction (October 30, 2026).
-It lives on a branch, not main, until the direction is approved to merge.
+Approved and merged to main on October 30, 2026. Phase 2 is planned
+around it in `docs/PHASE2.md`.
 
 ## Who buys
 Haitians living abroad — Canada, France, the United States, and worldwide
