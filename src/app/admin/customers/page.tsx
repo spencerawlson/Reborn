@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AdminHeader } from "@/components/AdminHeader";
 import { HAITI_MAP } from "@/components/map-data";
 import { listCustomers } from "@/lib/admin/customers";
-import { requireAdmin } from "@/lib/auth/admin";
+import { requireStaff } from "@/lib/auth/admin";
 import { getDb } from "@/lib/db/index";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ const deptName = (iso: string | null) => HAITI_MAP.departments.find((d) => d.iso
 
 /** Admin: every customer with their Haiti address (for packaging and delivery). */
 export default async function CustomersPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const session = await requireAdmin("/admin/customers");
+  const session = await requireStaff("/admin/customers");
   const { q = "" } = await searchParams;
   const customers = await listCustomers(await getDb(), q);
 

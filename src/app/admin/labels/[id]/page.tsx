@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/PrintButton";
 import { getPackageLabel } from "@/lib/admin/customers";
-import { requireAdmin } from "@/lib/auth/admin";
+import { requireStaff } from "@/lib/auth/admin";
 import { getDb } from "@/lib/db/index";
 import { formatMoney } from "@/lib/money/index";
 import { code128Svg, qrSvg } from "@/lib/shipping/barcode";
@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
  */
 export default async function LabelPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await requireAdmin(`/admin/labels/${id}`);
+  await requireStaff(`/admin/labels/${id}`);
   const db = await getDb();
   const label = await getPackageLabel(db, id);
   if (!label) notFound();
@@ -119,7 +119,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
   );
 }
 
-const WAREHOUSE_NAME_ABROAD = { MIA: "Miami", YUL: "Montréal" } as const;
+const WAREHOUSE_NAME_ABROAD = { MIA: "Miami", YUL: "Montreal" } as const;
 
 /** Empty tick box drawn with CSS (no glyphs — vector-only rule). */
 function Box() {

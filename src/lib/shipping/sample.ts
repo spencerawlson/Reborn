@@ -6,7 +6,7 @@
 import type { DictionaryKey } from "../i18n/index";
 
 export const ORIGINS = [
-  { code: "YUL", city: "Montréal" },
+  { code: "YUL", city: "Montreal" },
   { code: "MIA", city: "Miami" },
 ] as const;
 

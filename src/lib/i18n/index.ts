@@ -30,7 +30,7 @@ const en = {
 
   heroTitle: "The reliable way to ship to Haiti.",
   heroBody:
-    "Boxes, barrels, Amazon orders and freight — from Montréal and Miami to every town in Haiti. Our own trucks and warehouses, tracked at every step.",
+    "Boxes, barrels, Amazon orders and freight — from Montreal and Miami to every town in Haiti. Our own trucks and warehouses, tracked at every step.",
 
   kpi1Value: "3",
   kpi1Label: "countries, one network",
@@ -41,9 +41,9 @@ const en = {
 
   servicesTitle: "One network, three ways to move what matters.",
   svc1Title: "Boxes & barrels",
-  svc1Body: "Send to family anywhere in Haiti. Drop off in Montréal or Miami, or we pick up.",
+  svc1Body: "Send to family anywhere in Haiti. Drop off in Montreal or Miami, or we pick up.",
   svc2Title: "Shop & ship",
-  svc2Body: "Shop on Amazon with your personal Miami or Montréal address. We bring it home to Haiti.",
+  svc2Body: "Shop on Amazon with your personal Miami or Montreal address. We bring it home to Haiti.",
   svc3Title: "Freight & sourcing",
   svc3Body: "Haitian coffee, cacao, rum, oils and art for businesses abroad — sourced and shipped by us.",
   svcCta: "Get a price",
@@ -52,7 +52,7 @@ const en = {
   how1Title: "Book online",
   how1Body: "Get your price in seconds and book in a few taps.",
   how2Title: "Drop off or pickup",
-  how2Body: "Bring it to our Montréal or Miami warehouse, or our truck collects it.",
+  how2Body: "Bring it to our Montreal or Miami warehouse, or our truck collects it.",
   how3Title: "Scanned and shipped",
   how3Body: "Weighed, photographed and loaded on our next sailing or flight.",
   how4Title: "Delivered in Haiti",
@@ -60,7 +60,7 @@ const en = {
 
   networkTitle: "Our network",
   networkBody:
-    "Warehouses in Montréal, Miami and Haiti, linked by air and sea — then our own trucks to every department.",
+    "Warehouses in Montreal, Miami and Haiti, linked by air and sea — then our own trucks to every department.",
   networkNext: "Paris and more destinations next.",
   legendWarehouse: "Warehouse",
   legendRoute: "Air & sea route",
@@ -78,7 +78,7 @@ const en = {
   doorSuspended: "Door delivery suspended",
   kpi2LabelLocked: "departments of Haiti — warehouse pickup for now",
   signupTitle: "Create your account",
-  signupBody: "Get your personal Miami and Montréal address and follow every shipment.",
+  signupBody: "Get your personal Miami and Montreal address and follow every shipment.",
   fieldName: "Full name",
   fieldEmail: "Email",
   fieldPhone: "Phone (WhatsApp)",
@@ -104,6 +104,9 @@ const en = {
   errPassword: "Password must be at least 10 characters.",
   errEmailTaken: "An account already exists with this email.",
   errCredentials: "Email or password is incorrect.",
+  errInviteInvalid: "This invitation link is invalid, expired, or already used. Ask an admin for a new one.",
+  errInviteEmail: "Use the email address the invitation was sent to.",
+  errInviteRequired: "Staff accounts need an invitation from an admin.",
   errTooMany: "Too many attempts. Please wait a few minutes.",
   accountWelcome: "Welcome",
   accountAddressesTitle: "Your personal addresses",
@@ -206,7 +209,7 @@ const en = {
   zoneRemote: "Rural and remote areas",
 
   shopTitle: "Shop on Amazon, receive in Haiti",
-  shopStep1: "Sign up and register your address in Haiti — you get a free personal address in Miami and Montréal.",
+  shopStep1: "Sign up and register your address in Haiti — you get a free personal address in Miami and Montreal.",
   shopStep2: "Shop on Amazon or any store and ship to that address.",
   shopStep3: "We bring it to Haiti. Pay by MonCash or cash at our warehouse.",
   shopAddressLabel: "Your address (example)",
@@ -221,7 +224,7 @@ const en = {
   trackRecipient: "Recipient",
   trackRoute: "Route",
   trackStatusBooked: "Booked",
-  trackStatusReceived: "Received at our Montréal warehouse",
+  trackStatusReceived: "Received at our Montreal warehouse",
   trackStatusDeparted: "Departed by sea",
   trackStatusArrived: "Arrived in Port-au-Prince",
   trackStatusCustoms: "Cleared customs",
@@ -334,6 +337,9 @@ const fr: Dictionary = {
   errPassword: "Le mot de passe doit contenir au moins 10 caractères.",
   errEmailTaken: "Un compte existe déjà avec ce courriel.",
   errCredentials: "Courriel ou mot de passe incorrect.",
+  errInviteInvalid: "Ce lien d'invitation est invalide, expiré ou déjà utilisé. Demandez-en un nouveau à un administrateur.",
+  errInviteEmail: "Utilisez l'adresse courriel à laquelle l'invitation a été envoyée.",
+  errInviteRequired: "Les comptes du personnel nécessitent une invitation d'un administrateur.",
   errTooMany: "Trop de tentatives. Veuillez patienter quelques minutes.",
   accountWelcome: "Bienvenue",
   accountAddressesTitle: "Vos adresses personnelles",
@@ -488,7 +494,7 @@ const ht: Dictionary = {
 
   heroTitle: "Fason ki serye pou voye bay Ayiti.",
   heroBody:
-    "Bwat, barik, kòmann Amazon ak machandiz — soti Monreyal ak Miyami pou tout vil an Ayiti. Pwòp kamyon ak depo pa nou, swiv nan chak etap.",
+    "Bwat, barik, kòmann Amazon ak machandiz — soti Montreal ak Miami pou tout vil an Ayiti. Pwòp kamyon ak depo pa nou, swiv nan chak etap.",
 
   kpi1Value: "3",
   kpi1Label: "peyi, yon sèl rezo",
@@ -499,9 +505,9 @@ const ht: Dictionary = {
 
   servicesTitle: "Yon sèl rezo, twa fason pou deplase sa ki konte.",
   svc1Title: "Bwat ak barik",
-  svc1Body: "Voye bay fanmi w nenpòt kote an Ayiti. Depoze l Monreyal oswa Miyami, oswa nou vin chèche l.",
+  svc1Body: "Voye bay fanmi w nenpòt kote an Ayiti. Depoze l Montreal oswa Miami, oswa nou vin chèche l.",
   svc2Title: "Achte epi voye",
-  svc2Body: "Achte sou Amazon ak adrès pèsonèl ou Miyami oswa Monreyal. Nou pote l lakay an Ayiti.",
+  svc2Body: "Achte sou Amazon ak adrès pèsonèl ou Miami oswa Montreal. Nou pote l lakay an Ayiti.",
   svc3Title: "Machandiz ak founisè",
   svc3Body: "Kafe, kakawo, wonm, lwil ak atizay ayisyen pou biznis lòt bò dlo — nou jwenn yo epi nou voye yo.",
   svcCta: "Wè pri a",
@@ -510,15 +516,15 @@ const ht: Dictionary = {
   how1Title: "Rezève sou entènèt",
   how1Body: "Jwenn pri a nan kèk segonn epi rezève fasil.",
   how2Title: "Depoze oswa nou vin chèche",
-  how2Body: "Pote l nan depo nou Monreyal oswa Miyami, oswa kamyon nou vin chèche l.",
+  how2Body: "Pote'l nan depo nou Montreal oswa Miami, oswa kamyon nou vin chèche'l.",
   how3Title: "Eskane epi voye",
-  how3Body: "Nou peze l, fè foto l epi chaje l nan pwochen depa bato oswa avyon.",
+  how3Body: "Nou peze'l, fè foto'l epi chaje'l nan pwochen depa bato oswa avyon.",
   how4Title: "Livre an Ayiti",
   how4Body: "Lakay moun nan nenpòt kote an Ayiti, oswa pran l nan depo nou — ak nouvèl sou WhatsApp.",
 
   networkTitle: "Rezo nou",
   networkBody:
-    "Depo Monreyal, Miyami ak Ayiti, konekte pa avyon ak bato — epi pwòp kamyon nou rive nan tout depatman.",
+    "Depo Montreal, Miami ak Ayiti, konekte pa avyon ak bato — epi pwòp kamyon nou rive nan tout depatman.",
   networkNext: "Pari ak lòt destinasyon apre.",
   legendWarehouse: "Depo",
   legendRoute: "Wout avyon ak bato",
@@ -536,7 +542,7 @@ const ht: Dictionary = {
   doorSuspended: "Livrezon lakay sispann",
   kpi2LabelLocked: "depatman Ayiti — pran l nan depo pou kounye a",
   signupTitle: "Kreye kont ou",
-  signupBody: "Jwenn adrès pèsonèl ou Miyami ak Monreyal epi swiv chak anvwa.",
+  signupBody: "Jwenn adrès pèsonèl ou Miami ak Montreal epi swiv chak anvwa.",
   fieldName: "Non konplè",
   fieldEmail: "Imèl",
   fieldPhone: "Telefòn (WhatsApp)",
@@ -562,6 +568,9 @@ const ht: Dictionary = {
   errPassword: "Modpas la dwe gen omwen 10 karaktè.",
   errEmailTaken: "Gen yon kont ki egziste deja ak imèl sa a.",
   errCredentials: "Imèl oswa modpas la pa bon.",
+  errInviteInvalid: "Lyen envitasyon sa a pa bon, li ekspire oswa yo deja sèvi avè l. Mande yon administratè yon lòt.",
+  errInviteEmail: "Sèvi ak imèl envitasyon an te voye ba li a.",
+  errInviteRequired: "Kont anplwaye bezwen yon envitasyon yon administratè.",
   errTooMany: "Twòp esè. Tanpri tann kèk minit.",
   accountWelcome: "Byenveni",
   accountAddressesTitle: "Adrès pèsonèl ou",
@@ -664,7 +673,7 @@ const ht: Dictionary = {
   zoneRemote: "Zòn andeyò ak zòn ki lwen",
 
   shopTitle: "Achte sou Amazon, resevwa an Ayiti",
-  shopStep1: "Enskri epi anrejistre adrès ou an Ayiti — w ap jwenn yon adrès pèsonèl gratis Miyami ak Monreyal.",
+  shopStep1: "Enskri epi anrejistre adrès ou an Ayiti — w ap jwenn yon adrès pèsonèl gratis Miami ak Montreal.",
   shopStep2: "Achte sou Amazon oswa nenpòt magazen epi fè yo voye l nan adrès sa a.",
   shopStep3: "Nou pote l an Ayiti. Peye ak MonCash oswa kach nan depo nou.",
   shopAddressLabel: "Adrès ou (egzanp)",
@@ -679,7 +688,7 @@ const ht: Dictionary = {
   trackRecipient: "Moun k ap resevwa",
   trackRoute: "Wout",
   trackStatusBooked: "Rezève",
-  trackStatusReceived: "Resevwa nan depo nou Monreyal",
+  trackStatusReceived: "Resevwa nan depo nou Montreal",
   trackStatusDeparted: "Pati pa bato",
   trackStatusArrived: "Rive Pòtoprens",
   trackStatusCustoms: "Pase ladwàn",
@@ -723,4 +732,14 @@ export function detectLocale(acceptLanguage: string | null, saved: string | null
     if (isLocale(tag)) return tag;
   }
   return "en";
+}
+
+/** City names stay the same in every language, except French writes "Montréal". */
+export function montreal(locale: Locale): string {
+  return locale === "fr" ? "Montréal" : "Montreal";
+}
+
+/** Display name of an abroad warehouse city. */
+export function warehouseCity(locale: Locale, code: "MIA" | "YUL"): string {
+  return code === "MIA" ? "Miami" : montreal(locale);
 }

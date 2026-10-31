@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { t, type Locale } from "@/lib/i18n/index";
+import { montreal, t, type Locale } from "@/lib/i18n/index";
 import { formatMoney } from "@/lib/money/index";
 import {
   DESTINATIONS,
@@ -142,7 +142,7 @@ export function PriceEstimator({
             <div>
               <label className={label} htmlFor="origin">{t(locale, "estimateFrom")}</label>
               <select id="origin" className={field} value={origin} onChange={(e) => setOrigin(e.target.value as OriginCode)}>
-                {ORIGINS.map((o) => <option key={o.code} value={o.code}>{o.city}</option>)}
+                {ORIGINS.map((o) => <option key={o.code} value={o.code}>{o.code === "YUL" ? montreal(locale) : o.city}</option>)}
               </select>
             </div>
             <div>

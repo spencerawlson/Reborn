@@ -11,7 +11,7 @@ import { PriceEstimator } from "@/components/PriceEstimator";
 import { RouteMap } from "@/components/RouteMap";
 import { isDepartmentCode } from "@/lib/shipping/departments";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
-import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
+import { isLocale, montreal, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 import { isEstimatorTab } from "@/lib/shipping/tabs";
 import { getDb } from "@/lib/db/index";
 import { getDoorDelivery } from "@/lib/settings/index";
@@ -79,7 +79,7 @@ export default async function Home({
           <div className="relative mx-auto max-w-6xl px-5 pt-12 sm:pt-20">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-blue-100">
               <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-              Montréal · Miami → {t(locale, "haiti")}
+              {montreal(locale)} · Miami → {t(locale, "haiti")}
             </p>
             <h1 className="mt-6 max-w-3xl text-[2.6rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
               {t(locale, "heroTitle")}

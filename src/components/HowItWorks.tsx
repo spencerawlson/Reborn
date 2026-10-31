@@ -15,8 +15,9 @@ export interface Step {
   body: string;
 }
 
-const STOP_MS = 2600; // time at each step, including the drive
+const DWELL_MS = 8000; // the truck stays at least 8 s at each arrival
 const DRIVE_MS = 1200; // drive between steps (focus lands on arrival)
+const STOP_MS = DRIVE_MS + DWELL_MS; // full cycle per step: drive, then dwell
 
 export function HowItWorks({ steps }: { steps: Step[] }) {
   const [active, setActive] = useState(0);
@@ -55,7 +56,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
             opacity: resetting ? 0 : 1,
           }}
         >
-          <Truck className="h-auto w-full drop-shadow-[0_4px_6px_rgba(11,27,63,0.18)]" />
+          <Truck inverse className="h-auto w-full drop-shadow-[0_4px_6px_rgba(11,27,63,0.18)]" />
         </span>
       )}
 
@@ -81,8 +82,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
             >
               <Icon name={step.icon} size={22} />
             </span>
-            <p className="mt-5 text-xs font-semibold text-slate-400">0{i + 1}</p>
-            <h3 className="mt-1 font-semibold text-navy-900">{step.title}</h3>
+            <h3 className="mt-5 font-semibold text-navy-900">{step.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">{step.body}</p>
           </li>
         );

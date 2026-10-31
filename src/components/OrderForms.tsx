@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { prohibitedById } from "@/lib/shipping/prohibited";
 import { addOrderAction, setOtpAction, type OrderFormState } from "@/lib/orders/actions";
-import { t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
+import { montreal, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 
 const input =
   "w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20";
@@ -39,7 +39,7 @@ export function AddOrderForm({ locale }: { locale: Locale }) {
           <Label locale={locale} htmlFor="warehouse" k="fieldWarehouse" />
           <select id="warehouse" name="warehouse" defaultValue={v.warehouse ?? "MIA"} className={input}>
             <option value="MIA">Miami</option>
-            <option value="YUL">Montréal</option>
+            <option value="YUL">{montreal(locale)}</option>
           </select>
         </div>
         <div>

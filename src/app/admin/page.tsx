@@ -1,9 +1,7 @@
-import { notFound, redirect } from "next/navigation";
 import { AdminHeader } from "@/components/AdminHeader";
 import Link from "next/link";
 import { formatMoney } from "@/lib/money/index";
-import { hasRole } from "@/lib/auth/index";
-import { getSession } from "@/lib/auth/session";
+import { isAdmin, requireStaff } from "@/lib/auth/admin";
 import { getAdminStats } from "@/lib/admin/stats";
 import { getDb } from "@/lib/db/index";
 import { t } from "@/lib/i18n/index";
@@ -25,10 +23,9 @@ function Card({ label, value }: { label: string; value: string }) {
 }
 
 export default async function AdminPage() {
-  const session = await getSession();
-  if (!session) redirect("/en/signin?next=/admin");
-  // Signed in but not an admin: answer 404 so the route's existence is not advertised.
-  if (!hasRole(session, "admin")) notFound();
+  // Staff see operations (expected packages, labels); admins also see business settings and figures.
+  const session = await requireStaff("/admin");
+  const admin = isAdmin(session);
 
   const locale = "en" as const;
   const db = await getDb();
@@ -47,7 +44,8 @@ export default async function AdminPage() {
         <h1 className="text-3xl font-semibold tracking-tight text-navy-900">{t(locale, "adminTitle")}</h1>
         <p className="mt-1 text-slate-500">{t(locale, "adminSubtitle")}</p>
 
-        {/* Operations: door-to-door switch */}
+        {/* Operations: door-to-door switch (admin) */}
+        {admin && (<>
         <section
           className={`mt-8 rounded-3xl p-6 ring-1 ${door.locked ? "bg-amber-50 ring-amber-200" : "bg-white ring-slate-200"}`}
         >
@@ -102,6 +100,7 @@ export default async function AdminPage() {
           <p className="mt-1 max-w-2xl text-sm text-slate-600">{t(locale, "adminWarehouseBody")}</p>
           <WarehouseForm locale={locale} current={addresses} />
         </section>
+        </>)}
 
         {/* Warehouses: packages customers have declared, with delivery codes */}
         <section className="mt-8 rounded-3xl bg-white p-6 ring-1 ring-slate-200">
@@ -158,10 +157,10 @@ export default async function AdminPage() {
           )}
         </section>
 
-        {stats.mock && (
+        {admin && stats.mock && (
           <p className="mt-8 rounded-xl bg-slate-100 px-4 py-2 text-sm text-slate-600">{t(locale, "mockNotice")}</p>
         )}
-        <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {admin && <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Card label={t(locale, "statTotalSales")} value={formatMoney(stats.totalSalesMinor, stats.currency)} />
           <Card label={t(locale, "statCommission")} value={formatMoney(stats.commissionRevenueMinor, stats.currency)} />
           <Card label={t(locale, "statProducerOwed")} value={formatMoney(stats.producerOwedMinor, stats.currency)} />
@@ -171,7 +170,7 @@ export default async function AdminPage() {
           />
           <Card label={t(locale, "statActiveOrders")} value={String(stats.activeOrdersCount)} />
           <Card label={t(locale, "statProducers")} value={String(stats.producersCount)} />
-        </section>
+        </section>}
       </main>
     </div>
   );

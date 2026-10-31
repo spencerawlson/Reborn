@@ -132,12 +132,14 @@ export function FreightArt() {
 }
 
 /** Small delivery truck used on the "how it works" line and the CTA band. */
-export function Truck({ className = "", label = false }: { className?: string; label?: boolean }) {
+export function Truck({ className = "", label = false, inverse = false }: { className?: string; label?: boolean; inverse?: boolean }) {
+  // inverse: the cargo box is navy instead of white — used in "How it works".
+  const box = inverse ? NAVY : "#fff";
   return (
     <svg viewBox="0 0 120 56" className={className} aria-hidden>
-      <rect x="2" y="6" width="74" height="36" rx="4" fill="#fff" stroke={NAVY} strokeWidth="3" />
+      <rect x="2" y="6" width="74" height="36" rx="4" fill={box} stroke={NAVY} strokeWidth="3" />
       {label && (
-        <text x="39" y="29" textAnchor="middle" style={{ font: "800 10px var(--font-inter), system-ui, sans-serif" }} fill={NAVY}>
+        <text x="39" y="29" textAnchor="middle" style={{ font: "800 10px var(--font-inter), system-ui, sans-serif" }} fill={inverse ? "#fff" : NAVY}>
           ShipIt<tspan fill={RED}>Ayiti</tspan>
         </text>
       )}

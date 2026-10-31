@@ -5,7 +5,7 @@ import { OtpForm } from "@/components/OrderForms";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/index";
-import { isLocale, t, type DictionaryKey } from "@/lib/i18n/index";
+import { isLocale, t, warehouseCity, type DictionaryKey } from "@/lib/i18n/index";
 import { formatMoney } from "@/lib/money/index";
 import { getOrder } from "@/lib/orders/index";
 
@@ -25,7 +25,7 @@ export default async function OrderPage({ params }: { params: Promise<{ locale: 
   if (!order) notFound();
 
   const rows: [DictionaryKey, string | null][] = [
-    ["fieldWarehouse", order.warehouse === "MIA" ? "Miami" : "Montréal"],
+    ["fieldWarehouse", warehouseCity(locale, order.warehouse === "MIA" ? "MIA" : "YUL")],
     ["fieldStore", order.store],
     ["fieldOrderNumber", order.orderNumber],
     ["fieldTracking", order.trackingNumber],

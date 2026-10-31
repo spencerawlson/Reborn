@@ -1,4 +1,4 @@
-import { t, type Locale } from "@/lib/i18n/index";
+import { montreal, t, type Locale } from "@/lib/i18n/index";
 import { HaitiMap } from "./HaitiMap";
 import { MAIN_MAP } from "./map-data";
 
@@ -51,7 +51,7 @@ export function RouteMap({
           viewBox={`0 0 ${MAIN_MAP.width} ${MAIN_MAP.height}`}
           className="h-auto w-full"
           role="img"
-          aria-label={`${t(locale, "networkTitle")}: Montréal, Miami → Cap-Haïtien, Port-au-Prince`}
+          aria-label={`${t(locale, "networkTitle")}: ${montreal(locale)}, Miami → Cap-Haïtien, Port-au-Prince`}
         >
           {MAIN_MAP.land.map((country) => (
             <path
@@ -85,7 +85,7 @@ export function RouteMap({
                   className="fill-slate-900"
                   style={{ font: "600 14px var(--font-inter), system-ui, sans-serif", paintOrder: "stroke", stroke: "#ffffff", strokeWidth: 4 }}
                 >
-                  {city.name}
+                  {city.id === "yul" ? montreal(locale) : city.name}
                 </text>
               </g>
             );

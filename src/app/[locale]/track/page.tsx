@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
-import { isLocale, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
+import { isLocale, montreal, t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 
 // Sample journey for the preview; real tracking reads shipment events (Phase 2d–2f).
 const SAMPLE: { status: DictionaryKey; when: string; done: boolean }[] = [
@@ -56,7 +56,7 @@ export default async function TrackPage({
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t(locale, "trackRoute")}</p>
-                <p className="font-semibold">Montréal → Port-au-Prince · {t(locale, "sizeBarrel")}</p>
+                <p className="font-semibold">{montreal(locale)} → Port-au-Prince · {t(locale, "sizeBarrel")}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t(locale, "trackRecipient")}</p>

@@ -10,7 +10,7 @@
  * only exception, and admin-only routes must call requireRole('admin').
  */
 
-export type Role = "admin" | "producer" | "customer";
+export type Role = "admin" | "staff" | "producer" | "customer";
 
 export interface Session {
   userId: string;

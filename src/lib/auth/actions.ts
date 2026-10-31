@@ -53,7 +53,7 @@ export async function signUpAction(_prev: FormState, form: FormData): Promise<Fo
   const db = await getDb();
   const result = await createCustomer(db, input);
   if (!result.ok) return { error: result.error, values };
-  await syncAdminRole(db, result.userId, input.email);
+  // Customer accounts only: staff join through /admin/signup (invitation).
   await setSessionCookie(await createSession(db, result.userId));
   redirect(`/${locale}/account`);
 }

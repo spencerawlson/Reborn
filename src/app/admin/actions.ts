@@ -30,7 +30,7 @@ export interface WarehouseFormState {
   saved: boolean;
 }
 
-/** Set the Miami and Montréal receiving addresses customers see. Admin only; audit-logged. */
+/** Set the Miami and Montreal receiving addresses customers see. Admin only; audit-logged. */
 export async function setWarehouseAddressesAction(_prev: WarehouseFormState, form: FormData): Promise<WarehouseFormState> {
   const session = await getSession();
   if (!session || !hasRole(session, "admin")) throw new Error("forbidden");

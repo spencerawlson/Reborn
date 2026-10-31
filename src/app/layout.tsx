@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 export const metadata: Metadata = {
   title: "ShipItAyiti — The reliable way to ship to Haiti",
   description:
-    "Boxes, barrels, Amazon orders and freight from Montréal and Miami to every town in Haiti — our own trucks and warehouses, tracked at every step.",
+    "Boxes, barrels, Amazon orders and freight from Montreal and Miami to every town in Haiti — our own trucks and warehouses, tracked at every step.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

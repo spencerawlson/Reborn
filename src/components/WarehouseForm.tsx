@@ -11,7 +11,7 @@ const labelCls = "mb-1 block text-xs font-semibold uppercase tracking-wide text-
 
 const WAREHOUSES = [
   { code: "MIA", name: "Miami", defaults: { region: "FL", country: "USA" } },
-  { code: "YUL", name: "Montréal", defaults: { region: "QC", country: "Canada" } },
+  { code: "YUL", name: "Montreal", defaults: { region: "QC", country: "Canada" } },
 ] as const;
 
 const FIELDS: { key: keyof WarehouseAddress; label: DictionaryKey; wide?: boolean; optional?: boolean }[] = [
@@ -23,7 +23,7 @@ const FIELDS: { key: keyof WarehouseAddress; label: DictionaryKey; wide?: boolea
   { key: "phone", label: "fieldWarehousePhone", optional: true },
 ];
 
-/** Admin form: Miami and Montréal receiving addresses shown to customers with their suite. */
+/** Admin form: Miami and Montreal receiving addresses shown to customers with their suite. */
 export function WarehouseForm({ locale, current }: { locale: Locale; current: WarehouseAddresses }) {
   const [state, action, pending] = useActionState<WarehouseFormState, FormData>(setWarehouseAddressesAction, { error: null, saved: false });
   return (

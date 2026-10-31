@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { signOutAction } from "@/lib/auth/actions";
 import type { SessionUser } from "@/lib/auth/accounts";
+import { hasRole } from "@/lib/auth/index";
 import { Logo } from "./Logo";
 
-/** Header for admin pages: logo, admin navigation, signed-in admin, sign out. */
-export function AdminHeader({ session, current }: { session: SessionUser; current: "dashboard" | "customers" }) {
+/** Header for staff pages: logo, navigation (Team for admins only), signed-in member, access level, sign out. */
+export function AdminHeader({ session, current }: { session: SessionUser; current: "dashboard" | "customers" | "team" }) {
+  const admin = hasRole(session, "admin");
   const link = (href: string, label: string, key: typeof current) => (
     <Link
       href={href}
@@ -21,11 +23,14 @@ export function AdminHeader({ session, current }: { session: SessionUser; curren
           <nav className="order-last flex w-full items-center gap-1 sm:order-none sm:w-auto">
             {link("/admin", "Dashboard", "dashboard")}
             {link("/admin/customers", "Customers", "customers")}
+            {admin && link("/admin/team", "Team", "team")}
           </nav>
         </div>
         <form action={signOutAction} className="flex items-center gap-3 text-sm text-slate-500">
           <input type="hidden" name="locale" value="en" />
-          <span className="hidden sm:inline">{session.displayName}</span>
+          <span className="hidden sm:inline">
+            {session.displayName} <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">{admin ? "Admin" : "Staff"}</span>
+          </span>
           <button className="whitespace-nowrap rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-100">Sign out</button>
         </form>
       </div>

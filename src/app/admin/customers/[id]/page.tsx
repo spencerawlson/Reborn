@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminHeader } from "@/components/AdminHeader";
 import { HAITI_MAP } from "@/components/map-data";
 import { getCustomer } from "@/lib/admin/customers";
-import { requireAdmin } from "@/lib/auth/admin";
+import { requireStaff } from "@/lib/auth/admin";
 import { getDb } from "@/lib/db/index";
 import { formatMoney } from "@/lib/money/index";
 import { listOrders } from "@/lib/orders/index";
@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 /** Admin: one customer — full Haiti address, contacts, and packages with label links. */
 export default async function CustomerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const session = await requireAdmin(`/admin/customers/${id}`);
+  const session = await requireStaff(`/admin/customers/${id}`);
   const db = await getDb();
   const customer = await getCustomer(db, id);
   if (!customer) notFound();

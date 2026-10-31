@@ -24,7 +24,7 @@ const departments = JSON.parse(
 ) as FeatureCollection<Geometry, { name: string; iso: string }>;
 
 const CITIES = [
-  { id: "yul", name: "Montréal", lon: -73.5673, lat: 45.5017 },
+  { id: "yul", name: "Montreal", lon: -73.5673, lat: 45.5017 },
   { id: "mia", name: "Miami", lon: -80.1918, lat: 25.7617 },
   { id: "cap", name: "Cap-Haïtien", lon: -72.2003, lat: 19.7578 },
   { id: "pap", name: "Port-au-Prince", lon: -72.3388, lat: 18.5944 },

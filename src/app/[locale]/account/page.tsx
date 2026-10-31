@@ -8,7 +8,7 @@ import { signOutAction } from "@/lib/auth/actions";
 import { getAccount } from "@/lib/auth/accounts";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/index";
-import { isLocale, t } from "@/lib/i18n/index";
+import { isLocale, montreal, t, warehouseCity } from "@/lib/i18n/index";
 import { listOrders } from "@/lib/orders/index";
 import { getWarehouseAddresses } from "@/lib/settings/index";
 
@@ -16,7 +16,7 @@ import { getWarehouseAddresses } from "@/lib/settings/index";
 // address set by an admin + the customer's suite. Customers can't edit them.
 const WAREHOUSES = [
   { code: "MIA", label: "Miami, FL" },
-  { code: "YUL", label: "Montréal, QC" },
+  { code: "YUL", label: "Montreal, QC" },
 ] as const;
 
 export default async function AccountPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -69,7 +69,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
                   return (
                     <div key={w.code} className="rounded-3xl bg-white p-6 ring-1 ring-slate-200">
                       <p className="flex items-center gap-2 text-sm font-semibold text-blue-700">
-                        <Icon name="pin" size={18} /> {w.label}
+                        <Icon name="pin" size={18} /> {w.label.replace("Montreal", montreal(locale))}
                       </p>
                       <div className="mt-3 select-all rounded-2xl border border-dashed border-blue-200 bg-blue-50/50 px-4 py-3 font-mono text-sm leading-relaxed text-slate-700">
                         {account.displayName}
@@ -94,7 +94,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
                           <>
                             <span className="text-base font-bold text-navy-900">Suite {account.suiteCode}</span>
                             <br />
-                            {w.label}
+                            {w.label.replace("Montreal", montreal(locale))}
                           </>
                         )}
                       </div>
@@ -120,7 +120,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
                   <div>
                     <p className="font-semibold text-navy-900">{order.store}{order.description ? ` · ${order.description}` : ""}</p>
                     <p className="text-sm text-slate-500">
-                      {order.warehouse === "MIA" ? "Miami" : "Montréal"}
+                      {warehouseCity(locale, order.warehouse === "MIA" ? "MIA" : "YUL")}
                       {order.trackingNumber ? ` · ${order.trackingNumber}` : ""}
                     </p>
                   </div>

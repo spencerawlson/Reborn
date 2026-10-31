@@ -76,10 +76,10 @@ export function ProfileForm({
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor="department" className={labelCls}>{t(locale, "fieldDepartment")}</label>
-            <select id="department" name="department" required defaultValue={values.department ?? ""} className={input}>
-              <option value="" disabled>{t(locale, "fieldDepartmentChoose")}</option>
+            <select id="department" name="department" required defaultValue={values.department ?? ""} className={`${input} text-sm`}>
+              <option value="" disabled className="text-sm">{t(locale, "fieldDepartmentChoose")}</option>
               {departments.map((d) => (
-                <option key={d.iso} value={d.iso}>{d.name}</option>
+                <option key={d.iso} value={d.iso} className="text-sm">{d.name}</option>
               ))}
             </select>
           </div>
