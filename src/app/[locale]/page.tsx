@@ -168,7 +168,11 @@ export default async function Home({
           <div className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
             <h2 className="text-3xl font-semibold tracking-[-0.02em] text-navy-900 sm:text-4xl">{t(locale, "howTitle")}</h2>
             <HowItWorks
-              steps={STEPS.map((step) => ({ icon: step.icon, title: t(locale, step.title), body: t(locale, step.body) }))}
+              steps={STEPS.map((step) => ({
+                icon: step.icon,
+                title: t(locale, step.title),
+                body: t(locale, doorLocked && step.body === "how4Body" ? "how4BodyLocked" : step.body),
+              }))}
             />
           </div>
         </section>

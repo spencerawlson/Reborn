@@ -57,6 +57,7 @@ const en = {
   how3Body: "Weighed, photographed and loaded on our next sailing or flight.",
   how4Title: "Delivered in Haiti",
   how4Body: "To the door anywhere in Haiti, or pickup at our warehouse — with updates on WhatsApp.",
+  how4BodyLocked: "Pickup at our warehouse — with updates on WhatsApp.",
 
   networkTitle: "Our network",
   networkBody:
@@ -290,6 +291,7 @@ const fr: Dictionary = {
   how3Body: "Pesé, photographié et chargé sur notre prochain départ par mer ou par air.",
   how4Title: "Livré en Haïti",
   how4Body: "À domicile partout en Haïti, ou retrait à notre entrepôt — avec des nouvelles sur WhatsApp.",
+  how4BodyLocked: "Récupère à nôtre entrepôt - avec des mise à jour sur WhatsApp.",
 
   networkTitle: "Notre réseau",
   networkBody:
@@ -492,7 +494,7 @@ const ht: Dictionary = {
   tabShop: "Achte",
   tabHelp: "Èd",
 
-  heroTitle: "Fason ki serye pou voye bay Ayiti.",
+  heroTitle: "Fason ki fyab pou voye koli ou yo Ayiti.",
   heroBody:
     "Bwat, barik, kòmann Amazon ak machandiz — soti Montreal ak Miami pou tout vil an Ayiti. Pwòp kamyon ak depo pa nou, swiv nan chak etap.",
 
@@ -521,6 +523,7 @@ const ht: Dictionary = {
   how3Body: "Nou peze'l, fè foto'l epi chaje'l nan pwochen depa bato oswa avyon.",
   how4Title: "Livre an Ayiti",
   how4Body: "Lakay moun nan nenpòt kote an Ayiti, oswa pran l nan depo nou — ak nouvèl sou WhatsApp.",
+  how4BodyLocked: "Vin chèche’l nan depo nou an - n’ap voye enfòmasyon ba ou sou WhatsApp.",
 
   networkTitle: "Rezo nou",
   networkBody:

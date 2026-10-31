@@ -6,8 +6,9 @@ import { Icon, type IconName } from "./Icon";
 
 /**
  * "How it works" with a driving truck: the truck goes from step to step;
- * the step it just left (its last destination) blurs, and the step it
- * arrives at comes into focus. Loops. Static for prefers-reduced-motion.
+ * every step it has already passed stays blurred until the journey ends
+ * and loops back to the start; the step it arrives at comes into focus.
+ * Static for prefers-reduced-motion.
  */
 export interface Step {
   icon: IconName;
@@ -40,7 +41,6 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
   }, [steps.length]);
 
   const centre = (i: number) => ((i + 0.5) / steps.length) * 100;
-  const last = active === 0 ? -1 : active - 1;
 
   return (
     <ol className="relative mt-12 grid gap-6 md:grid-cols-4">
@@ -62,7 +62,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
 
       {steps.map((step, i) => {
         const focused = motion && i === active;
-        const leftBehind = motion && i === last;
+        const leftBehind = motion && i < active;
         return (
           <li
             key={step.title}
