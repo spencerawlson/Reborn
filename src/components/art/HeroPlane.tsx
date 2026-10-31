@@ -16,7 +16,7 @@ const FLIGHTS = [
 
 export function HeroPlane() {
   return (
-    <div aria-hidden className="pointer-events-none relative mt-10 h-8 w-8">
+    <div aria-hidden className="pointer-events-none relative ml-8 mt-10 h-8 w-8">
       {FLIGHTS.map((f) => (
         <div key={f.id} className={f.show}>
           {/* Dashed contrail, drawn in behind the plane */}

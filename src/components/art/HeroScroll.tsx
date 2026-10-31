@@ -37,8 +37,13 @@ export function HeroScroll({ children, className = "" }: { children: React.React
   }, []);
 
   return (
-    <section ref={ref} className={`hero-scroll relative h-[170vh] bg-navy-900 text-white ${className}`} style={{ ["--p" as string]: 0 }}>
-      <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-hidden">{children}</div>
+    <section
+      ref={ref}
+      className={`hero-scroll relative h-[150svh] bg-navy-900 text-white md:h-[170vh] ${className}`}
+      style={{ ["--p" as string]: 0 }}
+    >
+      {/* Phones: stop above the bottom tab bar (4.25rem) and use the real visible height (svh). */}
+      <div className="sticky top-16 h-[calc(100svh-4rem-4.25rem)] overflow-hidden md:h-[calc(100vh-4rem)]">{children}</div>
     </section>
   );
 }

@@ -24,12 +24,12 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
             <h1 className="text-3xl font-semibold tracking-tight text-navy-900">Customers</h1>
             <p className="mt-1 text-slate-500">Haiti delivery addresses, suites, and contacts. {customers.length} shown.</p>
           </div>
-          <form className="flex gap-2" action="/admin/customers">
+          <form className="flex w-full gap-2 sm:w-auto" action="/admin/customers">
             <input
               name="q"
               defaultValue={q}
               placeholder="Name, email, phone, suite, city…"
-              className="w-72 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              className="min-w-0 flex-1 rounded-xl sm:w-72 sm:flex-none border border-slate-200 bg-white px-3.5 py-2.5 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
             />
             <button className="rounded-xl bg-navy-900 px-4 font-semibold text-white hover:bg-navy-800">Search</button>
           </form>
