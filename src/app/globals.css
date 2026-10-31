@@ -59,33 +59,32 @@
 @keyframes scene-waves { to { transform: translateX(-120px); } }
 @keyframes scene-waves-slow { to { transform: translateX(-160px); } }
 
-/* Hero airplane: the little plane flies on its own, looping — takes off from
-   under "Get a quote", climbs along its offset-path, contrail drawn behind. */
+/* Hero airplane: the little plane hovers in flight under "Get a quote"
+   (gentle bob); scrolling down it flies away along its offset-path with the
+   contrail drawn behind it, scrolling up brings it back. Scroll progress
+   --p (HeroScroll) is sped up ×1.6 so it is gone before the ship docks. */
 .hero-plane {
+  --fly: min(1, var(--p, 0) * 1.6);
   offset-rotate: auto;
   offset-anchor: center;
   offset-position: 16px 16px;
-  animation: hero-plane-fly 14s ease-in-out infinite;
+  offset-distance: calc(var(--fly) * 100%);
+  opacity: calc(1 - max(0, var(--fly) - 0.85) * 6.6);
 }
-@keyframes hero-plane-fly {
-  0% { offset-distance: 0%; opacity: 0; }
-  6% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { offset-distance: 100%; opacity: 0; }
+.hero-plane-bob {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hero-plane-bob 2.4s ease-in-out infinite alternate;
+}
+@keyframes hero-plane-bob {
+  from { transform: translateY(-2.5px) rotate(-2deg); }
+  to { transform: translateY(2.5px) rotate(1.5deg); }
 }
 .hero-trail-reveal {
   stroke-dasharray: 1px 1px;
-  animation: hero-trail-draw 14s ease-in-out infinite;
+  stroke-dashoffset: calc((1 - min(1, var(--p, 0) * 1.6)) * 1px);
 }
-@keyframes hero-trail-draw {
-  from { stroke-dashoffset: 1px; }
-  to { stroke-dashoffset: 0px; }
-}
-.hero-trail { animation: hero-trail-fade 14s ease-in-out infinite; }
-@keyframes hero-trail-fade {
-  0%, 80% { opacity: 1; }
-  100% { opacity: 0; }
-}
+.hero-trail { opacity: calc(1 - max(0, var(--p, 0) * 1.6 - 0.85) * 6.6); }
 
 /* Sky clouds drift slowly; scroll adds parallax (inline transforms on the parent). */
 .sky-drift-slow { animation: sky-drift 90s linear infinite alternate; }
@@ -105,6 +104,5 @@
 @media (prefers-reduced-motion: reduce) {
   .logo-trail, .logo-parcel, .route-flow, .node-pulse,
   .scene-bob, .scene-waves, .scene-waves-slow, .scene-truck,
-  .sky-drift-slow, .sky-drift, .sky-drift-fast, .hero-plane, .hero-trail, .hero-trail-reveal { animation: none; }
-  .hero-trail { opacity: 0; }
+  .sky-drift-slow, .sky-drift, .sky-drift-fast, .hero-plane-bob { animation: none; }
 }
