@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { HeroScene } from "@/components/art/HeroScene";
+import { BoxesArt, FreightArt, ShopArt, Truck } from "@/components/art/ServiceArt";
 import { Icon, type IconName } from "@/components/Icon";
 import { PriceEstimator } from "@/components/PriceEstimator";
 import { RouteMap } from "@/components/RouteMap";
@@ -17,10 +19,10 @@ const KPIS: [DictionaryKey, DictionaryKey][] = [
   ["kpi3Value", "kpi3Label"],
 ];
 
-const SERVICES: { icon: IconName; title: DictionaryKey; body: DictionaryKey; tab?: "ship" | "shop" }[] = [
-  { icon: "box", title: "svc1Title", body: "svc1Body", tab: "ship" },
-  { icon: "cart", title: "svc2Title", body: "svc2Body", tab: "shop" },
-  { icon: "globe", title: "svc3Title", body: "svc3Body" },
+const SERVICES: { Art: () => React.JSX.Element; title: DictionaryKey; body: DictionaryKey; tab?: "ship" | "shop" }[] = [
+  { Art: BoxesArt, title: "svc1Title", body: "svc1Body", tab: "ship" },
+  { Art: ShopArt, title: "svc2Title", body: "svc2Body", tab: "shop" },
+  { Art: FreightArt, title: "svc3Title", body: "svc3Body" },
 ];
 
 const STEPS: { icon: IconName; title: DictionaryKey; body: DictionaryKey }[] = [
@@ -54,8 +56,9 @@ export default async function Home({
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_80%_10%,rgba(59,130,246,0.35),transparent_45%),radial-gradient(circle_at_10%_90%,rgba(220,38,38,0.18),transparent_40%)]" />
             <div className="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px]" />
+            <HeroScene />
           </div>
-          <div className="relative mx-auto grid max-w-6xl gap-12 px-5 pb-16 pt-14 lg:grid-cols-[1.05fr_1fr] lg:pb-24 lg:pt-24">
+          <div className="relative mx-auto grid max-w-6xl gap-12 px-5 pb-48 pt-14 lg:grid-cols-[1.05fr_1fr] lg:pb-56 lg:pt-24">
             <div className="lg:pt-6">
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-blue-100">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
@@ -106,11 +109,12 @@ export default async function Home({
             </h2>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {SERVICES.map((svc) => (
-                <article key={svc.title} className="group flex flex-col rounded-3xl border border-slate-200 bg-white p-7 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_18px_40px_-20px_rgba(11,27,63,0.25)]">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-900 text-white">
-                    <Icon name={svc.icon} />
-                  </span>
-                  <h3 className="mt-6 flex items-center gap-2 text-lg font-semibold text-navy-900">
+                <article key={svc.title} className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_18px_40px_-20px_rgba(11,27,63,0.25)]">
+                  <div className="aspect-[32/17] overflow-hidden border-b border-slate-100 transition duration-500 group-hover:scale-[1.02]">
+                    <svc.Art />
+                  </div>
+                  <div className="flex flex-1 flex-col p-7">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold text-navy-900">
                     {t(locale, svc.title)}
                     {!svc.tab && (
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
@@ -124,6 +128,7 @@ export default async function Home({
                       {t(locale, "svcCta")} <Icon name="arrowRight" size={16} strokeWidth={2.2} className="transition group-hover:translate-x-0.5" />
                     </Link>
                   )}
+                  </div>
                 </article>
               ))}
             </div>
@@ -136,6 +141,11 @@ export default async function Home({
             <h2 className="text-3xl font-semibold tracking-[-0.02em] text-navy-900 sm:text-4xl">{t(locale, "howTitle")}</h2>
             <ol className="relative mt-12 grid gap-10 md:grid-cols-4 md:gap-6">
               <span aria-hidden className="absolute left-6 right-6 top-6 hidden h-px bg-[repeating-linear-gradient(90deg,#94a3b8_0_6px,transparent_6px_12px)] md:block" />
+              <span aria-hidden className="pointer-events-none absolute -top-[22px] left-6 right-6 hidden md:block">
+                <span className="scene-truck absolute block w-[60px]">
+                  <Truck className="h-auto w-full" />
+                </span>
+              </span>
               {STEPS.map((step, i) => (
                 <li key={step.title} className="relative">
                   <span className="relative flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-navy-900 shadow-sm">
@@ -173,9 +183,12 @@ export default async function Home({
                 <h2 className="text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">{t(locale, "ctaTitle")}</h2>
                 <p className="mt-3 text-slate-300">{t(locale, "ctaBody")}</p>
               </div>
-              <a href="#ship" className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-navy-900 transition hover:bg-blue-50">
-                {t(locale, "navQuote")} <Icon name="arrowRight" size={16} strokeWidth={2.2} />
-              </a>
+              <div className="flex items-center gap-8">
+                <Truck label className="hidden h-auto w-48 drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)] md:block" />
+                <a href="#ship" className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-navy-900 transition hover:bg-blue-50">
+                  {t(locale, "navQuote")} <Icon name="arrowRight" size={16} strokeWidth={2.2} />
+                </a>
+              </div>
             </div>
           </div>
         </section>

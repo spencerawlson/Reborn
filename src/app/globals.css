@@ -48,6 +48,45 @@
   100% { transform: scale(1.8); opacity: 0; }
 }
 
+/* Hero scene: ship sails across, bobbing; plane crosses the sky; waves drift. */
+.scene-ship {
+  transform: translate(-260px, 238px);
+  animation: scene-sail 75s linear infinite;
+}
+@keyframes scene-sail {
+  from { transform: translate(-260px, 238px); }
+  to { transform: translate(1700px, 238px); }
+}
+.scene-bob { animation: scene-bob 3.2s ease-in-out infinite alternate; }
+@keyframes scene-bob {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(-3px) rotate(-0.6deg); }
+}
+.scene-plane {
+  transform: translate(-200px, 70px);
+  animation: scene-fly 28s linear infinite 2s;
+}
+@keyframes scene-fly {
+  from { transform: translate(-200px, 80px); }
+  to { transform: translate(1700px, 18px); }
+}
+.scene-waves { animation: scene-waves 7s linear infinite; }
+.scene-waves-slow { animation: scene-waves-slow 11s linear infinite; }
+@keyframes scene-waves { to { transform: translateX(-120px); } }
+@keyframes scene-waves-slow { to { transform: translateX(-160px); } }
+
+/* "How it works": the little truck drives along the dashed line. */
+.scene-truck { animation: scene-truck 9s ease-in-out infinite; }
+@keyframes scene-truck {
+  0% { left: 0; opacity: 0; }
+  8% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: calc(100% - 60px); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .logo-trail, .logo-parcel, .route-flow, .node-pulse { animation: none; }
+  .logo-trail, .logo-parcel, .route-flow, .node-pulse,
+  .scene-ship, .scene-bob, .scene-plane, .scene-waves, .scene-waves-slow, .scene-truck { animation: none; }
+  .scene-ship { transform: translate(560px, 238px); }
+  .scene-plane { transform: translate(980px, 40px); }
 }
