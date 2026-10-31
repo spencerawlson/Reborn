@@ -46,6 +46,16 @@ The admin dashboard has no login yet. To view it locally, set
 `ADMIN_DEV_PREVIEW=true` in `.env.local` (ignored in production);
 otherwise `/admin` returns 404.
 
+## Run it with Docker (server)
+```bash
+git clone https://github.com/spencerawlson/ShipItAyiti.git && cd ShipItAyiti
+cp .env.docker.example .env      # set POSTGRES_PASSWORD, ADMIN_EMAILS, APP_PORT, COOKIE_SECURE
+docker compose up -d --build     # app on http://<server>:${APP_PORT}, Postgres in a volume
+```
+Update to the latest version: `git pull && docker compose up -d --build`
+(migrations apply automatically on start). Logs: `docker compose logs -f app`.
+Set `COOKIE_SECURE=true` once the site is served over HTTPS.
+
 ## Docs
 - `docs/PLAN.md` — phases, business rules, module map
 - `docs/ARCHITECTURE.md` — database architecture and balance derivation
