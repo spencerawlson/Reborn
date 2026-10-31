@@ -48,7 +48,7 @@ const en = {
   svc3Body: "Haitian coffee, cacao, rum, oils and art for businesses abroad — sourced and shipped by us.",
   svcCta: "Get a price",
 
-  howTitle: "How it works",
+  howTitle: "How shipping works",
   how1Title: "Book online",
   how1Body: "Get your price in seconds and book in a few taps.",
   how2Title: "Drop off or pickup",
@@ -282,7 +282,7 @@ const fr: Dictionary = {
   svc3Body: "Café, cacao, rhum, huiles et art haïtiens pour les entreprises à l'étranger — trouvés et expédiés par nous.",
   svcCta: "Voir le prix",
 
-  howTitle: "Comment ça marche",
+  howTitle: "Comment fonctionne l'expédition",
   how1Title: "Réservez en ligne",
   how1Body: "Obtenez votre prix en quelques secondes et réservez en quelques gestes.",
   how2Title: "Dépôt ou ramassage",
@@ -514,7 +514,7 @@ const ht: Dictionary = {
   svc3Body: "Kafe, kakawo, wonm, lwil ak atizay ayisyen pou biznis lòt bò dlo — nou jwenn yo epi nou voye yo.",
   svcCta: "Wè pri a",
 
-  howTitle: "Kijan sa mache",
+  howTitle: "Kijan anbake ap mache",
   how1Title: "Rezève sou entènèt",
   how1Body: "Jwenn pri a nan kèk segonn epi rezève fasil.",
   how2Title: "Depoze oswa nou vin chèche",
