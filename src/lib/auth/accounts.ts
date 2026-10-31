@@ -45,10 +45,17 @@ export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-/** Returns the dictionary key of the first problem, or null if valid. */
+/** Returns the dictionary key of the first problem, or null if valid. The Haiti
+ * delivery address is optional as a whole: blank means no Haiti address on
+ * file. A half address (city without department, or department without city)
+ * is rejected, since delivery needs the pair. */
 export function validateSignup(input: SignupInput): DictionaryKey | null {
-  if (!input.name.trim() || !input.email.trim() || !input.phone.trim() || !input.city.trim()) return "errRequired";
-  if (!isDepartmentCode(input.department)) return "errRequired";
+  if (!input.name.trim() || !input.email.trim() || !input.phone.trim()) return "errRequired";
+  const dept = input.department.trim();
+  const city = input.city.trim();
+  if (dept && !isDepartmentCode(dept)) return "errRequired";
+  if (!dept && city) return "errRequired";
+  if (dept && !city) return "errRequired";
   if (!EMAIL.test(normalizeEmail(input.email)) || input.email.length > 254) return "errEmail";
   if (input.password.length < MIN_PASSWORD || input.password.length > 200) return "errPassword";
   if (input.name.length > 120 || input.phone.length > 40 || input.city.length > 120) return "errRequired";
@@ -83,8 +90,8 @@ export async function createCustomer(
         input.name.trim(),
         input.locale,
         input.phone.trim(),
-        input.department,
-        input.city.trim(),
+        input.department.trim() ? input.department : null,
+        blank(input.city),
         blank(input.neighborhood),
         blank(input.directions),
         blank(input.haitiPhone),
@@ -214,14 +221,18 @@ export interface ProfileInput {
 }
 
 export function validateProfile(input: ProfileInput): DictionaryKey | null {
-  if (!input.name.trim() || !input.phone.trim() || !input.city.trim()) return "errRequired";
-  if (!isDepartmentCode(input.department)) return "errRequired";
+  if (!input.name.trim() || !input.phone.trim()) return "errRequired";
+  const dept = input.department.trim();
+  const city = input.city.trim();
+  if (dept && !isDepartmentCode(dept)) return "errRequired";
+  if (!dept && city) return "errRequired";
+  if (dept && !city) return "errRequired";
   if (input.name.length > 120 || input.phone.length > 40 || input.city.length > 120) return "errRequired";
   if (input.neighborhood.length > 120 || input.directions.length > 500 || input.haitiPhone.length > 40) return "errRequired";
   return null;
 }
 
-/** Updates the customer's own name, phone, and Haiti address. Email, suite, and warehouse addresses are not editable here. */
+/** Updates the customer's own name, phone, and Haiti address (blank clears it). Email, suite, and warehouse addresses are not editable here. */
 export async function updateProfile(db: Db, userId: string, input: ProfileInput): Promise<DictionaryKey | null> {
   const invalid = validateProfile(input);
   if (invalid) return invalid;
@@ -233,7 +244,7 @@ export async function updateProfile(db: Db, userId: string, input: ProfileInput)
      UPDATE customer_profiles
         SET haiti_department = $4, haiti_city = $5, haiti_neighborhood = $6, haiti_directions = $7, haiti_phone = $8
       WHERE user_id = (SELECT id FROM u)`,
-    [userId, input.name.trim(), input.phone.trim(), input.department, input.city.trim(), blank(input.neighborhood), blank(input.directions), blank(input.haitiPhone)],
+    [userId, input.name.trim(), input.phone.trim(), input.department.trim() ? input.department : null, blank(input.city), blank(input.neighborhood), blank(input.directions), blank(input.haitiPhone)],
   );
   return null;
 }

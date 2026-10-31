@@ -82,15 +82,15 @@ export function SignUpForm({ locale, departments }: { locale: Locale; department
         <p className="-mt-2 text-sm text-slate-500">{t(locale, "haitiAddressBody")}</p>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="department" className={labelCls}>{t(locale, "fieldDepartment")}</label>
-            <select id="department" name="department" required defaultValue={v.department ?? ""} className={`${input} text-sm`}>
+            <label htmlFor="department" className={labelCls}>{t(locale, "fieldDepartment")} <span className="font-normal text-slate-400">({t(locale, "optional")})</span></label>
+            <select id="department" name="department" defaultValue={v.department ?? ""} className={`${input} text-sm`}>
               <option value="" disabled className="text-sm">{t(locale, "fieldDepartmentChoose")}</option>
               {departments.map((d) => (
                 <option key={d.iso} value={d.iso} className="text-sm">{d.name}</option>
               ))}
             </select>
           </div>
-          <Field locale={locale} name="city" label="fieldCity" autoComplete="address-level2" defaultValue={v.city} />
+          <Field locale={locale} name="city" label="fieldCity" required={false} autoComplete="address-level2" defaultValue={v.city} />
         </div>
         <Field locale={locale} name="neighborhood" label="fieldNeighborhood" required={false} defaultValue={v.neighborhood} />
         <Field locale={locale} name="directions" label="fieldDirections" required={false} defaultValue={v.directions} textarea />

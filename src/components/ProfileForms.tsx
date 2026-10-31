@@ -75,15 +75,15 @@ export function ProfileForm({
         <legend className="px-1 text-base font-semibold text-navy-900">{t(locale, "haitiAddressTitle")}</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="department" className={labelCls}>{t(locale, "fieldDepartment")}</label>
-            <select id="department" name="department" required defaultValue={values.department ?? ""} className={`${input} text-sm`}>
-              <option value="" disabled className="text-sm">{t(locale, "fieldDepartmentChoose")}</option>
+            <label htmlFor="department" className={labelCls}>{t(locale, "fieldDepartment")} <span className="font-normal text-slate-400">({t(locale, "optional")})</span></label>
+            <select id="department" name="department" defaultValue={values.department ?? ""} className={`${input} text-sm`}>
+              <option value="" className="text-sm">{t(locale, "fieldDepartmentChoose")}</option>
               {departments.map((d) => (
                 <option key={d.iso} value={d.iso} className="text-sm">{d.name}</option>
               ))}
             </select>
           </div>
-          <Field locale={locale} name="city" label="fieldCity" value={values.city} />
+          <Field locale={locale} name="city" label="fieldCity" value={values.city} required={false} />
         </div>
         <Field locale={locale} name="neighborhood" label="fieldNeighborhood" value={values.neighborhood} required={false} />
         <Field locale={locale} name="directions" label="fieldDirections" value={values.directions} required={false} textarea />

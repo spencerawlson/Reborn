@@ -73,7 +73,9 @@ describe("passwords", () => {
 describe("sign-up", () => {
   it("validates required fields, email, password length, and department", () => {
     expect(validateSignup(marie)).toBeNull();
-    expect(validateSignup({ ...marie, city: " " })).toBe("errRequired");
+    expect(validateSignup({ ...marie, department: "", city: "" })).toBeNull(); // no Haiti address: fine
+    expect(validateSignup({ ...marie, department: "", city: "Delmas" })).toBe("errRequired"); // half address
+    expect(validateSignup({ ...marie, department: "HT-OU", city: " " })).toBe("errRequired"); // half address
     expect(validateSignup({ ...marie, email: "nope" })).toBe("errEmail");
     expect(validateSignup({ ...marie, password: "short" })).toBe("errPassword");
     expect(validateSignup({ ...marie, department: "HT-XX" })).toBe("errRequired");
@@ -87,6 +89,27 @@ describe("sign-up", () => {
 
     const second = await createCustomer(db, { ...marie, email: "jean@example.test" });
     expect(second.ok && second.suiteCode).not.toBe(result.suiteCode);
+  });
+
+  it("creates a customer without a Haiti address, for the diaspora", async () => {
+    const result = await createCustomer(db, {
+      name: "Jean Diaspora",
+      email: "diaspora@example.test",
+      phone: "+1 514 555 0123",
+      password: "correct horse battery",
+      locale: "en",
+      department: "",
+      city: "",
+      neighborhood: "",
+      directions: "",
+      haitiPhone: "",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const token = await createSession(db, result.userId);
+    const account = await getAccount(db, (await getSessionUser(db, token))!);
+    expect(account.haiti).toBeNull();
+    expect(account.suiteCode).toMatch(/^SIA-/);
   });
 
   it("refuses a second account with the same email, in any letter case", async () => {
@@ -185,6 +208,7 @@ describe("editing one's own account", () => {
       haitiPhone: "",
     };
     expect(await updateProfile(db, userId, { ...profile, department: "HT-XX" })).toBe("errRequired");
+    expect(await updateProfile(db, userId, { ...profile, department: "" })).toBe("errRequired"); // city without department
     expect(await updateProfile(db, userId, { ...profile, name: " " })).toBe("errRequired");
     expect(await updateProfile(db, userId, profile)).toBeNull();
 
@@ -193,6 +217,24 @@ describe("editing one's own account", () => {
     expect(account).toMatchObject({ displayName: "Marie J. Joseph", phone: "+1 514 555 0199", email: "marie@example.test" });
     expect(account.haiti).toMatchObject({ department: "HT-SD", city: "Les Cayes", neighborhood: null, directions: "Behind the market" });
     expect(account.suiteCode).toMatch(/^SIA-/); // unchanged
+  });
+
+  it("clears the Haiti address when both fields are emptied", async () => {
+    const userId = (await verifyCredentials(db, "marie@example.test", "correct horse battery"))!;
+    expect(
+      await updateProfile(db, userId, {
+        name: "Marie J. Joseph",
+        phone: "+1 514 555 0199",
+        department: "",
+        city: "",
+        neighborhood: "",
+        directions: "",
+        haitiPhone: "",
+      }),
+    ).toBeNull();
+    const token = await createSession(db, userId);
+    const account = await getAccount(db, (await getSessionUser(db, token))!);
+    expect(account.haiti).toBeNull();
   });
 
   it("changes the password only with the current one, and signs out other devices", async () => {
