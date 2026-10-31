@@ -6,9 +6,11 @@
  * offset-path; see globals.css .hero-plane / .hero-trail-*). Phones get a
  * shorter path.
  */
+// Flight paths are half the original distance (founder, 2026-10-30). On wide
+// screens the plane flies low past the buttons, then climbs clear of the text.
 const FLIGHTS = [
-  { id: "narrow", show: "md:hidden", d: "M0 0 C 90 4, 180 -30, 240 -140 S 330 -330, 380 -420" },
-  { id: "wide", show: "hidden md:block", d: "M0 0 C 260 10, 520 -40, 760 -230 S 1100 -520, 1300 -640" },
+  { id: "narrow", show: "md:hidden", d: "M0 0 C 45 2, 90 -15, 120 -70 S 165 -165, 190 -210" },
+  { id: "wide", show: "hidden md:block", d: "M0 0 C 200 10, 420 0, 560 -70 S 640 -220, 650 -320" },
 ];
 
 export function HeroPlane() {
