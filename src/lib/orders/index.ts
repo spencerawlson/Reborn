@@ -20,6 +20,7 @@ export interface OrderInput {
 
 export interface IncomingOrder {
   id: string;
+  trackingCode: string;
   warehouse: Warehouse;
   store: string;
   orderNumber: string | null;
@@ -33,6 +34,7 @@ export interface IncomingOrder {
 }
 
 export interface ExpectedPackage extends IncomingOrder {
+  userId: string;
   suiteCode: string | null;
   customerName: string;
 }
@@ -64,6 +66,7 @@ export function validateOrder(input: OrderInput): DictionaryKey | null {
 
 type Row = {
   id: string;
+  tracking_code: string;
   warehouse: Warehouse;
   store: string;
   order_number: string | null;
@@ -76,12 +79,13 @@ type Row = {
   created_at: Date;
 };
 
-const COLUMNS = `o.id, o.warehouse, o.store, o.order_number, o.tracking_number, o.description,
+const COLUMNS = `o.id, o.tracking_code, o.warehouse, o.store, o.order_number, o.tracking_number, o.description,
   o.declared_value_minor::text AS declared_value_minor, o.delivery_otp, o.otp_updated_at, o.status, o.created_at`;
 
 function toOrder(r: Row): IncomingOrder {
   return {
     id: r.id,
+    trackingCode: r.tracking_code,
     warehouse: r.warehouse,
     store: r.store,
     orderNumber: r.order_number,
@@ -157,8 +161,8 @@ export async function setOrderOtp(
 
 /** Admin / warehouse view: everything still expected, with suite and delivery code. */
 export async function listExpectedPackages(db: Db): Promise<ExpectedPackage[]> {
-  const rows = await db.query<Row & { suite_code: string | null; display_name: string }>(
-    `SELECT ${COLUMNS}, p.suite_code, u.display_name
+  const rows = await db.query<Row & { user_id: string; suite_code: string | null; display_name: string }>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name
        FROM incoming_orders o
        JOIN users u ON u.id = o.user_id
        LEFT JOIN customer_profiles p ON p.user_id = o.user_id
@@ -166,5 +170,5 @@ export async function listExpectedPackages(db: Db): Promise<ExpectedPackage[]> {
       ORDER BY o.warehouse, o.created_at
       LIMIT 500`,
   );
-  return rows.map((r) => ({ ...toOrder(r), suiteCode: r.suite_code, customerName: r.display_name }));
+  return rows.map((r) => ({ ...toOrder(r), userId: r.user_id, suiteCode: r.suite_code, customerName: r.display_name }));
 }

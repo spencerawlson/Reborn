@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bwip-js": "^4.11.4",
     "next": "^15.5.0",
     "postgres": "^4.0.0",
     "react": "^19.1.0",

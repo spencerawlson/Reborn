@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
-import { Logo } from "@/components/Logo";
+import { AdminHeader } from "@/components/AdminHeader";
+import Link from "next/link";
 import { formatMoney } from "@/lib/money/index";
 import { hasRole } from "@/lib/auth/index";
-import { signOutAction } from "@/lib/auth/actions";
 import { getSession } from "@/lib/auth/session";
 import { getAdminStats } from "@/lib/admin/stats";
 import { getDb } from "@/lib/db/index";
@@ -41,21 +41,7 @@ export default async function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
-          <span className="flex items-center gap-3">
-            <Logo />
-            <span className="rounded-full bg-navy-900 px-2.5 py-0.5 text-xs font-semibold text-white">Admin</span>
-          </span>
-          <form action={signOutAction} className="flex items-center gap-3 text-sm text-slate-500">
-            <input type="hidden" name="locale" value={locale} />
-            {session.displayName}
-            <button className="rounded-full border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-100">
-              {t(locale, "signOut")}
-            </button>
-          </form>
-        </div>
-      </header>
+      <AdminHeader session={session} current="dashboard" />
 
       <main className="mx-auto max-w-5xl px-5 py-10">
         <h1 className="text-3xl font-semibold tracking-tight text-navy-900">{t(locale, "adminTitle")}</h1>
@@ -134,7 +120,8 @@ export default async function AdminPage() {
                     <th className="py-2 pr-4">{t(locale, "adminColCustomer")}</th>
                     <th className="py-2 pr-4">{t(locale, "adminColOrder")}</th>
                     <th className="py-2 pr-4">{t(locale, "fieldTracking")}</th>
-                    <th className="py-2">{t(locale, "orderOtpTitle")}</th>
+                    <th className="py-2 pr-4">{t(locale, "orderOtpTitle")}</th>
+                    <th className="py-2" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -143,7 +130,9 @@ export default async function AdminPage() {
                       <td className="py-3 pr-4 font-mono font-semibold text-navy-900">
                         {p.suiteCode ?? "—"} <span className="font-sans text-xs font-normal text-slate-400">{p.warehouse}</span>
                       </td>
-                      <td className="py-3 pr-4">{p.customerName}</td>
+                      <td className="py-3 pr-4">
+                        <Link href={`/admin/customers/${p.userId}`} className="hover:underline">{p.customerName}</Link>
+                      </td>
                       <td className="py-3 pr-4">
                         {p.store}{p.description ? ` · ${p.description}` : ""}
                         {p.orderNumber && <span className="block font-mono text-xs text-slate-400">{p.orderNumber}</span>}
@@ -155,6 +144,11 @@ export default async function AdminPage() {
                         ) : (
                           <span className="text-slate-400">—</span>
                         )}
+                      </td>
+                      <td className="py-3 text-right">
+                        <Link href={`/admin/labels/${p.id}`} className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800">
+                          Label
+                        </Link>
                       </td>
                     </tr>
                   ))}
