@@ -59,7 +59,7 @@ export function HeroScene() {
       aria-hidden
       viewBox="0 -200 1440 460"
       preserveAspectRatio="xMidYMax slice"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[380px] w-full sm:h-[460px]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[380px] w-full sm:h-[460px] md:h-[380px]"
     >
       {/* Port: cranes and container stacks */}
       <Crane x={150} />
@@ -78,8 +78,8 @@ export function HeroScene() {
       <Palm x={1330} />
       <Palm x={1395} s={0.7} />
 
-      {/* Ship: waits offshore at the top, sails left into port as you scroll down */}
-      <g style={{ transform: "translate(calc(1600px - var(--p, 0) * 970px), 238px)" }}>
+      {/* Ship: waits fully offshore at the top, sails left into port as you scroll down */}
+      <g style={{ transform: "translate(calc(1750px - var(--p, 0) * 1120px), 238px)" }}>
         <g className="scene-bob">
           <g transform="scale(-1 1)">
           <rect x="-2" y="-62" width="22" height="30" rx="2" fill="#e0f2fe" opacity="0.95" />

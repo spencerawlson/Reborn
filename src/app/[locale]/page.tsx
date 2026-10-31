@@ -72,11 +72,11 @@ export default async function Home({
           </div>
         )}
 
-        {/* Hero: pinned while you scroll through it — plane at the top, ship sails into port as you scroll down. */}
+        {/* Hero: scrolls with the page — plane flies off and ship sails into port as you scroll down, in reverse as you scroll back up. */}
         <HeroScroll>
           <SkyBackground />
           <HeroScene />
-          <div className="relative mx-auto max-w-6xl px-5 pt-12 sm:pt-20">
+          <div className="relative mx-auto max-w-6xl px-5 pb-[300px] pt-12 sm:pb-[360px] sm:pt-20 md:pb-[300px]">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-blue-100">
               <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
               {montreal(locale)} · Miami → {t(locale, "haiti")}
