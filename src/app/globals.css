@@ -95,17 +95,8 @@
 .sky-drift-fast { animation: sky-drift 40s linear infinite alternate; }
 @keyframes sky-drift { from { translate: 0 0; } to { translate: -120px 0; } }
 
-/* "How it works": the little truck drives along the dashed line. */
-.scene-truck { animation: scene-truck 9s ease-in-out infinite; }
-@keyframes scene-truck {
-  0% { left: 0; opacity: 0; }
-  8% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { left: calc(100% - 60px); opacity: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .logo-trail, .logo-parcel, .route-flow, .node-pulse,
-  .scene-bob, .scene-waves, .scene-waves-slow, .scene-truck,
+  .scene-bob, .scene-waves, .scene-waves-slow,
   .sky-drift-slow, .sky-drift, .sky-drift-fast, .hero-plane-bob { animation: none; }
 }

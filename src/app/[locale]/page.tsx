@@ -5,6 +5,7 @@ import { HeroScene } from "@/components/art/HeroScene";
 import { SkyBackground } from "@/components/art/SkyBackground";
 import { HeroScroll } from "@/components/art/HeroScroll";
 import { BoxesArt, FreightArt, ShopArt, Truck } from "@/components/art/ServiceArt";
+import { HowItWorks } from "@/components/HowItWorks";
 import { Icon, type IconName } from "@/components/Icon";
 import { PriceEstimator } from "@/components/PriceEstimator";
 import { RouteMap } from "@/components/RouteMap";
@@ -162,28 +163,13 @@ export default async function Home({
           </div>
         </section>
 
-        {/* How it works: four steps on a dashed line. */}
+        {/* How it works: the truck drives step to step — last stop blurs, the arrival comes into focus. */}
         <section id="how" className="scroll-mt-20 bg-slate-50">
           <div className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
             <h2 className="text-3xl font-semibold tracking-[-0.02em] text-navy-900 sm:text-4xl">{t(locale, "howTitle")}</h2>
-            <ol className="relative mt-12 grid gap-10 md:grid-cols-4 md:gap-6">
-              <span aria-hidden className="absolute left-6 right-6 top-6 hidden h-px bg-[repeating-linear-gradient(90deg,#94a3b8_0_6px,transparent_6px_12px)] md:block" />
-              <span aria-hidden className="pointer-events-none absolute -top-[22px] left-6 right-6 hidden md:block">
-                <span className="scene-truck absolute block w-[60px]">
-                  <Truck className="h-auto w-full" />
-                </span>
-              </span>
-              {STEPS.map((step, i) => (
-                <li key={step.title} className="relative">
-                  <span className="relative flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-navy-900 shadow-sm">
-                    <Icon name={step.icon} size={22} />
-                  </span>
-                  <p className="mt-5 text-xs font-semibold text-slate-400">0{i + 1}</p>
-                  <h3 className="mt-1 font-semibold text-navy-900">{t(locale, step.title)}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{t(locale, step.body)}</p>
-                </li>
-              ))}
-            </ol>
+            <HowItWorks
+              steps={STEPS.map((step) => ({ icon: step.icon, title: t(locale, step.title), body: t(locale, step.body) }))}
+            />
           </div>
         </section>
 
