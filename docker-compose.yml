@@ -1,0 +1,37 @@
+# ShipItAyiti — app + Postgres. Settings come from a .env file next to this
+# one (never committed); see .env.docker.example.
+name: shipitayiti
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: shipitayiti
+      POSTGRES_USER: shipitayiti
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shipitayiti -d shipitayiti"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    image: shipitayiti-app:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://shipitayiti:${POSTGRES_PASSWORD}@db:5432/shipitayiti
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      LIVE_PAYMENTS_ENABLED: "false"
+    ports:
+      - "${APP_PORT:-3010}:3000"
+
+volumes:
+  db-data:

@@ -27,7 +27,9 @@ export async function getSessionSafe(): Promise<SessionUser | null> {
 export async function setSessionCookie(token: string): Promise<void> {
   (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // HTTPS-only in production. COOKIE_SECURE=false allows plain-HTTP access
+    // (e.g. a server on the local network before TLS is set up).
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_DAYS * 24 * 60 * 60,
