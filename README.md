@@ -29,7 +29,8 @@ stay `false` until then.
 ## Run it (local)
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+cp .env.example .env.local   # then put your email in ADMIN_EMAILS
+npm run dev        # http://localhost:3000 — starts an embedded Postgres too
 npm test           # vitest: ledger, guards, and migrations (in-process Postgres)
 npm run typecheck  # tsc --noEmit
 ```

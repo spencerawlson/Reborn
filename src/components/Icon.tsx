@@ -69,6 +69,12 @@ const PATHS = {
   ),
   arrowRight: <path d="M5 12h14m-6-6 6 6-6 6" />,
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof PATHS;

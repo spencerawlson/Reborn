@@ -28,10 +28,13 @@ export function PriceEstimator({
   locale,
   initialTab = "ship",
   initialDestination = "PAP",
+  doorLocked = false,
 }: {
   locale: Locale;
   initialTab?: EstimatorTab;
   initialDestination?: DestinationCode;
+  /** Admin switch: door-to-door suspended in Haiti — only warehouse pickup can be chosen. */
+  doorLocked?: boolean;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<EstimatorTab>(initialTab);
@@ -39,14 +42,14 @@ export function PriceEstimator({
   const [origin, setOrigin] = useState<OriginCode>("YUL");
   const [destination, setDestination] = useState<DestinationCode>(initialDestination);
   const [size, setSize] = useState<SizeCode>("barrel");
-  const [delivery, setDelivery] = useState<"door" | "pickup">("door");
+  const [delivery, setDelivery] = useState<"door" | "pickup">(doorLocked ? "pickup" : "door");
   const [zone, setZone] = useState<ZoneCode>("metro");
   const [number, setNumber] = useState("");
 
   const total = sampleEstimate({ origin, size, delivery, zone });
 
   return (
-    <div id="ship" className="scroll-mt-20 rounded-3xl bg-white p-5 text-slate-900 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_10px_28px_rgba(17,24,39,0.07)] ring-1 ring-slate-200 sm:p-6">
+    <div className="rounded-3xl bg-white p-5 text-slate-900 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_10px_28px_rgba(17,24,39,0.07)] ring-1 ring-slate-200 sm:p-6">
       <div role="tablist" className="grid grid-cols-3 gap-1 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
         {ESTIMATOR_TABS.map(({ key, label: tabLabel }) => (
           <button
@@ -170,20 +173,30 @@ export function PriceEstimator({
 
           <p className={`${label} mt-4`}>{t(locale, "estimateDelivery")}</p>
           <div className="flex flex-wrap gap-2">
-            {(["door", "pickup"] as const).map((d) => (
-              <button
-                key={d}
-                type="button"
-                onClick={() => setDelivery(d)}
-                aria-pressed={delivery === d}
-                className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
-                  delivery === d ? "border-blue-700 bg-blue-50 text-blue-800" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                }`}
-              >
-                {t(locale, d === "door" ? "estimateDoor" : "estimatePickup")}
-              </button>
-            ))}
+            {(["door", "pickup"] as const).map((d) => {
+              const disabled = d === "door" && doorLocked;
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => setDelivery(d)}
+                  aria-pressed={delivery === d}
+                  className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+                    disabled
+                      ? "cursor-not-allowed border-dashed border-slate-200 bg-slate-50 text-slate-400 line-through"
+                      : delivery === d
+                        ? "border-blue-700 bg-blue-50 text-blue-800"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                  }`}
+                >
+                  {t(locale, d === "door" ? "estimateDoor" : "estimatePickup")}
+                </button>
+              );
+            })}
           </div>
+
+          {doorLocked && <p className="mt-2 text-xs font-medium text-amber-700">{t(locale, "doorSuspended")}</p>}
 
           {delivery === "door" && (
             <div className="mt-4">

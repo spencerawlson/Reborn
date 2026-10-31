@@ -5,6 +5,27 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Accounts, door-to-door switch, delivery codes (founder) + build choices (lead)
+- **Founder:** customers sign up and have an account; an admin page can
+  suspend door-to-door delivery when there is political trouble in Haiti;
+  customers can enter a store's delivery one-time code (OTP) on the order
+  page so the warehouse can give it to the driver; the booking card moves
+  below the hero; the hero is scroll-driven (ship sails into port as you
+  scroll) over a vector sky, with the original little plane flying from
+  under "Get a quote".
+- **Lead:** accounts with scrypt password hashes (Node built-in) and
+  database sessions (only a SHA-256 of the token stored; HTTP-only cookie;
+  failed sign-in brake) — chosen over an auth library for now to keep
+  the stack small; revisit with MFA (Phase 7). Each customer gets a suite
+  number (SIA-10001…) and must register a Haiti address. Admins come from
+  `ADMIN_EMAILS`. Door-to-door switch stored in `app_settings`, every
+  change audit-logged; while on, the site shows a notice and only
+  warehouse pickup can be chosen. Incoming orders (pre-alerts) with OTP,
+  scoped per customer; admin sees expected packages with codes.
+- **Lead (dev tooling):** `npm run dev` runs an embedded Postgres (PGlite)
+  in its own process and the app connects over the Postgres protocol, the
+  same path as production.
+
 ## 2026-10-30 — Amazon forwarding: customers buy, sign-up required; repo renamed (founder)
 - **Founder:** customers buy on Amazon themselves and ship to the address
   the company gives them; they must sign up on the website and register

@@ -7,7 +7,6 @@ import {
   mockMoncashProvider,
   mockPaymentProvider,
 } from "../src/lib/providers/index";
-import { getSession } from "../src/lib/auth/session";
 
 describe("live-money switch", () => {
   it("returns mocks unless LIVE_PAYMENTS_ENABLED is exactly 'true'", () => {
@@ -23,17 +22,6 @@ describe("live-money switch", () => {
     const env = { LIVE_PAYMENTS_ENABLED: "true" };
     expect(() => getPaymentProvider(env)).toThrow("no live payment provider");
     expect(() => getPayoutProvider(env)).toThrow("no live payout provider");
-  });
-});
-
-describe("getSession", () => {
-  it("has no session by default", async () => {
-    expect(await getSession({})).toBeNull();
-  });
-
-  it("allows the admin preview only outside production", async () => {
-    expect((await getSession({ ADMIN_DEV_PREVIEW: "true", NODE_ENV: "development" }))?.roles).toEqual(["admin"]);
-    expect(await getSession({ ADMIN_DEV_PREVIEW: "true", NODE_ENV: "production" })).toBeNull();
   });
 });
 

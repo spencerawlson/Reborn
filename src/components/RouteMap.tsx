@@ -26,7 +26,15 @@ function arc(a: City, b: City, bend: number) {
 // Haiti labels sit to the left (over the sea) so they never cover the Dominican Republic.
 const LABEL_SIDE: Record<string, "start" | "end"> = { yul: "start", mia: "end", cap: "end", pap: "end" };
 
-export function RouteMap({ locale, department = null }: { locale: Locale; department?: string | null }) {
+export function RouteMap({
+  locale,
+  department = null,
+  doorLocked = false,
+}: {
+  locale: Locale;
+  department?: string | null;
+  doorLocked?: boolean;
+}) {
   const c = MAIN_MAP.cities;
   const routes = [
     arc(byId(c, "yul"), byId(c, "cap"), -0.22),
@@ -90,7 +98,7 @@ export function RouteMap({ locale, department = null }: { locale: Locale; depart
         <p className="text-sm text-slate-500">
           <span className="font-semibold text-blue-700">{t(locale, "kpi2Value")}</span> {t(locale, "kpi2Label")}
         </p>
-        <HaitiMap locale={locale} initialSelected={department} />
+        <HaitiMap locale={locale} initialSelected={department} doorLocked={doorLocked} />
         <figcaption className="mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm text-slate-500">
           <span className="inline-flex items-center gap-2">
             <span className="h-3 w-3 rounded-full border-[3px] border-navy-900 bg-white" /> {t(locale, "legendWarehouse")}

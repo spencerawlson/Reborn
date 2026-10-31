@@ -1,9 +1,10 @@
 /**
  * Hero background scene (vector only): port cranes and container stacks,
- * a container ship sailing across on moving waves, a cargo plane with a
- * dashed contrail, and palm trees on the Haiti side. Drawn in light tints
- * over the navy hero so the headline stays readable. Animations live in
- * globals.css (.scene-*), and stop for prefers-reduced-motion.
+ * palm trees, waves and a container ship. Scroll-driven via the CSS
+ * variable --p (0 at the top → 1, set by HeroScroll): scrolling down, the
+ * ship sails from the right into port; scrolling up reverses it. The
+ * airplane is HeroPlane (takes off from under the CTA). Waves and the
+ * ship's bob are time-based (globals.css .scene-*).
  */
 const CONTAINER_COLORS = ["#dc2626", "#2563eb", "#f59e0b", "#0ea5e9", "#e11d48", "#3b82f6"];
 
@@ -56,9 +57,9 @@ export function HeroScene() {
   return (
     <svg
       aria-hidden
-      viewBox="0 0 1440 260"
+      viewBox="0 -200 1440 460"
       preserveAspectRatio="xMidYMax slice"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[220px] w-full sm:h-[260px]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[380px] w-full sm:h-[460px]"
     >
       {/* Port: cranes and container stacks */}
       <Crane x={150} />
@@ -77,20 +78,10 @@ export function HeroScene() {
       <Palm x={1330} />
       <Palm x={1395} s={0.7} />
 
-      {/* Cargo plane with dashed contrail */}
-      <g className="scene-plane">
-        <path d="M-160 0 H-24" stroke="#bfdbfe" strokeWidth="2" strokeDasharray="6 7" opacity="0.6" />
-        <g fill="#e0f2fe" opacity="0.9">
-          <path d="M-24 -4 H22 C 30 -4, 36 0, 36 2 C 36 4, 30 6, 22 6 H-24 L-30 -6 H-24z" />
-          <path d="M2 -2 L-10 -22 H-2 L16 -2z" />
-          <path d="M2 4 L-10 22 H-2 L16 4z" />
-          <path d="M-24 -2 L-30 -14 H-25 L-18 -2z" />
-        </g>
-      </g>
-
-      {/* Ship (sails across, bobbing) */}
-      <g className="scene-ship">
+      {/* Ship: waits offshore at the top, sails left into port as you scroll down */}
+      <g style={{ transform: "translate(calc(1600px - var(--p, 0) * 970px), 238px)" }}>
         <g className="scene-bob">
+          <g transform="scale(-1 1)">
           <rect x="-2" y="-62" width="22" height="30" rx="2" fill="#e0f2fe" opacity="0.95" />
           <rect x="3" y="-56" width="12" height="5" rx="1" fill="#0b1b3f" opacity="0.6" />
           <ContainerRow x={26} y={-46} count={8} w={20} h={12} />
@@ -98,6 +89,7 @@ export function HeroScene() {
           <ContainerRow x={48} y={-74} count={3} w={20} h={12} offset={1} />
           <path d="M-30 -32 H210 L190 0 H-14z" fill="#f8fafc" />
           <path d="M-26 -26 H205" stroke="#dc2626" strokeWidth="3" />
+          </g>
         </g>
       </g>
 

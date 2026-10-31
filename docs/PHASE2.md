@@ -30,13 +30,16 @@ they will in real life:
 
 ### 2a — Accounts, sign-in, languages
 - ✅ Postgres client (`src/lib/db`) and migration runner (`npm run db:migrate`).
-- Sign-in: email or phone + password (argon2id), database sessions in an
-  HTTP-only cookie, password reset. Maintained library (evaluate Better
-  Auth). Replaces `ADMIN_DEV_PREVIEW`.
+- ✅ Sign-up / sign-in / sign-out: email + password (scrypt), database
+  sessions in an HTTP-only cookie, Haiti address on file, personal suite.
+  ⏳ Password reset (needs an email provider).
+- ✅ Admin role via `ADMIN_EMAILS`; `/admin` requires it.
+- ✅ Door-to-door switch (admin, audit-logged) — ahead of 2b zones.
+- ✅ Incoming orders + delivery OTP (start of 2g).
 - Roles: `customer` (sender), `staff` (counter and warehouse, per
   warehouse), `driver` (employee or contractor), `admin`. Staff and
   drivers see only their site's or their own work.
-- Locale routing `/{locale}/...`; all page text in the dictionaries;
+- ✅ Locale routing `/{locale}/...`; all page text in the dictionaries;
   Creole default for Haiti-side screens and recipient messages.
 - **Done when:** each role can sign in and sees only what it should.
 

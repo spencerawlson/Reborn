@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { getSessionSafe } from "@/lib/auth/session";
 import { LOCALES, t, type Locale } from "@/lib/i18n/index";
+import { Icon } from "./Icon";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 import { TabBar } from "./TabBar";
 
 /** White top bar: logo, a few links, language, and the one primary action. */
-export function SiteHeader({ locale }: { locale: Locale }) {
+export async function SiteHeader({ locale }: { locale: Locale }) {
   const base = `/${locale}`;
+  const session = await getSessionSafe();
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
@@ -23,6 +26,13 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={locale} />
+          <Link
+            href={session ? `${base}/account` : `${base}/signin`}
+            className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:inline-flex"
+          >
+            <Icon name="user" size={18} />
+            {session ? session.displayName.split(" ")[0] : t(locale, "navSignIn")}
+          </Link>
           <Link
             href={`${base}#ship`}
             className="hidden rounded-full bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-navy-800 sm:inline-flex"

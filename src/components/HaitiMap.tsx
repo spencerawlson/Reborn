@@ -17,7 +17,15 @@ import { HAITI_MAP } from "./map-data";
 // Department label nudges where the centroid collides with a city dot.
 const LABEL_NUDGE: Record<string, [number, number]> = { "HT-OU": [4, 13] };
 
-export function HaitiMap({ locale, initialSelected = null }: { locale: Locale; initialSelected?: string | null }) {
+export function HaitiMap({
+  locale,
+  initialSelected = null,
+  doorLocked = false,
+}: {
+  locale: Locale;
+  initialSelected?: string | null;
+  doorLocked?: boolean;
+}) {
   const [selected, setSelected] = useState<string | null>(initialSelected);
   const dept = selected ? HAITI_MAP.departments.find((d) => d.iso === selected) : undefined;
   const info = selected ? DEPARTMENTS[selected] : undefined;
@@ -86,10 +94,19 @@ export function HaitiMap({ locale, initialSelected = null }: { locale: Locale; i
             </div>
             <ul className="mt-3 grid gap-1.5 text-sm text-slate-600">
               <li className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                  <Icon name="check" size={13} strokeWidth={3} />
-                </span>
-                {t(locale, "deptDoor")}
+                {doorLocked ? (
+                  <>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-xs font-black text-amber-700">!</span>
+                    <span className="font-medium text-amber-800">{t(locale, "doorSuspended")}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                      <Icon name="check" size={13} strokeWidth={3} />
+                    </span>
+                    {t(locale, "deptDoor")}
+                  </>
+                )}
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="pin" size={18} className="text-blue-700" />
