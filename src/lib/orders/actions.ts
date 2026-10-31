@@ -28,6 +28,7 @@ export async function addOrderAction(_prev: OrderFormState, form: FormData): Pro
     trackingNumber: text(form, "trackingNumber"),
     description: text(form, "description"),
     value: text(form, "value"),
+    notifyPhone: text(form, "notifyPhone"),
   };
   const result = await createOrder(await getDb(), session.userId, input);
   if (!result.ok) return { error: result.error, prohibited: result.prohibited, saved: false, values: input };

@@ -6,6 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   buildOrderEmail,
+  buildOrderStatusWhatsApp,
   buildOrderWhatsApp,
   formatDollars,
   notifyNewOrder,
@@ -99,6 +100,23 @@ describe("buildOrderWhatsApp", () => {
       "SIA-10482",
       "MIA",
       "Amazon",
+      "SIA-T00000042",
+    ]);
+  });
+});
+
+describe("buildOrderStatusWhatsApp", () => {
+  it("builds a customer template payload with the four parameters in order", () => {
+    const payload = buildOrderStatusWhatsApp(
+      { trackingCode: "SIA-T00000042", store: "Amazon", customerName: "Marie Joseph", status: "Received" },
+      "order_update",
+      "+50900000000",
+    ) as any;
+    expect(payload.template.name).toBe("order_update");
+    expect(payload.template.components[0].parameters.map((p: any) => p.text)).toEqual([
+      "Marie Joseph",
+      "Amazon",
+      "Received",
       "SIA-T00000042",
     ]);
   });

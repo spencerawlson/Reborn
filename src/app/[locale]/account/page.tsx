@@ -122,6 +122,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
                     <p className="text-sm text-slate-500">
                       {warehouseCity(locale, order.warehouse === "MIA" ? "MIA" : "YUL")}
                       {order.trackingNumber ? ` · ${order.trackingNumber}` : ""}
+                      {` · ${t(locale, ({ expected: "orderStatusExpected", received: "orderStatusReceived", repackaging: "orderStatusRepackaging", shipped: "orderStatusShipped", delivered: "orderStatusDelivered", cancelled: "orderStatusCancelled" } as const)[order.status])}`}
                     </p>
                   </div>
                   <span className="flex items-center gap-2 text-sm">
@@ -136,7 +137,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
             <details className="mt-4 rounded-3xl bg-white p-6 ring-1 ring-slate-200" open={orders.length === 0}>
               <summary className="cursor-pointer font-semibold text-blue-700">{t(locale, "orderAdd")}</summary>
               <div className="mt-5">
-                <AddOrderForm locale={locale} />
+                <AddOrderForm locale={locale} defaultPhone={account.phone} />
               </div>
             </details>
           </section>

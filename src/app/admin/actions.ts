@@ -12,6 +12,7 @@ import {
   type WarehouseAddress,
   type WarehouseAddresses,
 } from "@/lib/settings/index";
+import { NEXT_ORDER_STATUS, setOrderStatus, type OrderStatus } from "@/lib/orders/index";
 
 /** Suspend or reopen door-to-door delivery in Haiti. Admin only; audit-logged. */
 export async function setDoorDeliveryAction(form: FormData): Promise<void> {
@@ -28,6 +29,23 @@ export async function setDoorDeliveryAction(form: FormData): Promise<void> {
 export interface WarehouseFormState {
   error: string | null;
   saved: boolean;
+}
+
+/**
+ * Staff-only status step for one incoming package. Only the next step in
+ * the flow is accepted (see NEXT_ORDER_STATUS); the customer sees the new
+ * status in their app and gets a WhatsApp update, best-effort.
+ */
+export async function setOrderStatusAction(form: FormData): Promise<void> {
+  const session = await getSession();
+  if (!session || !(hasRole(session, "admin") || hasRole(session, "staff"))) throw new Error("forbidden");
+  const orderId = String(form.get("orderId") ?? "");
+  const toStatus = String(form.get("toStatus") ?? "") as OrderStatus;
+  if (!(Object.values(NEXT_ORDER_STATUS) as string[]).includes(toStatus)) throw new Error("forbidden");
+  const result = await setOrderStatus(await getDb(), session.userId, orderId, toStatus);
+  if (!result.ok) throw new Error("forbidden");
+  revalidatePath("/admin");
+  revalidatePath("/admin/history");
 }
 
 /** Set the Miami and Montreal receiving addresses customers see. Admin only; audit-logged. */

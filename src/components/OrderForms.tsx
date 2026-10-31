@@ -19,7 +19,7 @@ function Label({ locale, htmlFor, k, optional = false }: { locale: Locale; htmlF
   );
 }
 
-export function AddOrderForm({ locale }: { locale: Locale }) {
+export function AddOrderForm({ locale, defaultPhone }: { locale: Locale; defaultPhone?: string | null }) {
   const [state, action, pending] = useActionState(addOrderAction, initial);
   const v = state.values;
   return (
@@ -54,6 +54,10 @@ export function AddOrderForm({ locale }: { locale: Locale }) {
           <Label locale={locale} htmlFor="trackingNumber" k="fieldTracking" optional />
           <input id="trackingNumber" name="trackingNumber" maxLength={80} defaultValue={v.trackingNumber} className={`${input} font-mono`} />
         </div>
+      </div>
+      <div>
+        <Label locale={locale} htmlFor="notifyPhone" k="fieldNotifyPhone" optional />
+        <input id="notifyPhone" name="notifyPhone" type="tel" autoComplete="tel" maxLength={40} defaultValue={v.notifyPhone ?? defaultPhone ?? ""} className={input} />
       </div>
       <div className="grid gap-4 sm:grid-cols-[1fr_10rem]">
         <div>

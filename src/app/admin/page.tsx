@@ -7,8 +7,8 @@ import { getDb } from "@/lib/db/index";
 import { t } from "@/lib/i18n/index";
 import { getDoorDelivery, getWarehouseAddresses } from "@/lib/settings/index";
 import { WarehouseForm } from "@/components/WarehouseForm";
-import { listExpectedPackages } from "@/lib/orders/index";
-import { setDoorDeliveryAction } from "./actions";
+import { listExpectedPackages, listInProgressPackages, NEXT_ORDER_STATUS, type OrderStatus } from "@/lib/orders/index";
+import { setDoorDeliveryAction, setOrderStatusAction } from "./actions";
 
 // Auth and figures must be evaluated per request, never frozen at build time.
 export const dynamic = "force-dynamic";
@@ -29,12 +29,26 @@ export default async function AdminPage() {
 
   const locale = "en" as const;
   const db = await getDb();
-  const [stats, door, expected, addresses] = await Promise.all([
+  const [stats, door, expected, inProgress, addresses] = await Promise.all([
     getAdminStats(),
     getDoorDelivery(db),
     listExpectedPackages(db),
+    listInProgressPackages(db),
     getWarehouseAddresses(db),
   ]);
+  const NEXT_LABEL: Record<string, string> = {
+    received: "adminMarkRepackaging",
+    repackaging: "adminMarkShipped",
+    shipped: "adminMarkDelivered",
+  };
+  const STATUS_LABEL: Record<OrderStatus, string> = {
+    expected: "orderStatusExpected",
+    received: "orderStatusReceived",
+    repackaging: "orderStatusRepackaging",
+    shipped: "orderStatusShipped",
+    delivered: "orderStatusDelivered",
+    cancelled: "orderStatusCancelled",
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -145,9 +159,18 @@ export default async function AdminPage() {
                         )}
                       </td>
                       <td className="py-3 text-right">
-                        <Link href={`/admin/labels/${p.id}`} className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800">
-                          Label
-                        </Link>
+                        <span className="inline-flex flex-wrap justify-end gap-2">
+                          <form action={setOrderStatusAction} className="inline">
+                            <input type="hidden" name="orderId" value={p.id} />
+                            <input type="hidden" name="toStatus" value="received" />
+                            <button className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700">
+                              {t(locale, "adminMarkReceived")}
+                            </button>
+                          </form>
+                          <Link href={`/admin/labels/${p.id}`} className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800">
+                            Label
+                          </Link>
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -155,6 +178,71 @@ export default async function AdminPage() {
               </table>
             </div>
           )}
+        </section>
+
+        {/* In progress: received, repackaging, or shipped — still active, not History. */}
+        <section className="mt-8 rounded-3xl bg-white p-6 ring-1 ring-slate-200">
+          <h2 className="text-lg font-semibold text-navy-900">
+            {t(locale, "adminInProgressTitle")} <span className="text-slate-400">· {inProgress.length}</span>
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">{t(locale, "adminInProgressBody")}</p>
+          {inProgress.length === 0 ? (
+            <p className="mt-4 text-sm text-slate-400">{t(locale, "adminNoInProgress")}</p>
+          ) : (
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead className="text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th className="py-2 pr-4">Suite</th>
+                    <th className="py-2 pr-4">{t(locale, "adminColCustomer")}</th>
+                    <th className="py-2 pr-4">{t(locale, "adminColOrder")}</th>
+                    <th className="py-2 pr-4">Status</th>
+                    <th className="py-2" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {inProgress.map((p) => {
+                    const next = NEXT_ORDER_STATUS[p.status];
+                    return (
+                      <tr key={p.id}>
+                        <td className="py-3 pr-4 font-mono font-semibold text-navy-900">
+                          {p.suiteCode ?? "—"} <span className="font-sans text-xs font-normal text-slate-400">{p.warehouse}</span>
+                        </td>
+                        <td className="py-3 pr-4">
+                          <Link href={`/admin/customers/${p.userId}`} className="hover:underline">{p.customerName}</Link>
+                          <span className="block text-xs text-slate-400">{p.notifyPhone ?? p.customerPhone ?? "—"}</span>
+                        </td>
+                        <td className="py-3 pr-4">
+                          {p.store}{p.description ? ` · ${p.description}` : ""}
+                          {p.trackingNumber && <span className="block font-mono text-xs text-slate-400">{p.trackingNumber}</span>}
+                        </td>
+                        <td className="py-3 pr-4 font-semibold">{t(locale, STATUS_LABEL[p.status] as never)}</td>
+                        <td className="py-3 text-right">
+                          <span className="inline-flex flex-wrap justify-end gap-2">
+                            {next && (
+                              <form action={setOrderStatusAction} className="inline">
+                                <input type="hidden" name="orderId" value={p.id} />
+                                <input type="hidden" name="toStatus" value={next} />
+                                <button className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700">
+                                  {t(locale, NEXT_LABEL[p.status] as never)}
+                                </button>
+                              </form>
+                            )}
+                            <Link href={`/admin/labels/${p.id}`} className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800">
+                              Label
+                            </Link>
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <p className="mt-4 text-sm">
+            <Link href="/admin/history" className="font-semibold text-blue-700 hover:underline">{t(locale, "adminHistoryTitle")} →</Link>
+          </p>
         </section>
 
         {admin && stats.mock && (

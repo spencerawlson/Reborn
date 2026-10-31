@@ -5,10 +5,34 @@
  */
 import type { Db } from "../db/index";
 import type { DictionaryKey } from "../i18n/index";
-import { notifyNewOrder, type OrderAlertDetails } from "../notify/index";
+import {
+  notifyNewOrder,
+  sendOrderStatusWhatsApp,
+  type OrderAlertDetails,
+  type OrderStatusUpdate,
+} from "../notify/index";
 import { findProhibited } from "../shipping/prohibited";
 
 export type Warehouse = "MIA" | "YUL";
+
+export type OrderStatus = "expected" | "received" | "repackaging" | "shipped" | "delivered" | "cancelled";
+
+/** The only forward step allowed from each active status. */
+export const NEXT_ORDER_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
+  expected: "received",
+  received: "repackaging",
+  repackaging: "shipped",
+  shipped: "delivered",
+};
+
+export const ORDER_STATUS_WORD: Record<OrderStatus, string> = {
+  expected: "Expected",
+  received: "Received",
+  repackaging: "Repackaging",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+};
 
 export interface OrderInput {
   warehouse: string;
@@ -17,6 +41,8 @@ export interface OrderInput {
   trackingNumber: string;
   description: string;
   value: string; // dollars as typed, e.g. "49.99"
+  /** Phone for WhatsApp status updates, per order; blank falls back to the account phone. */
+  notifyPhone?: string;
 }
 
 export interface IncomingOrder {
@@ -30,14 +56,25 @@ export interface IncomingOrder {
   declaredValueMinor: bigint | null;
   deliveryOtp: string | null;
   otpUpdatedAt: Date | null;
-  status: "expected" | "received" | "cancelled";
+  status: OrderStatus;
+  notifyPhone: string | null;
+  receivedAt: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExpectedPackage extends IncomingOrder {
   userId: string;
   suiteCode: string | null;
   customerName: string;
+  /** Account phone (fallback when the order has no per-order phone). */
+  customerPhone: string | null;
+}
+
+export interface OrderStatusHistoryEntry {
+  fromStatus: OrderStatus | null;
+  toStatus: OrderStatus;
+  changedAt: Date;
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -61,6 +98,7 @@ export function validateOrder(input: OrderInput): DictionaryKey | null {
   if (!input.store.trim()) return "errRequired";
   if (input.store.length > 80 || input.orderNumber.length > 80 || input.trackingNumber.length > 80) return "errRequired";
   if (input.description.length > 300) return "errRequired";
+  if ((input.notifyPhone ?? "").trim().length > 40) return "errRequired";
   if (parseDollars(input.value) === undefined) return "errValue";
   return null;
 }
@@ -77,11 +115,15 @@ type Row = {
   delivery_otp: string | null;
   otp_updated_at: Date | null;
   status: IncomingOrder["status"];
+  notify_phone: string | null;
+  received_at: Date | null;
   created_at: Date;
+  updated_at: Date;
 };
 
 const COLUMNS = `o.id, o.tracking_code, o.warehouse, o.store, o.order_number, o.tracking_number, o.description,
-  o.declared_value_minor::text AS declared_value_minor, o.delivery_otp, o.otp_updated_at, o.status, o.created_at`;
+  o.declared_value_minor::text AS declared_value_minor, o.delivery_otp, o.otp_updated_at, o.status,
+  o.notify_phone, o.received_at, o.created_at, o.updated_at`;
 
 function toOrder(r: Row): IncomingOrder {
   return {
@@ -96,7 +138,10 @@ function toOrder(r: Row): IncomingOrder {
     deliveryOtp: r.delivery_otp,
     otpUpdatedAt: r.otp_updated_at ? new Date(r.otp_updated_at) : null,
     status: r.status,
+    notifyPhone: r.notify_phone,
+    receivedAt: r.received_at ? new Date(r.received_at) : null,
     createdAt: new Date(r.created_at),
+    updatedAt: new Date(r.updated_at),
   };
 }
 
@@ -113,8 +158,8 @@ export async function createOrder(
   const blank = (s: string) => (s.trim() ? s.trim() : null);
   const value = parseDollars(input.value);
   const rows = await db.query<{ id: string }>(
-    `INSERT INTO incoming_orders (user_id, warehouse, store, order_number, tracking_number, description, declared_value_minor)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+    `INSERT INTO incoming_orders (user_id, warehouse, store, order_number, tracking_number, description, declared_value_minor, notify_phone)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
     [
       userId,
       input.warehouse,
@@ -123,6 +168,7 @@ export async function createOrder(
       blank(input.trackingNumber),
       blank(input.description),
       value === null || value === undefined ? null : value.toString(),
+      blank(input.notifyPhone ?? ""),
     ],
   );
   // Best-effort admin alert (email + WhatsApp, when configured). A failure
@@ -192,8 +238,8 @@ export async function setOrderOtp(
 
 /** Admin / warehouse view: everything still expected, with suite and delivery code. */
 export async function listExpectedPackages(db: Db): Promise<ExpectedPackage[]> {
-  const rows = await db.query<Row & { user_id: string; suite_code: string | null; display_name: string }>(
-    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name
+  const rows = await db.query<Row & { user_id: string; suite_code: string | null; display_name: string; phone: string | null }>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name, u.phone
        FROM incoming_orders o
        JOIN users u ON u.id = o.user_id
        LEFT JOIN customer_profiles p ON p.user_id = o.user_id
@@ -201,5 +247,113 @@ export async function listExpectedPackages(db: Db): Promise<ExpectedPackage[]> {
       ORDER BY o.warehouse, o.created_at
       LIMIT 500`,
   );
-  return rows.map((r) => ({ ...toOrder(r), userId: r.user_id, suiteCode: r.suite_code, customerName: r.display_name }));
+  return rows.map((r) => ({ ...toOrder(r), userId: r.user_id, suiteCode: r.suite_code, customerName: r.display_name, customerPhone: r.phone }));
+}
+
+type StaffRow = Row & { user_id: string; suite_code: string | null; display_name: string; phone: string | null };
+
+function toStaffPackage(r: StaffRow): ExpectedPackage {
+  return { ...toOrder(r), userId: r.user_id, suiteCode: r.suite_code, customerName: r.display_name, customerPhone: r.phone };
+}
+
+/** Admin view: packages received, being repackaged, or shipped — active work, not Expected and not History. */
+export async function listInProgressPackages(db: Db): Promise<ExpectedPackage[]> {
+  const rows = await db.query<StaffRow>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name, u.phone
+       FROM incoming_orders o
+       JOIN users u ON u.id = o.user_id
+       LEFT JOIN customer_profiles p ON p.user_id = o.user_id
+      WHERE o.status IN ('received', 'repackaging', 'shipped')
+      ORDER BY o.updated_at DESC
+      LIMIT 500`,
+  );
+  return rows.map(toStaffPackage);
+}
+
+/** History view: delivered (and cancelled) packages only. Reports are pulled from here. */
+export async function listHistoryPackages(db: Db): Promise<ExpectedPackage[]> {
+  const rows = await db.query<StaffRow>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name, u.phone
+       FROM incoming_orders o
+       JOIN users u ON u.id = o.user_id
+       LEFT JOIN customer_profiles p ON p.user_id = o.user_id
+      WHERE o.status IN ('delivered', 'cancelled')
+      ORDER BY o.updated_at DESC
+      LIMIT 500`,
+  );
+  return rows.map(toStaffPackage);
+}
+
+/** Status changes for one order, oldest first, for the History report. */
+export async function listOrderStatusHistory(db: Db, orderId: string): Promise<OrderStatusHistoryEntry[]> {
+  if (!isOrderId(orderId)) return [];
+  const rows = await db.query<{ from_status: OrderStatus | null; to_status: OrderStatus; changed_at: Date }>(
+    `SELECT from_status, to_status, changed_at FROM order_status_history WHERE order_id = $1 ORDER BY changed_at ASC`,
+    [orderId],
+  );
+  return rows.map((r) => ({ fromStatus: r.from_status, toStatus: r.to_status, changedAt: new Date(r.changed_at) }));
+}
+
+type FetchImpl = (url: string, init?: RequestInit) => Promise<{ ok: boolean; status: number }>;
+const defaultFetch: FetchImpl = (url, init) =>
+  fetch(url, init).then((r) => ({ ok: r.ok, status: r.status }));
+
+/**
+ * Staff-only status step (caller checks staff). Only the next step in the
+ * flow is allowed, so a package cannot skip or go backwards. The change is
+ * recorded in order_status_history, the customer sees the new status in
+ * their app, and — best-effort, never blocking the change — they get a
+ * WhatsApp to the order's phone field, falling back to their account phone.
+ */
+export async function setOrderStatus(
+  db: Db,
+  staffUserId: string | null,
+  orderId: string,
+  toStatus: OrderStatus,
+  fetchImpl: FetchImpl = defaultFetch,
+): Promise<{ ok: true; status: OrderStatus } | { ok: false; error: DictionaryKey }> {
+  if (!isOrderId(orderId)) return { ok: false, error: "errRequired" };
+  const current = await db.query<{ status: OrderStatus }>(`SELECT status FROM incoming_orders WHERE id = $1`, [orderId]);
+  if (current.length === 0) return { ok: false, error: "errRequired" };
+  const fromStatus = current[0].status;
+  if (NEXT_ORDER_STATUS[fromStatus] !== toStatus) return { ok: false, error: "errRequired" };
+  const updated = await db.query<{ id: string }>(
+    `WITH updated AS (
+       UPDATE incoming_orders
+          SET status = $2::varchar,
+              received_at = CASE WHEN $2::varchar = 'received' THEN now() ELSE received_at END
+        WHERE id = $1::uuid AND status = $3::varchar
+        RETURNING id
+     )
+     INSERT INTO order_status_history (order_id, from_status, to_status, changed_by)
+     SELECT id, $3::varchar, $2::varchar, $4::uuid FROM updated RETURNING order_id AS id`,
+    [orderId, toStatus, fromStatus, staffUserId],
+  );
+  if (updated.length === 0) return { ok: false, error: "errRequired" };
+  // Customer notification: in-app status is already visible; WhatsApp is best-effort.
+  try {
+    const info = await db.query<Row & { display_name: string; phone: string | null }>(
+      `SELECT ${COLUMNS}, u.display_name, u.phone
+         FROM incoming_orders o JOIN users u ON u.id = o.user_id
+        WHERE o.id = $1`,
+      [orderId],
+    );
+    const r = info[0];
+    if (r) {
+      const order = toOrder(r);
+      const to = order.notifyPhone?.trim() || r.phone;
+      if (to) {
+        const update: OrderStatusUpdate = {
+          trackingCode: order.trackingCode,
+          store: order.store,
+          customerName: r.display_name,
+          status: ORDER_STATUS_WORD[toStatus],
+        };
+        await sendOrderStatusWhatsApp(fetchImpl, update, to);
+      }
+    }
+  } catch {
+    // Notification only — the status change already succeeded.
+  }
+  return { ok: true, status: toStatus };
 }

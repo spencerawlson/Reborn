@@ -12,6 +12,9 @@ import { getOrder } from "@/lib/orders/index";
 const STATUS: Record<string, DictionaryKey> = {
   expected: "orderStatusExpected",
   received: "orderStatusReceived",
+  repackaging: "orderStatusRepackaging",
+  shipped: "orderStatusShipped",
+  delivered: "orderStatusDelivered",
   cancelled: "orderStatusCancelled",
 };
 

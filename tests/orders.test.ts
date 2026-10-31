@@ -14,9 +14,13 @@ import {
   createOrder,
   getOrder,
   listExpectedPackages,
+  listHistoryPackages,
+  listInProgressPackages,
+  listOrderStatusHistory,
   listOrders,
   parseDollars,
   setOrderOtp,
+  setOrderStatus,
   validateOrder,
 } from "../src/lib/orders/index";
 
@@ -146,5 +150,64 @@ describe("delivery codes (OTP)", () => {
     const created = await createOrder(db, marie, order);
     if (!created.ok) throw new Error("create failed");
     await expect(db.query(`UPDATE incoming_orders SET delivery_otp = 'x' WHERE id = $1`, [created.id])).rejects.toThrow();
+  });
+});
+
+describe("status flow", () => {
+  it("saves the per-order phone, moves only forward, records history, and lands delivered in History", async () => {
+    const created = await createOrder(db, marie, { ...order, trackingNumber: "TBAFLOW", notifyPhone: "+509 1111 2222" });
+    if (!created.ok) throw new Error("create failed");
+    expect((await getOrder(db, marie, created.id))!.notifyPhone).toBe("+509 1111 2222");
+    // Skipping a step is rejected.
+    expect(await setOrderStatus(db, null, created.id, "shipped")).toEqual({ ok: false, error: "errRequired" });
+    const noop = async () => ({ ok: true, status: 200 });
+    expect(await setOrderStatus(db, null, created.id, "received", noop)).toEqual({ ok: true, status: "received" });
+    expect((await listExpectedPackages(db)).map((p) => p.id)).not.toContain(created.id);
+    expect((await listInProgressPackages(db)).map((p) => p.id)).toContain(created.id);
+    expect(await setOrderStatus(db, null, created.id, "repackaging", noop)).toEqual({ ok: true, status: "repackaging" });
+    expect(await setOrderStatus(db, null, created.id, "shipped", noop)).toEqual({ ok: true, status: "shipped" });
+    expect(await setOrderStatus(db, null, created.id, "delivered", noop)).toEqual({ ok: true, status: "delivered" });
+    expect((await listInProgressPackages(db)).map((p) => p.id)).not.toContain(created.id);
+    expect((await listHistoryPackages(db)).map((p) => p.id)).toContain(created.id);
+    expect((await listOrderStatusHistory(db, created.id)).map((h) => h.toStatus)).toEqual([
+      "received",
+      "repackaging",
+      "shipped",
+      "delivered",
+    ]);
+    // Delivered is terminal: no further step.
+    expect(await setOrderStatus(db, null, created.id, "delivered", noop)).toEqual({ ok: false, error: "errRequired" });
+  });
+
+  it("sends the customer WhatsApp to the per-order phone on a status step", async () => {
+    const created = await createOrder(db, marie, { ...order, trackingNumber: "TBAWHATS", notifyPhone: "+509 3333 4444" });
+    if (!created.ok) throw new Error("create failed");
+    const calls: { url: string; init: any }[] = [];
+    const fake = async (url: string, init?: any) => {
+      calls.push({ url, init });
+      return { ok: true, status: 200 };
+    };
+    const prev = { token: process.env.WHATSAPP_TOKEN, phone: process.env.WHATSAPP_PHONE_NUMBER_ID, tpl: process.env.WHATSAPP_CUSTOMER_TEMPLATE };
+    process.env.WHATSAPP_TOKEN = "tok";
+    process.env.WHATSAPP_PHONE_NUMBER_ID = "12345";
+    process.env.WHATSAPP_CUSTOMER_TEMPLATE = "order_update";
+    try {
+      expect(await setOrderStatus(db, null, created.id, "received", fake)).toEqual({ ok: true, status: "received" });
+    } finally {
+      if (prev.token === undefined) delete process.env.WHATSAPP_TOKEN; else process.env.WHATSAPP_TOKEN = prev.token;
+      if (prev.phone === undefined) delete process.env.WHATSAPP_PHONE_NUMBER_ID; else process.env.WHATSAPP_PHONE_NUMBER_ID = prev.phone;
+      if (prev.tpl === undefined) delete process.env.WHATSAPP_CUSTOMER_TEMPLATE; else process.env.WHATSAPP_CUSTOMER_TEMPLATE = prev.tpl;
+    }
+    expect(calls).toHaveLength(1);
+    expect(calls[0].url).toBe("https://graph.facebook.com/v21.0/12345/messages");
+    const body = JSON.parse(calls[0].init.body);
+    expect(body.to).toBe("+50933334444");
+    expect(body.template.name).toBe("order_update");
+    expect(body.template.components[0].parameters.map((p: any) => p.text)).toEqual([
+      "Marie Joseph",
+      "Amazon",
+      "Received",
+      expect.stringMatching(/^SIA-/),
+    ]);
   });
 });

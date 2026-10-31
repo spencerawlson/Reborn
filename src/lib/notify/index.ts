@@ -42,13 +42,18 @@ export function adminEmails(): string[] {
     .filter(Boolean);
 }
 
+/** Strip spaces, dashes, and parentheses from one phone number. */
+export function normalizePhoneNumber(value: string): string {
+  return value.trim().replace(/[\s()-]/g, "");
+}
+
 /** WhatsApp alert recipients: comma-separated, same shape as ADMIN_EMAILS.
  *  Formatting is normalized (spaces, dashes, parentheses stripped) so a
  *  number typed as "+509 3217 1628" still reaches the API as "+50932171628". */
 export function whatsappRecipients(): string[] {
   return (process.env.WHATSAPP_TO ?? "")
     .split(",")
-    .map((s) => s.trim().replace(/[\s()-]/g, ""))
+    .map((s) => normalizePhoneNumber(s))
     .filter(Boolean);
 }
 
@@ -158,6 +163,70 @@ export async function sendOrderWhatsApp(
       ),
     );
     return results.some((r) => r.status === "fulfilled" && r.value.ok);
+  } catch {
+    return false;
+  }
+}
+
+export interface OrderStatusUpdate {
+  trackingCode: string;
+  store: string;
+  customerName: string;
+  /** Plain-English status word shown to the customer, e.g. "Received". */
+  status: string;
+}
+
+/**
+ * Customer status update: template parameters, in order: customer, store,
+ * status, tracking code. The template itself (e.g. order_update) is
+ * created and approved in Meta; this only fills its parameters.
+ * English-only, like the admin alerts.
+ */
+export function buildOrderStatusWhatsApp(
+  d: OrderStatusUpdate,
+  template: string,
+  to: string,
+): Record<string, unknown> {
+  const params = [d.customerName, d.store, d.status, d.trackingCode];
+  return {
+    messaging_product: "whatsapp",
+    to,
+    type: "template",
+    template: {
+      name: template,
+      language: { code: "en_US" },
+      components: [
+        {
+          type: "body",
+          parameters: params.map((text) => ({ type: "text", text })),
+        },
+      ],
+    },
+  };
+}
+
+/** Best-effort WhatsApp status update to one customer number. Never throws. */
+export async function sendOrderStatusWhatsApp(
+  fetchImpl: FetchImpl,
+  d: OrderStatusUpdate,
+  toRaw: string,
+): Promise<boolean> {
+  const token = process.env.WHATSAPP_TOKEN ?? "";
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID ?? "";
+  const template = process.env.WHATSAPP_CUSTOMER_TEMPLATE ?? "";
+  const to = normalizePhoneNumber(toRaw);
+  if (!token || !phoneId || !template || !to) return false;
+  try {
+    const res = await fetchImpl(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buildOrderStatusWhatsApp(d, template, to)),
+      signal: AbortSignal.timeout(5000),
+    });
+    return res.ok;
   } catch {
     return false;
   }
