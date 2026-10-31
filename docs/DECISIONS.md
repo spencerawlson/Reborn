@@ -5,6 +5,10 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-31 — Prohibited items ARE returned (founder; supersedes 2026-10-30 no-return)
+- **Founder:** a package containing a prohibited item is still not shipped, but it WILL be returned to the customer — reversing the Oct 30 no-return rule. Copy updated in EN/FR/HT (order-form notice, prohibited-items page).
+- **Open:** return logistics (cost, method, timing) are not yet specified anywhere.
+
 ## 2026-10-30 — Prohibited items, no return; customer self-service; warehouse addresses (founder)
 - **Founder:** block prohibited items with the reason and a reference;
   "What's inside" optional but recommended, with a warning that packages
