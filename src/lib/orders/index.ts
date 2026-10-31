@@ -5,6 +5,7 @@
  */
 import type { Db } from "../db/index";
 import type { DictionaryKey } from "../i18n/index";
+import { notifyNewOrder, type OrderAlertDetails } from "../notify/index";
 import { findProhibited } from "../shipping/prohibited";
 
 export type Warehouse = "MIA" | "YUL";
@@ -124,6 +125,36 @@ export async function createOrder(
       value === null || value === undefined ? null : value.toString(),
     ],
   );
+  // Best-effort admin alert (email + WhatsApp, when configured). A failure
+  // here must never fail the order itself — the order already succeeded.
+  try {
+    const info = await db.query<Row & { display_name: string; suite_code: string | null }>(
+      `SELECT ${COLUMNS}, u.display_name, p.suite_code
+         FROM incoming_orders o
+         JOIN users u ON u.id = o.user_id
+         LEFT JOIN customer_profiles p ON p.user_id = o.user_id
+        WHERE o.id = $1`,
+      [rows[0].id],
+    );
+    const r = info[0];
+    if (r) {
+      const order = toOrder(r);
+      const details: OrderAlertDetails = {
+        trackingCode: order.trackingCode,
+        warehouse: order.warehouse,
+        store: order.store,
+        orderNumber: order.orderNumber,
+        trackingNumber: order.trackingNumber,
+        description: order.description,
+        declaredValueMinor: order.declaredValueMinor,
+        customerName: r.display_name,
+        suiteCode: r.suite_code,
+      };
+      await notifyNewOrder(details);
+    }
+  } catch {
+    // Alert only — the order already succeeded.
+  }
   return { ok: true, id: rows[0].id };
 }
 
