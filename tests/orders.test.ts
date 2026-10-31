@@ -69,7 +69,8 @@ describe("incoming orders", () => {
   it("validates the warehouse, required fields, and value", () => {
     expect(validateOrder(order)).toBeNull();
     expect(validateOrder({ ...order, warehouse: "LAX" })).toBe("errRequired");
-    expect(validateOrder({ ...order, description: " " })).toBe("errRequired");
+    expect(validateOrder({ ...order, description: "" })).toBeNull(); // optional (recommended)
+    expect(validateOrder({ ...order, store: " " })).toBe("errRequired");
     expect(validateOrder({ ...order, value: "abc" })).toBe("errValue");
   });
 
@@ -84,6 +85,23 @@ describe("incoming orders", () => {
     expect(await getOrder(db, marie, "not-a-uuid")).toBeNull();
     expect((await listOrders(db, marie)).map((o) => o.id)).toContain(created.id);
     expect(await listOrders(db, jean)).toEqual([]);
+  });
+});
+
+describe("prohibited items on orders", () => {
+  it("blocks a declared prohibited item and says which category", async () => {
+    expect(await createOrder(db, marie, { ...order, description: "Ammo and a rifle scope" })).toEqual({
+      ok: false,
+      error: "errProhibited",
+      prohibited: "weapons",
+    });
+    expect(await createOrder(db, marie, { ...order, description: "Phone and glue gun" })).toMatchObject({ ok: true });
+  });
+
+  it("accepts an order with no description (it will be inspected)", async () => {
+    const created = await createOrder(db, marie, { ...order, description: "" });
+    expect(created.ok).toBe(true);
+    if (created.ok) expect((await getOrder(db, marie, created.id))!.description).toBeNull();
   });
 });
 

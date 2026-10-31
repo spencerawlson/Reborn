@@ -5,6 +5,22 @@ October 30, 2026) for technical and product calls inside `docs/VISION.md`;
 legal, live money, spending, public launch, business terms, and changes to
 the vision stay with the founder.
 
+## 2026-10-30 — Prohibited items, no return; customer self-service; warehouse addresses (founder)
+- **Founder:** block prohibited items with the reason and a reference;
+  "What's inside" optional but recommended, with a warning that packages
+  are inspected; **there is no return on prohibited items** — a package
+  containing one is neither shipped nor returned.
+- **Founder:** the Miami and Montréal receiving addresses are set by the
+  admin; customers can edit their own name, phone, and Haiti address but
+  not the warehouse addresses (or their suite).
+- **Lead:** list in `src/lib/shipping/prohibited.ts` (9 categories, EN/FR/
+  HT keywords, references: UN SC res. 2752/2794 arms embargo, trade.gov
+  Haiti import rules, USDA FAIRS, USPS IMM, IATA DGR, 49 CFR). Haiti's own
+  official list isn't published online (reportedly from 1962): to be
+  confirmed by the company's customs broker. Lithium batteries are not
+  blocked (phones, laptops); restrictions for air are a founder decision.
+  Email changes wait for an email provider (verification).
+
 ## 2026-10-30 — Accounts, door-to-door switch, delivery codes (founder) + build choices (lead)
 - **Founder:** customers sign up and have an account; an admin page can
   suspend door-to-door delivery when there is political trouble in Haiti;

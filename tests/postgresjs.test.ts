@@ -14,7 +14,7 @@ import { createCustomer, createSession, getSessionUser, verifyCredentials } from
 import { getDb, type Db } from "../src/lib/db/index";
 import { loadMigrations, migrate } from "../src/lib/db/migrate";
 import { createOrder, getOrder, setOrderOtp } from "../src/lib/orders/index";
-import { getDoorDelivery, setDoorDelivery } from "../src/lib/settings/index";
+import { getDoorDelivery, getWarehouseAddresses, setDoorDelivery, setWarehouseAddresses } from "../src/lib/settings/index";
 
 const PORT = 54000 + Math.floor(Math.random() * 900);
 let server: PGLiteSocketServer;
@@ -62,6 +62,12 @@ describe("through postgres.js (production driver)", () => {
 
     await setDoorDelivery(db, { locked: false, reason: null, adminId: created.userId });
     expect((await getDoorDelivery(db)).locked).toBe(false);
+
+    const yul = { street: "100 Rue Exemple", city: "Montréal", region: "QC", postalCode: "H1A 1A1", country: "Canada", phone: "+1 514 000 0000" };
+    await setWarehouseAddresses(db, { YUL: yul }, created.userId);
+    expect(await getWarehouseAddresses(db)).toEqual({ YUL: yul });
+    const kind = await db.query<{ kind: string }>(`SELECT jsonb_typeof(value) AS kind FROM app_settings WHERE key = 'warehouse_addresses'`);
+    expect(kind[0].kind).toBe("object");
   });
 
   it("signs in, keeps sessions, and stores orders and codes", async () => {

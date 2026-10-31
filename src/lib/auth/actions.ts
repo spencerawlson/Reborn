@@ -9,6 +9,8 @@ import { redirect } from "next/navigation";
 import { getDb } from "../db/index";
 import { resolveLocale, type DictionaryKey } from "../i18n/index";
 import {
+  changePassword,
+  updateProfile,
   clearAttempts,
   createCustomer,
   createSession,
@@ -18,7 +20,8 @@ import {
   tooManyAttempts,
   verifyCredentials,
 } from "./accounts";
-import { clearSessionCookie, SESSION_COOKIE, setSessionCookie } from "./session";
+import { clearSessionCookie, getSession, SESSION_COOKIE, setSessionCookie } from "./session";
+import { revalidatePath } from "next/cache";
 
 export interface FormState {
   error: DictionaryKey | null;
@@ -73,6 +76,40 @@ export async function signInAction(_prev: FormState, form: FormData): Promise<Fo
   await syncAdminRole(db, userId, email);
   await setSessionCookie(await createSession(db, userId));
   redirect(safeNext(text(form, "next"), `/${locale}/account`));
+}
+
+export interface SaveState {
+  error: DictionaryKey | null;
+  saved: boolean;
+}
+
+/** The signed-in customer edits their own name, phone, and Haiti address. */
+export async function updateProfileAction(_prev: SaveState, form: FormData): Promise<SaveState> {
+  const locale = resolveLocale(text(form, "locale"));
+  const session = await getSession();
+  if (!session) redirect(`/${locale}/signin?next=/${locale}/account/edit`);
+  const error = await updateProfile(await getDb(), session.userId, {
+    name: text(form, "name"),
+    phone: text(form, "phone"),
+    department: text(form, "department"),
+    city: text(form, "city"),
+    neighborhood: text(form, "neighborhood"),
+    directions: text(form, "directions"),
+    haitiPhone: text(form, "haitiPhone"),
+  });
+  if (error) return { error, saved: false };
+  revalidatePath(`/${locale}/account`);
+  return { error: null, saved: true };
+}
+
+/** Change password (current password required); other devices are signed out. */
+export async function changePasswordAction(_prev: SaveState, form: FormData): Promise<SaveState> {
+  const locale = resolveLocale(text(form, "locale"));
+  const session = await getSession();
+  if (!session) redirect(`/${locale}/signin?next=/${locale}/account/edit`);
+  const token = (await cookies()).get(SESSION_COOKIE)?.value ?? null;
+  const error = await changePassword(await getDb(), session.userId, text(form, "currentPassword"), text(form, "newPassword"), token);
+  return error ? { error, saved: false } : { error: null, saved: true };
 }
 
 export async function signOutAction(form: FormData): Promise<void> {

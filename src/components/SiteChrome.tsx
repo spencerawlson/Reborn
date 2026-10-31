@@ -71,6 +71,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <ul className="mt-4 grid gap-2.5 text-sm">
               <li><Link href={`${base}/track`} className="hover:text-white">{t(locale, "trackTitle")}</Link></li>
               <li><Link href={`${base}#how`} className="hover:text-white">{t(locale, "howTitle")}</Link></li>
+              <li><Link href={`${base}/prohibited`} className="hover:text-white">{t(locale, "prohibitedTitle")}</Link></li>
             </ul>
           </div>
           <div>

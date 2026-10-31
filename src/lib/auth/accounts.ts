@@ -200,3 +200,59 @@ export function recordFailedAttempt(key: string, now = Date.now()): void {
 export function clearAttempts(key: string): void {
   attempts.delete(key);
 }
+
+/* Editing one's own account ----------------------------------------------- */
+
+export interface ProfileInput {
+  name: string;
+  phone: string;
+  department: string;
+  city: string;
+  neighborhood: string;
+  directions: string;
+  haitiPhone: string;
+}
+
+export function validateProfile(input: ProfileInput): DictionaryKey | null {
+  if (!input.name.trim() || !input.phone.trim() || !input.city.trim()) return "errRequired";
+  if (!isDepartmentCode(input.department)) return "errRequired";
+  if (input.name.length > 120 || input.phone.length > 40 || input.city.length > 120) return "errRequired";
+  if (input.neighborhood.length > 120 || input.directions.length > 500 || input.haitiPhone.length > 40) return "errRequired";
+  return null;
+}
+
+/** Updates the customer's own name, phone, and Haiti address. Email, suite, and warehouse addresses are not editable here. */
+export async function updateProfile(db: Db, userId: string, input: ProfileInput): Promise<DictionaryKey | null> {
+  const invalid = validateProfile(input);
+  if (invalid) return invalid;
+  const blank = (s: string) => (s.trim() ? s.trim() : null);
+  await db.query(
+    `WITH u AS (
+       UPDATE users SET display_name = $2, phone = $3, updated_at = now() WHERE id = $1 RETURNING id
+     )
+     UPDATE customer_profiles
+        SET haiti_department = $4, haiti_city = $5, haiti_neighborhood = $6, haiti_directions = $7, haiti_phone = $8
+      WHERE user_id = (SELECT id FROM u)`,
+    [userId, input.name.trim(), input.phone.trim(), input.department, input.city.trim(), blank(input.neighborhood), blank(input.directions), blank(input.haitiPhone)],
+  );
+  return null;
+}
+
+/**
+ * Changes the password after checking the current one, and signs out every
+ * other session (the current one, identified by its token, stays).
+ */
+export async function changePassword(
+  db: Db,
+  userId: string,
+  current: string,
+  next: string,
+  keepToken: string | null,
+): Promise<DictionaryKey | null> {
+  const rows = await db.query<{ password_hash: string }>(`SELECT password_hash FROM users WHERE id = $1`, [userId]);
+  if (!rows[0] || !(await verifyPassword(current, rows[0].password_hash))) return "errCurrentPassword";
+  if (next.length < MIN_PASSWORD || next.length > 200) return "errPassword";
+  await db.query(`UPDATE users SET password_hash = $2, updated_at = now() WHERE id = $1`, [userId, await hashPassword(next)]);
+  await db.query(`DELETE FROM sessions WHERE user_id = $1 AND token_hash <> $2`, [userId, keepToken ? hashToken(keepToken) : ""]);
+  return null;
+}

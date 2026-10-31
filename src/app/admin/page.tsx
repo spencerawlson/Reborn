@@ -7,7 +7,8 @@ import { getSession } from "@/lib/auth/session";
 import { getAdminStats } from "@/lib/admin/stats";
 import { getDb } from "@/lib/db/index";
 import { t } from "@/lib/i18n/index";
-import { getDoorDelivery } from "@/lib/settings/index";
+import { getDoorDelivery, getWarehouseAddresses } from "@/lib/settings/index";
+import { WarehouseForm } from "@/components/WarehouseForm";
 import { listExpectedPackages } from "@/lib/orders/index";
 import { setDoorDeliveryAction } from "./actions";
 
@@ -31,7 +32,12 @@ export default async function AdminPage() {
 
   const locale = "en" as const;
   const db = await getDb();
-  const [stats, door, expected] = await Promise.all([getAdminStats(), getDoorDelivery(db), listExpectedPackages(db)]);
+  const [stats, door, expected, addresses] = await Promise.all([
+    getAdminStats(),
+    getDoorDelivery(db),
+    listExpectedPackages(db),
+    getWarehouseAddresses(db),
+  ]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -104,6 +110,13 @@ export default async function AdminPage() {
           )}
         </section>
 
+        {/* Warehouse receiving addresses customers put on their Amazon orders */}
+        <section className="mt-8 rounded-3xl bg-white p-6 ring-1 ring-slate-200">
+          <h2 className="text-lg font-semibold text-navy-900">{t(locale, "adminWarehouseTitle")}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-slate-600">{t(locale, "adminWarehouseBody")}</p>
+          <WarehouseForm locale={locale} current={addresses} />
+        </section>
+
         {/* Warehouses: packages customers have declared, with delivery codes */}
         <section className="mt-8 rounded-3xl bg-white p-6 ring-1 ring-slate-200">
           <h2 className="text-lg font-semibold text-navy-900">
@@ -132,7 +145,7 @@ export default async function AdminPage() {
                       </td>
                       <td className="py-3 pr-4">{p.customerName}</td>
                       <td className="py-3 pr-4">
-                        {p.store} · {p.description}
+                        {p.store}{p.description ? ` · ${p.description}` : ""}
                         {p.orderNumber && <span className="block font-mono text-xs text-slate-400">{p.orderNumber}</span>}
                       </td>
                       <td className="py-3 pr-4 font-mono text-xs">{p.trackingNumber ?? "—"}</td>

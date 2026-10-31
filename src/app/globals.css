@@ -69,7 +69,8 @@
   offset-anchor: center;
   offset-position: 16px 16px;
   offset-distance: calc(var(--fly) * 100%);
-  opacity: calc(1 - max(0, var(--fly) - 0.85) * 6.6);
+  /* Fades out gradually over the climb: full until 60% of the flight, gone at the end. */
+  opacity: calc(1 - max(0, var(--fly) - 0.6) * 2.5);
   /* Gaussian blur only mid-flight: 0 at take-off and at the end, peak 2.5px halfway. */
   filter: blur(calc(min(var(--fly), 1 - var(--fly)) * 5px));
 }
@@ -86,7 +87,7 @@
   stroke-dasharray: 1px 1px;
   stroke-dashoffset: calc((1 - min(1, var(--p, 0) * 1.6)) * 1px);
 }
-.hero-trail { opacity: calc(1 - max(0, var(--p, 0) * 1.6 - 0.85) * 6.6); }
+.hero-trail { opacity: calc(1 - max(0, min(1, var(--p, 0) * 1.6) - 0.6) * 2.5); }
 
 /* Sky clouds drift slowly; scroll adds parallax (inline transforms on the parent). */
 .sky-drift-slow { animation: sky-drift 90s linear infinite alternate; }

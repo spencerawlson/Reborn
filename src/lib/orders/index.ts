@@ -5,6 +5,7 @@
  */
 import type { Db } from "../db/index";
 import type { DictionaryKey } from "../i18n/index";
+import { findProhibited } from "../shipping/prohibited";
 
 export type Warehouse = "MIA" | "YUL";
 
@@ -23,7 +24,7 @@ export interface IncomingOrder {
   store: string;
   orderNumber: string | null;
   trackingNumber: string | null;
-  description: string;
+  description: string | null;
   declaredValueMinor: bigint | null;
   deliveryOtp: string | null;
   otpUpdatedAt: Date | null;
@@ -54,7 +55,7 @@ export function parseDollars(value: string): bigint | null | undefined {
 
 export function validateOrder(input: OrderInput): DictionaryKey | null {
   if (input.warehouse !== "MIA" && input.warehouse !== "YUL") return "errRequired";
-  if (!input.store.trim() || !input.description.trim()) return "errRequired";
+  if (!input.store.trim()) return "errRequired";
   if (input.store.length > 80 || input.orderNumber.length > 80 || input.trackingNumber.length > 80) return "errRequired";
   if (input.description.length > 300) return "errRequired";
   if (parseDollars(input.value) === undefined) return "errValue";
@@ -67,7 +68,7 @@ type Row = {
   store: string;
   order_number: string | null;
   tracking_number: string | null;
-  description: string;
+  description: string | null;
   declared_value_minor: string | number | null;
   delivery_otp: string | null;
   otp_updated_at: Date | null;
@@ -98,9 +99,12 @@ export async function createOrder(
   db: Db,
   userId: string,
   input: OrderInput,
-): Promise<{ ok: true; id: string } | { ok: false; error: DictionaryKey }> {
+): Promise<{ ok: true; id: string } | { ok: false; error: DictionaryKey; prohibited?: string }> {
   const invalid = validateOrder(input);
   if (invalid) return { ok: false, error: invalid };
+  // Block declared prohibited items (store name included, e.g. "Gun shop").
+  const banned = findProhibited(`${input.description} ${input.store}`);
+  if (banned) return { ok: false, error: "errProhibited", prohibited: banned.id };
   const blank = (s: string) => (s.trim() ? s.trim() : null);
   const value = parseDollars(input.value);
   const rows = await db.query<{ id: string }>(
@@ -112,7 +116,7 @@ export async function createOrder(
       input.store.trim(),
       blank(input.orderNumber),
       blank(input.trackingNumber),
-      input.description.trim(),
+      blank(input.description),
       value === null || value === undefined ? null : value.toString(),
     ],
   );

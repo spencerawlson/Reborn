@@ -47,3 +47,60 @@ export async function setDoorDelivery(db: Db, args: { locked: boolean; reason: s
     [value, args.adminId],
   );
 }
+
+/* Warehouse receiving addresses ------------------------------------------ */
+
+export type WarehouseCode = "MIA" | "YUL";
+
+export interface WarehouseAddress {
+  street: string;
+  city: string;
+  region: string; // state or province, e.g. FL, QC
+  postalCode: string;
+  country: string;
+  phone: string;
+}
+
+export type WarehouseAddresses = Partial<Record<WarehouseCode, WarehouseAddress>>;
+
+export const WAREHOUSE_CODES: WarehouseCode[] = ["MIA", "YUL"];
+const FIELDS: (keyof WarehouseAddress)[] = ["street", "city", "region", "postalCode", "country", "phone"];
+
+/** Returns the field that is missing or too long, or null when the address is valid (phone optional). */
+export function validateWarehouseAddress(a: WarehouseAddress): keyof WarehouseAddress | null {
+  for (const f of FIELDS) {
+    const v = a[f].trim();
+    if (f !== "phone" && !v) return f;
+    if (v.length > 120) return f;
+  }
+  return null;
+}
+
+export async function getWarehouseAddresses(db: Db): Promise<WarehouseAddresses> {
+  const rows = await db.query<{ value: unknown }>(`SELECT value FROM app_settings WHERE key = 'warehouse_addresses'`);
+  const raw = rows[0]?.value;
+  const value = typeof raw === "string" ? JSON.parse(raw) : raw;
+  return (value ?? {}) as WarehouseAddresses;
+}
+
+/** Admin only (caller checks). Audit-logged in the same statement. */
+export async function setWarehouseAddresses(db: Db, addresses: WarehouseAddresses, adminId: string): Promise<void> {
+  const clean: WarehouseAddresses = {};
+  for (const code of WAREHOUSE_CODES) {
+    const a = addresses[code];
+    if (a) clean[code] = Object.fromEntries(FIELDS.map((f) => [f, a[f].trim()])) as unknown as WarehouseAddress;
+  }
+  await db.query(
+    `WITH before AS (
+       SELECT value FROM app_settings WHERE key = 'warehouse_addresses'
+     ), upd AS (
+       INSERT INTO app_settings (key, value, updated_by, updated_at)
+       VALUES ('warehouse_addresses', $1::text::jsonb, $2, now())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_by = EXCLUDED.updated_by, updated_at = now()
+       RETURNING value
+     )
+     INSERT INTO audit_log (actor_user_id, action, entity_type, before_json, after_json)
+     SELECT $2, 'warehouse_addresses.update', 'app_settings', (SELECT value FROM before), (SELECT value FROM upd)`,
+    [JSON.stringify(clean), adminId],
+  );
+}

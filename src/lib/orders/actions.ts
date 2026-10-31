@@ -9,6 +9,8 @@ import { createOrder, setOrderOtp } from "./index";
 
 export interface OrderFormState {
   error: DictionaryKey | null;
+  /** Prohibited category id when the order was blocked (see shipping/prohibited). */
+  prohibited?: string;
   saved: boolean;
   values: Record<string, string>;
 }
@@ -28,7 +30,7 @@ export async function addOrderAction(_prev: OrderFormState, form: FormData): Pro
     value: text(form, "value"),
   };
   const result = await createOrder(await getDb(), session.userId, input);
-  if (!result.ok) return { error: result.error, saved: false, values: input };
+  if (!result.ok) return { error: result.error, prohibited: result.prohibited, saved: false, values: input };
   redirect(`/${locale}/account/orders/${result.id}`);
 }
 

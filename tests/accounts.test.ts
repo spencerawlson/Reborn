@@ -8,6 +8,8 @@ import { citext } from "@electric-sql/pglite/contrib/citext";
 import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  changePassword,
+  updateProfile,
   clearAttempts,
   createCustomer,
   createSession,
@@ -24,7 +26,13 @@ import {
 import { hashPassword, verifyPassword } from "../src/lib/auth/password";
 import { pgliteDb, type Db } from "../src/lib/db/index";
 import { loadMigrations, migrate } from "../src/lib/db/migrate";
-import { getDoorDelivery, setDoorDelivery } from "../src/lib/settings/index";
+import {
+  getDoorDelivery,
+  getWarehouseAddresses,
+  setDoorDelivery,
+  setWarehouseAddresses,
+  validateWarehouseAddress,
+} from "../src/lib/settings/index";
 
 let db: Db;
 
@@ -161,5 +169,60 @@ describe("door-to-door switch", () => {
     );
     expect(log.map((l) => l.action).sort()).toEqual(["door_delivery.lock", "door_delivery.unlock"]);
     expect(log.every((l) => l.actor_user_id === adminId)).toBe(true);
+  });
+});
+
+describe("editing one's own account", () => {
+  it("updates name, phone, and Haiti address; validates input", async () => {
+    const userId = (await verifyCredentials(db, "marie@example.test", "correct horse battery"))!;
+    const profile = {
+      name: "Marie J. Joseph",
+      phone: "+1 514 555 0199",
+      department: "HT-SD",
+      city: "Les Cayes",
+      neighborhood: "",
+      directions: "Behind the market",
+      haitiPhone: "",
+    };
+    expect(await updateProfile(db, userId, { ...profile, department: "HT-XX" })).toBe("errRequired");
+    expect(await updateProfile(db, userId, { ...profile, name: " " })).toBe("errRequired");
+    expect(await updateProfile(db, userId, profile)).toBeNull();
+
+    const token = await createSession(db, userId);
+    const account = await getAccount(db, (await getSessionUser(db, token))!);
+    expect(account).toMatchObject({ displayName: "Marie J. Joseph", phone: "+1 514 555 0199", email: "marie@example.test" });
+    expect(account.haiti).toMatchObject({ department: "HT-SD", city: "Les Cayes", neighborhood: null, directions: "Behind the market" });
+    expect(account.suiteCode).toMatch(/^SIA-/); // unchanged
+  });
+
+  it("changes the password only with the current one, and signs out other devices", async () => {
+    const userId = (await verifyCredentials(db, "marie@example.test", "correct horse battery"))!;
+    const here = await createSession(db, userId);
+    const elsewhere = await createSession(db, userId);
+
+    expect(await changePassword(db, userId, "wrong current pw", "a brand new password", here)).toBe("errCurrentPassword");
+    expect(await changePassword(db, userId, "correct horse battery", "short", here)).toBe("errPassword");
+    expect(await changePassword(db, userId, "correct horse battery", "a brand new password", here)).toBeNull();
+
+    expect(await verifyCredentials(db, "marie@example.test", "correct horse battery")).toBeNull();
+    expect(await verifyCredentials(db, "marie@example.test", "a brand new password")).toBe(userId);
+    expect(await getSessionUser(db, here)).not.toBeNull();
+    expect(await getSessionUser(db, elsewhere)).toBeNull();
+    await changePassword(db, userId, "a brand new password", "correct horse battery", here); // restore for later tests
+  });
+});
+
+describe("warehouse addresses (admin)", () => {
+  it("validates, saves, reads back, and audit-logs", async () => {
+    const adminId = (await verifyCredentials(db, "marie@example.test", "correct horse battery"))!;
+    const miami = { street: "1234 NW 72nd Ave", city: "Miami", region: "FL", postalCode: "33126", country: "USA", phone: "" };
+    expect(validateWarehouseAddress({ ...miami, street: " " })).toBe("street");
+    expect(validateWarehouseAddress(miami)).toBeNull();
+
+    expect(await getWarehouseAddresses(db)).toEqual({});
+    await setWarehouseAddresses(db, { MIA: miami }, adminId);
+    expect(await getWarehouseAddresses(db)).toEqual({ MIA: miami });
+    const log = await db.query<{ action: string }>(`SELECT action FROM audit_log WHERE action = 'warehouse_addresses.update'`);
+    expect(log.length).toBe(1);
   });
 });

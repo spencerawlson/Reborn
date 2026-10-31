@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
+import { prohibitedById } from "@/lib/shipping/prohibited";
 import { addOrderAction, setOtpAction, type OrderFormState } from "@/lib/orders/actions";
 import { t, type DictionaryKey, type Locale } from "@/lib/i18n/index";
 
@@ -23,10 +25,14 @@ export function AddOrderForm({ locale }: { locale: Locale }) {
   return (
     <form action={action} className="grid gap-4">
       <input type="hidden" name="locale" value={locale} />
-      {state.error && (
-        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-100">
-          {t(locale, state.error)}
-        </p>
+      {state.error && state.prohibited ? (
+        <ProhibitedError locale={locale} id={state.prohibited} />
+      ) : (
+        state.error && (
+          <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700 ring-1 ring-red-100">
+            {t(locale, state.error)}
+          </p>
+        )
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
@@ -51,18 +57,56 @@ export function AddOrderForm({ locale }: { locale: Locale }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-[1fr_10rem]">
         <div>
-          <Label locale={locale} htmlFor="description" k="fieldDescription" />
-          <input id="description" name="description" required maxLength={300} defaultValue={v.description} className={input} />
+          <label htmlFor="description" className={labelCls}>
+            {t(locale, "fieldDescription")}{" "}
+            <span className="font-normal text-slate-400">
+              ({t(locale, "optional")} — {t(locale, "recommended")})
+            </span>
+          </label>
+          <input id="description" name="description" maxLength={300} defaultValue={v.description} aria-describedby="description-notice" className={input} />
         </div>
         <div>
           <Label locale={locale} htmlFor="value" k="fieldValue" optional />
           <input id="value" name="value" inputMode="decimal" placeholder="49.99" defaultValue={v.value} className={input} />
         </div>
       </div>
+      <p id="description-notice" className="flex gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-100">
+        <span aria-hidden className="font-bold">!</span>
+        <span>
+          {t(locale, "descriptionNotice")}{" "}
+          <Link href={`/${locale}/prohibited`} className="font-semibold underline">
+            {t(locale, "prohibitedSeeList")}
+          </Link>
+        </span>
+      </p>
       <button disabled={pending} className="min-h-12 rounded-full bg-navy-900 px-6 font-semibold text-white hover:bg-navy-800 disabled:opacity-60 sm:justify-self-start">
         {pending ? "…" : t(locale, "orderSave")}
       </button>
     </form>
+  );
+}
+
+/** Blocked order: which category, why, and the reference it comes from. */
+function ProhibitedError({ locale, id }: { locale: Locale; id: string }) {
+  const category = prohibitedById(id);
+  if (!category) return null;
+  return (
+    <div role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-red-100">
+      <p className="font-semibold">
+        {t(locale, "errProhibited")}: {category.title[locale]}
+      </p>
+      <p className="mt-1">{category.reason[locale]}</p>
+      <p className="mt-1 font-semibold">{t(locale, "prohibitedNoReturn")}</p>
+      <p className="mt-2 text-xs">
+        {t(locale, "prohibitedReference")}:{" "}
+        <a href={category.references[0].url} target="_blank" rel="noopener noreferrer" className="underline">
+          {category.references[0].label}
+        </a>
+      </p>
+      <Link href={`/${locale}/prohibited#${category.id}`} className="mt-2 inline-block text-xs font-semibold underline">
+        {t(locale, "prohibitedSeeList")}
+      </Link>
+    </div>
   );
 }
 
