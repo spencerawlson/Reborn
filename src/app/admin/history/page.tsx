@@ -64,7 +64,15 @@ export default async function AdminHistoryPage() {
                       <span className="block font-mono text-xs text-slate-400">{p.trackingCode}</span>
                     </td>
                     <td className="py-3 pr-4 font-semibold">{t(locale, STATUS_LABEL[p.status] as never)}</td>
-                    <td className="py-3 pr-4 text-slate-500">{p.updatedAt.toLocaleDateString("en-CA")}</td>
+                    <td className="py-3 pr-4 text-slate-500">
+                      {p.updatedAt.toLocaleDateString("en-CA")}
+                      {p.deliverySignerName && <span className="block text-xs">{t(locale, "adminSignedBy")}: {p.deliverySignerName}</span>}
+                      {p.deliverySignatureData && (
+                        // Signature proof: data URL stored at delivery, rendered small.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.deliverySignatureData} alt="" className="mt-1 h-8 w-24 border border-slate-200 bg-white object-contain" />
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

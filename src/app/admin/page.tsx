@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n/index";
 import { getDoorDelivery, getWarehouseAddresses } from "@/lib/settings/index";
 import { WarehouseForm } from "@/components/WarehouseForm";
 import { listExpectedPackages, listInProgressPackages, NEXT_ORDER_STATUS, type OrderStatus } from "@/lib/orders/index";
+import { OrderProgress } from "@/components/OrderProgress";
 import { setDoorDeliveryAction, setOrderStatusAction } from "./actions";
 
 // Auth and figures must be evaluated per request, never frozen at build time.
@@ -149,6 +150,7 @@ export default async function AdminPage() {
                       <td className="py-3 pr-4">
                         {p.store}{p.description ? ` · ${p.description}` : ""}
                         {p.orderNumber && <span className="block font-mono text-xs text-slate-400">{p.orderNumber}</span>}
+                        <OrderProgress status={p.status} labels={{ expected: "Expected", received: "Received", repackaging: "Repackaging", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" }} />
                       </td>
                       <td className="py-3 pr-4 font-mono text-xs">{p.trackingNumber ?? "—"}</td>
                       <td className="py-3">
@@ -215,11 +217,12 @@ export default async function AdminPage() {
                         <td className="py-3 pr-4">
                           {p.store}{p.description ? ` · ${p.description}` : ""}
                           {p.trackingNumber && <span className="block font-mono text-xs text-slate-400">{p.trackingNumber}</span>}
+                          <OrderProgress status={p.status} labels={{ expected: "Expected", received: "Received", repackaging: "Repackaging", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" }} />
                         </td>
                         <td className="py-3 pr-4 font-semibold">{t(locale, STATUS_LABEL[p.status] as never)}</td>
                         <td className="py-3 text-right">
                           <span className="inline-flex flex-wrap justify-end gap-2">
-                            {next && (
+                            {next && p.status !== "shipped" && (
                               <form action={setOrderStatusAction} className="inline">
                                 <input type="hidden" name="orderId" value={p.id} />
                                 <input type="hidden" name="toStatus" value={next} />
@@ -227,6 +230,11 @@ export default async function AdminPage() {
                                   {t(locale, NEXT_LABEL[p.status] as never)}
                                 </button>
                               </form>
+                            )}
+                            {p.status === "shipped" && (
+                              <Link href={`/admin/deliveries/${p.id}`} className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700">
+                                {t(locale, "adminDeliverSign")}
+                              </Link>
                             )}
                             <Link href={`/admin/labels/${p.id}`} className="rounded-full bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800">
                               Label

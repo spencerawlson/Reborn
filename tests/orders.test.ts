@@ -166,7 +166,12 @@ describe("status flow", () => {
     expect((await listInProgressPackages(db)).map((p) => p.id)).toContain(created.id);
     expect(await setOrderStatus(db, null, created.id, "repackaging", noop)).toEqual({ ok: true, status: "repackaging" });
     expect(await setOrderStatus(db, null, created.id, "shipped", noop)).toEqual({ ok: true, status: "shipped" });
-    expect(await setOrderStatus(db, null, created.id, "delivered", noop)).toEqual({ ok: true, status: "delivered" });
+    // Delivered requires a signature: no manual delivered step.
+    expect(await setOrderStatus(db, null, created.id, "delivered", noop)).toEqual({ ok: false, error: "errRequired" });
+    expect(
+      await setOrderStatus(db, null, created.id, "delivered", noop, { name: "Marie Joseph", data: "data:image/png;base64,abc" }),
+    ).toEqual({ ok: true, status: "delivered" });
+    expect((await getOrder(db, marie, created.id))!.deliverySignerName).toBe("Marie Joseph");
     expect((await listInProgressPackages(db)).map((p) => p.id)).not.toContain(created.id);
     expect((await listHistoryPackages(db)).map((p) => p.id)).toContain(created.id);
     expect((await listOrderStatusHistory(db, created.id)).map((h) => h.toStatus)).toEqual([

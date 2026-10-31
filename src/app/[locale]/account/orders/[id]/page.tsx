@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { OtpForm } from "@/components/OrderForms";
+import { OrderProgress } from "@/components/OrderProgress";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/index";
@@ -50,6 +51,17 @@ export default async function OrderPage({ params }: { params: Promise<{ locale: 
               {t(locale, STATUS[order.status])}
             </span>
           </div>
+          <OrderProgress
+            status={order.status}
+            labels={{
+              expected: t(locale, "orderStatusExpected"),
+              received: t(locale, "orderStatusReceived"),
+              repackaging: t(locale, "orderStatusRepackaging"),
+              shipped: t(locale, "orderStatusShipped"),
+              delivered: t(locale, "orderStatusDelivered"),
+              cancelled: t(locale, "orderStatusCancelled"),
+            }}
+          />
 
           <dl className="mt-6 grid gap-x-6 gap-y-4 rounded-3xl bg-white p-6 ring-1 ring-slate-200 sm:grid-cols-2">
             {rows.map(([label, value]) => (

@@ -61,6 +61,9 @@ export interface IncomingOrder {
   receivedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  deliverySignerName: string | null;
+  deliverySignatureData: string | null;
+  deliverySignedAt: Date | null;
 }
 
 export interface ExpectedPackage extends IncomingOrder {
@@ -119,11 +122,15 @@ type Row = {
   received_at: Date | null;
   created_at: Date;
   updated_at: Date;
+  delivery_signer_name: string | null;
+  delivery_signature_data: string | null;
+  delivery_signed_at: Date | null;
 };
 
 const COLUMNS = `o.id, o.tracking_code, o.warehouse, o.store, o.order_number, o.tracking_number, o.description,
   o.declared_value_minor::text AS declared_value_minor, o.delivery_otp, o.otp_updated_at, o.status,
-  o.notify_phone, o.received_at, o.created_at, o.updated_at`;
+  o.notify_phone, o.received_at, o.created_at, o.updated_at,
+  o.delivery_signer_name, o.delivery_signature_data, o.delivery_signed_at`;
 
 function toOrder(r: Row): IncomingOrder {
   return {
@@ -142,6 +149,9 @@ function toOrder(r: Row): IncomingOrder {
     receivedAt: r.received_at ? new Date(r.received_at) : null,
     createdAt: new Date(r.created_at),
     updatedAt: new Date(r.updated_at),
+    deliverySignerName: r.delivery_signer_name,
+    deliverySignatureData: r.delivery_signature_data,
+    deliverySignedAt: r.delivery_signed_at ? new Date(r.delivery_signed_at) : null,
   };
 }
 
@@ -298,12 +308,48 @@ type FetchImpl = (url: string, init?: RequestInit) => Promise<{ ok: boolean; sta
 const defaultFetch: FetchImpl = (url, init) =>
   fetch(url, init).then((r) => ({ ok: r.ok, status: r.status }));
 
+/** Staff view of one package by id, regardless of status. */
+export async function getStaffPackage(db: Db, orderId: string): Promise<ExpectedPackage | null> {
+  if (!isOrderId(orderId)) return null;
+  const rows = await db.query<StaffRow>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name, u.phone
+       FROM incoming_orders o
+       JOIN users u ON u.id = o.user_id
+       LEFT JOIN customer_profiles p ON p.user_id = o.user_id
+      WHERE o.id = $1`,
+    [orderId],
+  );
+  return rows.length ? toStaffPackage(rows[0]) : null;
+}
+
+/** Packages ready to hand over: Shipped only. */
+export async function listShippedPackages(db: Db): Promise<ExpectedPackage[]> {
+  const rows = await db.query<StaffRow>(
+    `SELECT ${COLUMNS}, o.user_id, p.suite_code, u.display_name, u.phone
+       FROM incoming_orders o
+       JOIN users u ON u.id = o.user_id
+       LEFT JOIN customer_profiles p ON p.user_id = o.user_id
+      WHERE o.status = 'shipped'
+      ORDER BY o.updated_at DESC
+      LIMIT 500`,
+  );
+  return rows.map(toStaffPackage);
+}
+
+export interface DeliverySignature {
+  name: string;
+  /** PNG data URL from the signature pad. */
+  data: string;
+}
+
 /**
  * Staff-only status step (caller checks staff). Only the next step in the
- * flow is allowed, so a package cannot skip or go backwards. The change is
- * recorded in order_status_history, the customer sees the new status in
- * their app, and — best-effort, never blocking the change — they get a
- * WhatsApp to the order's phone field, falling back to their account phone.
+ * flow is allowed, so a package cannot skip or go backwards. Delivered is
+ * special: it is only reached with a customer signature (name + image);
+ * there is no manual delivered button. The change is recorded in
+ * order_status_history, the customer sees the new status in their app,
+ * and — best-effort, never blocking the change — they get a WhatsApp to
+ * the order's phone field, falling back to their account phone.
  */
 export async function setOrderStatus(
   db: Db,
@@ -311,8 +357,12 @@ export async function setOrderStatus(
   orderId: string,
   toStatus: OrderStatus,
   fetchImpl: FetchImpl = defaultFetch,
+  signature?: DeliverySignature,
 ): Promise<{ ok: true; status: OrderStatus } | { ok: false; error: DictionaryKey }> {
   if (!isOrderId(orderId)) return { ok: false, error: "errRequired" };
+  if (toStatus === "delivered" && (!signature?.name.trim() || !signature?.data.trim())) {
+    return { ok: false, error: "errRequired" };
+  }
   const current = await db.query<{ status: OrderStatus }>(`SELECT status FROM incoming_orders WHERE id = $1`, [orderId]);
   if (current.length === 0) return { ok: false, error: "errRequired" };
   const fromStatus = current[0].status;
@@ -321,13 +371,16 @@ export async function setOrderStatus(
     `WITH updated AS (
        UPDATE incoming_orders
           SET status = $2::varchar,
-              received_at = CASE WHEN $2::varchar = 'received' THEN now() ELSE received_at END
+              received_at = CASE WHEN $2::varchar = 'received' THEN now() ELSE received_at END,
+              delivery_signer_name = CASE WHEN $2::varchar = 'delivered' THEN $5::varchar ELSE delivery_signer_name END,
+              delivery_signature_data = CASE WHEN $2::varchar = 'delivered' THEN $6::text ELSE delivery_signature_data END,
+              delivery_signed_at = CASE WHEN $2::varchar = 'delivered' THEN now() ELSE delivery_signed_at END
         WHERE id = $1::uuid AND status = $3::varchar
         RETURNING id
      )
      INSERT INTO order_status_history (order_id, from_status, to_status, changed_by)
      SELECT id, $3::varchar, $2::varchar, $4::uuid FROM updated RETURNING order_id AS id`,
-    [orderId, toStatus, fromStatus, staffUserId],
+    [orderId, toStatus, fromStatus, staffUserId, signature?.name.trim() ?? null, signature?.data.trim() ?? null],
   );
   if (updated.length === 0) return { ok: false, error: "errRequired" };
   // Customer notification: in-app status is already visible; WhatsApp is best-effort.

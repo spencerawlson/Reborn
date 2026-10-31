@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AddOrderForm } from "@/components/OrderForms";
+import { OrderProgress } from "@/components/OrderProgress";
 import { Icon } from "@/components/Icon";
 import { HAITI_MAP } from "@/components/map-data";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
@@ -124,6 +125,17 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
                       {order.trackingNumber ? ` · ${order.trackingNumber}` : ""}
                       {` · ${t(locale, ({ expected: "orderStatusExpected", received: "orderStatusReceived", repackaging: "orderStatusRepackaging", shipped: "orderStatusShipped", delivered: "orderStatusDelivered", cancelled: "orderStatusCancelled" } as const)[order.status])}`}
                     </p>
+                    <OrderProgress
+                      status={order.status}
+                      labels={{
+                        expected: t(locale, "orderStatusExpected"),
+                        received: t(locale, "orderStatusReceived"),
+                        repackaging: t(locale, "orderStatusRepackaging"),
+                        shipped: t(locale, "orderStatusShipped"),
+                        delivered: t(locale, "orderStatusDelivered"),
+                        cancelled: t(locale, "orderStatusCancelled"),
+                      }}
+                    />
                   </div>
                   <span className="flex items-center gap-2 text-sm">
                     <span className={`rounded-full px-2.5 py-0.5 font-mono font-semibold ${order.deliveryOtp ? "bg-emerald-50 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>

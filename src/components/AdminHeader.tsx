@@ -5,7 +5,7 @@ import { hasRole } from "@/lib/auth/index";
 import { Logo } from "./Logo";
 
 /** Header for staff pages: logo, navigation (Team for admins only), signed-in member, access level, sign out. */
-export function AdminHeader({ session, current }: { session: SessionUser; current: "dashboard" | "customers" | "team" | "history" }) {
+export function AdminHeader({ session, current }: { session: SessionUser; current: "dashboard" | "customers" | "team" | "history" | "deliveries" }) {
   const admin = hasRole(session, "admin");
   const link = (href: string, label: string, key: typeof current) => (
     <Link
@@ -23,6 +23,7 @@ export function AdminHeader({ session, current }: { session: SessionUser; curren
           <nav className="order-last flex w-full items-center gap-1 sm:order-none sm:w-auto">
             {link("/admin", "Dashboard", "dashboard")}
             {link("/admin/customers", "Customers", "customers")}
+            {link("/admin/deliveries", "Deliveries", "deliveries")}
             {link("/admin/history", "History", "history")}
             {admin && link("/admin/team", "Team", "team")}
           </nav>

@@ -12,6 +12,7 @@ import {
   type WarehouseAddress,
   type WarehouseAddresses,
 } from "@/lib/settings/index";
+import { redirect } from "next/navigation";
 import { NEXT_ORDER_STATUS, setOrderStatus, type OrderStatus } from "@/lib/orders/index";
 
 /** Suspend or reopen door-to-door delivery in Haiti. Admin only; audit-logged. */
@@ -46,6 +47,32 @@ export async function setOrderStatusAction(form: FormData): Promise<void> {
   if (!result.ok) throw new Error("forbidden");
   revalidatePath("/admin");
   revalidatePath("/admin/history");
+}
+
+/**
+ * Delivery confirmation: staff hand the phone to the customer, the
+ * customer signs and gives their name, Done marks the package Delivered.
+ * This is the only way a package becomes Delivered — there is no manual
+ * delivered button.
+ */
+export async function deliverOrderAction(form: FormData): Promise<void> {
+  const session = await getSession();
+  if (!session || !(hasRole(session, "admin") || hasRole(session, "staff"))) throw new Error("forbidden");
+  const orderId = String(form.get("orderId") ?? "");
+  const signerName = String(form.get("signerName") ?? "").trim();
+  const signatureData = String(form.get("signatureData") ?? "").trim();
+  if (!signerName || signerName.length > 120 || !signatureData.startsWith("data:image/png;base64,") || signatureData.length > 200000) {
+    throw new Error("forbidden");
+  }
+  const result = await setOrderStatus(await getDb(), session.userId, orderId, "delivered", undefined, {
+    name: signerName,
+    data: signatureData,
+  });
+  if (!result.ok) throw new Error("forbidden");
+  revalidatePath("/admin");
+  revalidatePath("/admin/history");
+  revalidatePath("/admin/deliveries");
+  redirect("/admin/deliveries");
 }
 
 /** Set the Miami and Montreal receiving addresses customers see. Admin only; audit-logged. */
