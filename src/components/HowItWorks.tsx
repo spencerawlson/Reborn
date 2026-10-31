@@ -6,9 +6,10 @@ import { Icon, type IconName } from "./Icon";
 
 /**
  * "How it works" with a driving truck: the truck goes from step to step;
- * every step it has already passed stays blurred until the journey ends
- * and loops back to the start; the step it arrives at comes into focus.
- * Static for prefers-reduced-motion.
+ * the step it arrives at comes into focus; every step it has left stays
+ * blurred until the truck arrives at it again — including across the loop
+ * back to the start, so after the first journey only the focused step is
+ * sharp. Static for prefers-reduced-motion.
  */
 export interface Step {
   icon: IconName;
@@ -23,6 +24,7 @@ const STOP_MS = DRIVE_MS + DWELL_MS; // full cycle per step: drive, then dwell
 export function HowItWorks({ steps }: { steps: Step[] }) {
   const [active, setActive] = useState(0);
   const [resetting, setResetting] = useState(false);
+  const [hasLooped, setHasLooped] = useState(false);
   const [motion, setMotion] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
         if (current < steps.length - 1) return current + 1;
         // After the last step: jump back to the start without driving backwards.
         setResetting(true);
+        setHasLooped(true);
         window.setTimeout(() => setResetting(false), 60);
         return 0;
       });
@@ -62,7 +65,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
 
       {steps.map((step, i) => {
         const focused = motion && i === active;
-        const leftBehind = motion && i < active;
+        const leftBehind = motion && i !== active && (hasLooped || i < active);
         return (
           <li
             key={step.title}

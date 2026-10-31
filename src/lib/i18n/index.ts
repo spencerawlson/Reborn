@@ -514,7 +514,7 @@ const ht: Dictionary = {
   svc3Body: "Kafe, kakawo, wonm, lwil ak atizay ayisyen pou biznis lòt bò dlo — nou jwenn yo epi nou voye yo.",
   svcCta: "Wè pri a",
 
-  howTitle: "Kijan anbake ap mache",
+  howTitle: "Kijan koli ou an vwayaje",
   how1Title: "Rezève sou entènèt",
   how1Body: "Jwenn pri a nan kèk segonn epi rezève fasil.",
   how2Title: "Depoze oswa nou vin chèche",
