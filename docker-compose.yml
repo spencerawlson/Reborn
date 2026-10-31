@@ -30,6 +30,15 @@ services:
       ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       LIVE_PAYMENTS_ENABLED: "false"
+      # Order alerts: without these the app container never sees the
+      # values in the server .env, and alerts are silently skipped.
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      NOTIFY_FROM: ${NOTIFY_FROM:-}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
+      WHATSAPP_PHONE_NUMBER_ID: ${WHATSAPP_PHONE_NUMBER_ID:-}
+      WHATSAPP_TEMPLATE: ${WHATSAPP_TEMPLATE:-order_alert}
+      WHATSAPP_TO: ${WHATSAPP_TO:-}
+      SITE_URL: ${SITE_URL:-}
     ports:
       - "${APP_PORT:-3010}:3000"
 
