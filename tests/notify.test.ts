@@ -88,8 +88,7 @@ describe("buildOrderEmail", () => {
 
 describe("buildOrderWhatsApp", () => {
   it("builds a template payload with the five parameters in order", () => {
-    process.env.WHATSAPP_TO = "+50900000000";
-    const payload = buildOrderWhatsApp(details, "order_alert") as any;
+    const payload = buildOrderWhatsApp(details, "order_alert", "+50900000000") as any;
     expect(payload.messaging_product).toBe("whatsapp");
     expect(payload.to).toBe("+50900000000");
     expect(payload.type).toBe("template");
@@ -165,6 +164,34 @@ describe("senders", () => {
     const body = JSON.parse(calls[0].init.body);
     expect(body.to).toBe("+50900000000");
     expect(body.template.name).toBe("order_alert");
+  });
+
+  it("whatsapps every listed recipient", async () => {
+    process.env.WHATSAPP_TOKEN = "wa_token";
+    process.env.WHATSAPP_PHONE_NUMBER_ID = "12345";
+    process.env.WHATSAPP_TO = "+50900000000, +50911111111";
+    process.env.WHATSAPP_TEMPLATE = "order_alert";
+    const calls: { url: string; init: any }[] = [];
+    const ok = await sendOrderWhatsApp(async (url, init) => {
+      calls.push({ url, init });
+      return { ok: true, status: 200 };
+    }, details);
+    expect(ok).toBe(true);
+    expect(calls).toHaveLength(2);
+    expect(calls.map((c) => JSON.parse(c.init.body).to)).toEqual(["+50900000000", "+50911111111"]);
+  });
+
+  it("normalizes recipient formatting", async () => {
+    process.env.WHATSAPP_TOKEN = "wa_token";
+    process.env.WHATSAPP_PHONE_NUMBER_ID = "12345";
+    process.env.WHATSAPP_TO = "+1 (438) 000-0000, +509 0000 0000";
+    process.env.WHATSAPP_TEMPLATE = "order_alert";
+    const calls: { url: string; init: any }[] = [];
+    await sendOrderWhatsApp(async (url, init) => {
+      calls.push({ url, init });
+      return { ok: true, status: 200 };
+    }, details);
+    expect(calls.map((c) => JSON.parse(c.init.body).to)).toEqual(["+14380000000", "+50900000000"]);
   });
 
   it("skips whatsapp when unconfigured", async () => {

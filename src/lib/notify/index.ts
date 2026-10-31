@@ -42,6 +42,16 @@ export function adminEmails(): string[] {
     .filter(Boolean);
 }
 
+/** WhatsApp alert recipients: comma-separated, same shape as ADMIN_EMAILS.
+ *  Formatting is normalized (spaces, dashes, parentheses stripped) so a
+ *  number typed as "+509 3217 1628" still reaches the API as "+50932171628". */
+export function whatsappRecipients(): string[] {
+  return (process.env.WHATSAPP_TO ?? "")
+    .split(",")
+    .map((s) => s.trim().replace(/[\s()-]/g, ""))
+    .filter(Boolean);
+}
+
 function adminLink(): string | null {
   const base = (process.env.SITE_URL ?? "").replace(/\/$/, "");
   return base ? `${base}/admin` : null;
@@ -73,14 +83,14 @@ export function buildOrderEmail(
   };
 }
 
-export function buildOrderWhatsApp(d: OrderAlertDetails, template: string): Record<string, unknown> {
+export function buildOrderWhatsApp(d: OrderAlertDetails, template: string, to: string): Record<string, unknown> {
   // Template body placeholders, in order: customer, suite, warehouse,
   // store, tracking code. The template itself is created and approved
   // in the Meta dashboard; this only fills its parameters.
   const params = [d.customerName, d.suiteCode ?? "—", d.warehouse, d.store, d.trackingCode];
   return {
     messaging_product: "whatsapp",
-    to: process.env.WHATSAPP_TO ?? "",
+    to,
     type: "template",
     template: {
       name: template,
@@ -130,20 +140,24 @@ export async function sendOrderWhatsApp(
 ): Promise<boolean> {
   const token = process.env.WHATSAPP_TOKEN ?? "";
   const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID ?? "";
-  const to = process.env.WHATSAPP_TO ?? "";
   const template = process.env.WHATSAPP_TEMPLATE ?? "";
-  if (!token || !phoneId || !to || !template) return false;
+  const recipients = whatsappRecipients();
+  if (!token || !phoneId || !template || recipients.length === 0) return false;
   try {
-    const res = await fetchImpl(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(buildOrderWhatsApp(d, template)),
-      signal: AbortSignal.timeout(5000),
-    });
-    return res.ok;
+    const results = await Promise.allSettled(
+      recipients.map((to) =>
+        fetchImpl(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(buildOrderWhatsApp(d, template, to)),
+          signal: AbortSignal.timeout(5000),
+        }),
+      ),
+    );
+    return results.some((r) => r.status === "fulfilled" && r.value.ok);
   } catch {
     return false;
   }
@@ -165,7 +179,7 @@ export async function notifyNewOrder(
     if (
       process.env.WHATSAPP_TOKEN &&
       process.env.WHATSAPP_PHONE_NUMBER_ID &&
-      process.env.WHATSAPP_TO &&
+      whatsappRecipients().length > 0 &&
       process.env.WHATSAPP_TEMPLATE
     ) {
       jobs.push(sendOrderWhatsApp(fetchImpl, d));
